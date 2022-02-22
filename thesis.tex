@@ -1,7 +1,7 @@
 %!TEX output_directory = .aux
 %!TEX copy_output_on_build(true)
 
-\documentclass[11pt,a4paper, titlepage]{article}
+\documentclass[11pt,a4paper, titlepage]{report}
 \usepackage[a4paper, total={6.5in, 8in}]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage{amsfonts}
@@ -10,9 +10,9 @@
 \usepackage{mathtools}
 \usepackage{amsthm}
 
-\title{title}
+\title{An Analysis of smart voting in liquid democracy}
 \author{Giannis Tyrovolas}
-\date{Month Day, 2020}
+\date{\today}
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{prop}[theorem]{Proposition}
 \newtheorem*{remark}{Remark}
@@ -31,8 +31,37 @@
 
 \maketitle
 
+\tableofcontents
+
+\chapter{Preliminaries}
+
+\section{Notation}
 
 
+An election consists of a finite set of voters, voting on a finite set of issues. For each issue there is a finite set of alternatives. A special alternative is the abstention represented by $*$. Formally:
+
+\begin{definition}[Election]
+    An \emph{election} consists of a tuple $\langle N, I, D\rangle $ where $N = \{1,..., n\} $ is a finite non-empty set. The finite non-empty set $I$ holds represents the issues of the election. For each $i \in I$, $D(i)$ is a finite non-empty set.
+\end{definition}
+
+For single-issue elections we omit the reference to $I$ and abbreviate $D(i)$ to $D$.
+
+The model we will consider allows each voter to submit a smart ballot. A smart ballot is a preference list of smart votes. Each smart vote is a function with domain the other voters. A special requirement is that the final preference in the preference list is a direct vote on an alternative in $D$. Formally:
+
+\begin{definition}[Smart Ballots]
+    A smart ballot of an agent $a$ on issue $i \in I$ is an ordering $( (S^1, F^1) > \ldots > (S^k, F^k) > d)$ where $k \geq 0$. Each $S^h$ for $h \leq k$ is a subset of $N$ and $F^h \colon D(i)^{S^h} \longrightarrow D(i)$ is a resolute aggregation function. We also have that $d \in D(i)$.   
+\end{definition}
+
+Further when relevant we will consider $F^{k+1}$ to be the constant function with output $d$. Now, in most cases the sets $S^h$ are implicit and we will drop any mention to them. That is supported by the fact that we will treat two functions $F, G$ as identical if they are extensionally equal. This is formalised by the following definition:
+
+\begin{definition}[Valid Smart Ballot]
+    A valid smart ballot of an agent $a$ is a smart ballot $B_a$ such that for all $ 1 \leq s < t \leq k + 1$ $F^s$ is not equivalent to $F^t$. Additionally $a \notin S_t$.
+\end{definition}
+
+\chapter{Results}
+
+
+\chapter{Proposals}
 
 \end{document}
 
