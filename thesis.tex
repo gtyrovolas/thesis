@@ -44,10 +44,10 @@
 An election consists of a finite set of voters, voting on a finite set of issues. For each issue there is a finite set of alternatives. A special alternative is the abstention represented by $*$. Finally, there is an aggregation function that decides what the result of the election is. Formally:
 
 \begin{definition}[Election]
-    An \emph{election} consists of a tuple $\langle N, I, D, \mathcal{G}\rangle $ where $N = \{1,..., n\} $ is a finite non-empty set. The finite non-empty set $I$ holds represents the issues of the election. For each $i \in I$, $D(i)$ is a finite non-empty set. The function $\mathcal{G}$ is an aggregation function that inputs the votes on every voter on every issue and outputs the resulting vote of the group on each issue.
+    An \emph{election} consists of a tuple $\langle N, I, D, r\rangle $ where $N = \{1,..., n\} $ is a finite non-empty set. The finite non-empty set $I$ holds represents the issues of the election. For each $i \in I$, $D(i)$ is a finite non-empty set. The function $r$ is an aggregation function that inputs the votes on every voter on every issue and outputs the resulting vote of the group on each issue.
 \end{definition}
 
-For single-issue elections we omit the reference to $I$ and abbreviate $D(i)$ to $D$. So, that function $\mathcal{G}$ is $\mathcal{G} \colon D^N \longrightarrow D$. We also focus on non-trivial issues where $\abs{D} > 1$.
+For single-issue elections we omit the reference to $I$ and abbreviate $D(i)$ to $D$. So, that function $\mathcal{G}$ is $r \colon D^N \longrightarrow D$. We also focus on non-trivial issues where $\abs{D} > 1$.
 
 The model we will consider allows each voter to submit a smart ballot. A smart ballot is a preference list of smart votes. Each smart vote is a function with domain the other voters. A special requirement is that the final preference in the preference list is a direct vote on an alternative in $D$. Formally:
 
@@ -132,19 +132,17 @@ So, that when we refer to consistent certificates we do not need to specify the 
     Let \textsc{BoundedMinMax}$_\mathcal{F}$ be the decision problem with input a target constant $M$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. The YES instances are those with a consistent certificate  $\vec{c}$ with $\max_i \vec{c}_i \leq M$. 
 \end{definition}
 
+\begin{proposition}
+    Suppose that $r$ is monotone and the agents are only allowed to delegate using LIQUID ballots. Then for any outcome $d \in D$ there is an algorithm that determines if there is an \textsc{MinMax} certificate such that the election resolves in favour of $d$.
+\end{proposition}
+
 \begin{proposition}[Hardness of \textsc{BoundedMinSum}]
-    Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$. Then \textsc{BoundedMinSum} is NP-hard.    
+    Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$. Then \textsc{BoundedMinSum} is NP-hard.
 \end{proposition}
 
 \begin{proposition}[Hardness of \textsc{BoundedMinMax}]
     Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$. Then \textsc{BoundedMinMax} is NP-hard.    
 \end{proposition}
-
-We introduce the axiom of cast participation. That is that voters that have a preference for an outcome benefit from voting directly for it. We denote that agent $a$ prefers outcome $d$ to $e$ as $d >_a e$. We also infer that if agent $a$ votes directly for outcome $d$ then they weakly prefer $d$ over any other outcome. Formally if $B_a = (d)$ then for all $d' \in D$, $d \geq_a d'$.
-Now, an issue is that irresolute unravelling procedures might return multiple outcomes. So \textsc{MinSum} can return outcomes for $0$ and for $1$.
-So, we need to consider the set of outcomes from irresolute unravelling procedures. The simplest ordering of these sets of outcomes is that a voter $a$ that votes for $d$ prefers every set of outcomes that includes $d$ to every set of outcomes that doesn't. Further, $\{d\}$ is the preferred outcome of voter $a$. We assume that voters are indifferent between other sets of outcomes. 
-
-Then we can formalise cast-participation for irresolute procedures:
 
 \begin{definition}[Cast-Participation for irresolute procedures]
     A resolute voting rule $r$ and a irresolute unravelling procedure $\mathcal{U}$ satisfy cast-participation if for all valid smart profiles $\mathbf{B}$ and agents $a \in N$ such that $B_a \in D \setminus \{*\}$ we have that for all $B_a' \neq B_a$:
@@ -154,10 +152,6 @@ Then we can formalise cast-participation for irresolute procedures:
 
     Where $\mathbf{B}_{-a}, B_a'$ denotes replacing $B_a$ with $B_a'$. 
 \end{definition}
-
-Cast participation seems like a desirable property of a voting system. Unfortunately in several cases it doesn't hold.
-
-We now prove a series of negative results for cast participation.
 
 \begin{lemma} If $r$ is not monotone then cast participation doesn't hold.
 \end{lemma}
@@ -189,7 +183,7 @@ In the case where abstentions are allowed we denote $\mathit{Maj}(0, *) = 0, \ma
     Now if $B_a' = (c > d > 0)$ then the unique result of \textsc{MinSum} is $c$ votes for $0$. Further, $a, d, e$ delegate to $c$ using first preferences and vote for $0$ as well. This results in a strict majority for $0$. So the set of outcomes is $\{0\}$ which is a preferred set of outcomes.
 \end{proof}
 
-Note, that in the above case $\mathit{Maj}$ is a monotone rule. So, it is not the case that monotone rules guarantee cast participation.
+
 
 \iffalse
 Plan for this section:
