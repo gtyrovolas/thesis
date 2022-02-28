@@ -8,6 +8,8 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{mathtools}
+\usepackage{forest}
+\usetikzlibrary{shapes.geometric,positioning, arrows, trees, positioning, fit, calc}
 \usepackage{amsthm}
 
 \title{An Analysis of smart voting in liquid democracy}
@@ -18,6 +20,7 @@
 \newtheorem*{remark}{Remark}
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}
 \DeclarePairedDelimiter\norm{\lVert}{\rVert}
+
 
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
@@ -138,8 +141,101 @@ So, that when we refer to consistent certificates we do not need to specify the 
 Let $\lor$ the binary logical OR and $\land$ the binary logical AND. Then:
 
 \begin{proposition}[Hardness of \textsc{BoundedMinSum}]
-    Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$. Then \textsc{BoundedMinSum} is NP-hard.    
+    Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ and that every voter is allowed only 1 non-constant delegation. Then \textsc{BoundedMinSum} is NP-hard.    
 \end{proposition}
+
+\begin{proof}
+    We reduce from the NP-hard problem of \textsc{3-SAT}. Let $\varphi = \bigwedge_{i = 1}^k t_i $ a \textsc{3-SAT} instance on boolean variables $x_1, \ldots, x_n$ with $t_i = l_a \lor l_b \lor l_c $ where $l_a, l_b, l_c$ correspond to literals of variables $x_a, x_b, x_c$ or the negations the variables.
+    
+    We first define constant voters \underline{zero}, \underline{one} that always vote for 0 and 1 respectively. So that $B_{\text{\underline{zero}}} = (0)$ and $B_{\text{\underline{one}}} = (1)$. 
+
+\tikzset{circ/.style={circle,draw, solid, inner sep=0pt,minimum size=10mm}}
+\begin{figure}[h]
+    \centering
+\begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=2cm]
+
+\node[circle,draw] (z){\underline{zero}} [grow = up]
+    child{node [circle,draw]{0}
+    };
+
+\node[right of=z, circle,draw] {\underline{one}} [grow = up]
+    child{node [circle,draw]{1}
+    };
+
+\end{tikzpicture}
+\end{figure}
+
+For each variable $x_i$ we construct a voter $x_i$ with voting profile $B_{x_i} = (  \text{\underline{zero}} > 1) $. We denote the primary preferences as full lines and the secondary preferences as dashed lines.
+
+\begin{figure}[h]
+    \centering
+\begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=2cm]
+
+\node[circ] (x){$x_i$} [grow = up]
+
+    child{node[circ] (1){1}  edge from parent [dashed]}
+    child{node [circ] (z){\underline{zero}}{
+        child{node[circ](0){0}}}
+    };
+\end{tikzpicture}
+\end{figure}
+
+We then construct gadgets for each term $t_h$. These gadgets will have the property that they incur no additional cost if $t_h$ is satisfied and a cost of at least one if $t_h$ is satisfied.
+
+For a term $\overline{x_i} \lor x_j \lor x_k$: We construct additional voters $t_h$ and $a$, $b$ and $z$, with smart profiles:
+
+\begin{align*}
+    &B_z = (t_h > 0) \\
+    &B_a = (x_i \land z> 0) \\
+    &B_b = (x_j \lor a > 0) \\
+    &B_{t_h} = (b \lor x_k > 0)
+\end{align*}
+
+This is demonstrated by the following figure:
+
+\tikzset{circ/.style={circle,draw, solid, inner sep=0pt,minimum size=10mm}}
+    \begin{figure}[h]
+        \centering
+    \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=1.75cm]
+    
+    \node[circ] (xi){$x_i$};
+    \node[circ, right of=xi] (z){$z$};
+    
+
+    \node[circ, below of=xi] (xj){$x_j$};
+    \node[circ, below of=xj] (xk){$x_k$};
+    \node[circ, right of=xj] (a){$a$};
+    \node[circ, right of=xk] (b){$b$};
+    
+    
+    \node[draw, dashed, rounded rectangle, fit={(xi)(z)}] (elli1) {};
+    \node[draw, dashed, rounded rectangle, fit={(a)(xj)}](elli2) {};
+    \node[draw, dashed, rounded rectangle, fit={(b)(xk)}](elli3) {};
+
+    \node[circ, below of=elli3](t){$t_h$};
+    
+    \draw [->] (a) -- (elli1) node[midway,left]{$\land$};
+    \draw [->] (b) -- (elli2) node[midway,left]{$\lor$};
+    \draw [->] (t) -- (elli3) node[midway,left]{$\lor$};
+    \draw [->] (z.east) to [bend left=90] (t.east) {};
+    
+    \end{tikzpicture}
+    \end{figure}
+    
+    Now, we analyse when first preferences of the additional voters can be resolved without producing cycles. If $x_k = 1$ then $t_h$ can resolve to $1$ and so will $z$. As $x_i$ and $z$ are set to a value $a$ can resolve its first preference. As $x_j$ and $a$ are set, $b$ can resolve its first delegation as well. Similarly if $x_j = 1$ then $b$ is immediately resolved to $1$ and so $t_h$ is resolved. Hence $z$ and then $a$ can be resolved. Similarly if $x_i = 0$ the logical AND of $a$ is resolved to $0$ and all additional voters are resolved.
+    
+    Now, suppose $x_i = 0, x_j = 0, x_k = 1$. Then $t_h$ cannot immediately resolve the logical OR as it is dependent on the vote of $b$, similarly $b$ is waiting for $a$ to decide, and $a$ is waiting for $z$. But $z$ is waiting for $t_h$ to decide. There is no way to resolve this cycle and so one of the additional voters we've introduced will have to vote for their second preference. This will incur an additional cost of at least 1.
+
+    Now suppose that for each term we construct $n + 1$ such gadgets. Then if every term is satisfied by some assignment of the variables the maximum cost will be that of $n$. If a term is not satisfied then at least $n+1$ gadgets will incur a cost of $1$ so that the cost is at least $n+1$. Hence we have reduced the satisfiability of a \textsc{3-SAT} instance $\varphi$ to querying if there is a certificate $\vec{c}$ for the above election with $\sum_{i} \vec{c}_i \leq n$. Thus \textsc{BoundedMinSum}$_\mathcal{F}$ is NP-hard.
+\end{proof}
+
+\begin{corollary}[Inapproximability of \textsc{BoundedMinSum}] A constant factor approximation of \textsc{BoundedMinSum}$_\mathcal{F}$ is NP-hard.    
+\end{corollary}
+
+\begin{proof}
+    We can adapt the above proof to prove that \textsc{BoundedMinSum} is not constant-factor approximable. Following our construction above we can incur a cost of $k$ for when the expression $\varphi$ is not satisfiable by simply creating $k$ gadgets for each term. So for a \textsc{MinSum} outcome $\vec{c}$:   $\sum_i \vec{c}_i \leq n$ if and only if $\varphi$ is satisfiable and $\sum_i \vec{c}_i \geq k$ if and only if $\varphi$ is not satisfiable. So, any constant factor approximator would solve \textsc{3-SAT}, thus proving hardness.
+\end{proof}
+
 
 \begin{proposition}[Hardness of \textsc{BoundedMinMax}]
     Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$. Then \textsc{BoundedMinMax} is NP-hard.    
