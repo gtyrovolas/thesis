@@ -117,12 +117,11 @@ So, that when we refer to consistent certificates we do not need to specify the 
 \end{definition}
 
 
-
 \newpage
 
 
 
-\section{Results}
+\section{Complexity Results}
 
 \begin{definition}[\textsc{BoundedMinSum}]
     Let \textsc{BoundedMinSum}$_\mathcal{F}$ be the decision problem with input a target constant $M$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. The YES instances are those with a consistent certificate  $\vec{c}$ with $\sum_i \vec{c}_i \leq M$. 
@@ -132,6 +131,12 @@ So, that when we refer to consistent certificates we do not need to specify the 
     Let \textsc{BoundedMinMax}$_\mathcal{F}$ be the decision problem with input a target constant $M$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. The YES instances are those with a consistent certificate  $\vec{c}$ with $\max_i \vec{c}_i \leq M$. 
 \end{definition}
 
+\begin{proposition}
+    Suppose that $r$ is monotone and the agents are only allowed to delegate using LIQUID ballots. Then for any outcome $d \in D$ there is an algorithm that determines if there is an \textsc{MinMax} certificate such that the election resolves in favour of $d$.
+\end{proposition}
+
+Let $\lor$ the binary logical OR and $\land$ the binary logical AND. Then:
+
 \begin{proposition}[Hardness of \textsc{BoundedMinSum}]
     Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$. Then \textsc{BoundedMinSum} is NP-hard.    
 \end{proposition}
@@ -139,6 +144,13 @@ So, that when we refer to consistent certificates we do not need to specify the 
 \begin{proposition}[Hardness of \textsc{BoundedMinMax}]
     Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$. Then \textsc{BoundedMinMax} is NP-hard.    
 \end{proposition}
+
+\begin{proposition}[\textsc{BoundedMinMax} is not approximable]
+    If $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ then a non-trivial approximation of \textsc{BoundedMinMax} is NP-hard.
+\end{proposition}
+
+\newpage
+\section{Axiomatisation}
 
 We introduce the axiom of cast participation. That is that voters that have a preference for an outcome benefit from voting directly for it. We denote that agent $a$ prefers outcome $d$ to $e$ as $d >_a e$. We also infer that if agent $a$ votes directly for outcome $d$ then they weakly prefer $d$ over any other outcome. Formally if $B_a = (d)$ then for all $d' \in D$, $d \geq_a d'$.
 Now, an issue is that irresolute unravelling procedures might return multiple outcomes. So \textsc{MinSum} can return outcomes for $0$ and for $1$.
@@ -155,25 +167,39 @@ Then we can formalise cast-participation for irresolute procedures:
     Where $\mathbf{B}_{-a}, B_a'$ denotes replacing $B_a$ with $B_a'$. 
 \end{definition}
 
-Cast participation seems like a desirable property of a voting system. Unfortunately in several cases it doesn't hold.
+Cast participation can be thought of disallowing tactical voting. Unfortunatelly it does not always hold. 
+We first prove the cases of non-monotone $r$ and non-monotone delegating functions. 
+We prove these results for all unravelling procedures that would respect the voters first preference if the preferences didn't introduce cycles.
 
 We now prove a series of negative results for cast participation.
 
-\begin{lemma} If $r$ is not monotone then cast participation doesn't hold.
+\begin{lemma} Suppose $r$ is not monotone and $\mathcal{U}$ is any unravelling procedure, then cast participation doesn't hold.
 \end{lemma}
 
 \begin{proof}
-    Suppose $r$ is not monotone. Then for some vector $\vec{u} \in D^n$ with $\vec{u}_i = 0$ there exists a $\vec{u}' = (\vec{u}_1, \ldots, \vec{u}_{i-1}, 1, \vec{u}_{i+1}, \ldots, \vec{u}_n )$ with $r(\vec{u}) = 1$ and $r(\vec{u}') = 0$. This violates cast participation by the following profile: let $B_a = (\vec{u}_a)$, so in particular voter $i$ prefers 0 to 1. Then voter $i$ strictly prefers to vote for 1 than 0. So, to achieve cast participation, $r$ must be monotone.
+    Suppose $r$ is not monotone. Then for some vector $\vec{u} \in D^n$ with $\vec{u}_i = 0$ there exists a $\vec{u}' = (\vec{u}_1, \ldots, \vec{u}_{i-1}, 1, \vec{u}_{i+1}, \ldots, \vec{u}_n )$ with $r(\vec{u}) = 1$ and $r(\vec{u}') = 0$. This violates cast participation by the following profile: let $B_a = (\vec{u}_a)$, so in particular voter $i$ prefers 0 to 1. Then voter $i$ strictly prefers to vote for 1 than 0. So, to achieve cast participation, $r$ must be monotone. 
 \end{proof}
 
 \begin{lemma}
-    Let $r$ be a rule such that for $n \geq 5$ voters if $n-2$ voters vote for $d$ then $r$ assigns $d$. Let $\mathcal{F}$ contain LIQUID. Then cast-participation doesn't hold for unravelling with \textsc{MinMax}.
+    Suppose $r$ is a monotone rule, $\mathcal{U}$ respects first preferences and $f \in \mathcal{F}$ is a function on $D^k \longrightarrow D$ that is not monotone. Now suppose additionally that for some $n$ there exists a ``deciding'' subset of voters $S$ with $\abs{S} \leq n - k$ such that if every voter in $S$ votes for 0, $r$ votes for 0 and if every voter in $S$ votes for 1, $r$ votes for 1. Then cast-participation doesn't hold.
 \end{lemma}
 
 \begin{proof}
-    Let $N = \{a, b, c, d, e\}$ and $r$ as described. Then, let $B_a = (0), B_b = (a > 0), B_c = (1), B_d = B_e = (c > 0)$. Then \textsc{MinMax} would simply assign each individual to first preferences and the majority votes for 1. So the outcome set is $\{1\}$.
+    Let $S$ and $f$ as defined above. Suppose $\vec{u} < \vec{u}'$ with only $\vec{u}_i \neq \vec{u}_i$ and $f(\vec{u}) > f(\vec{u}')$. Then, enumerate voters $v_1, \ldots, v_k$ not in $S$ and let $B_{v_i} = (\vec{u}_i)$. For all other agents $a$ set $B_{a} = (f(v_1, \ldots, v_k) > d)$ for some arbitrary $d$. 
+    Then the first preferences of the voters do not introduce cycles. So
+     $r$ resolves to vote for $1$ as all voters in $S$ vote for $1$.
+    Now if $v_i$ were to switch their vote from $0$ to $1$ everyone in $S$ would vote for $0$ and so $r$ would resolve to $0$. This breaks cast participation for voter $v_i$.
+\end{proof}
 
-    But, if $B_a = (b > 0)$ then a cycle is formed and so necessarily, \textsc{MinMax} will have to use some second preferences. Hence $(2, 1, 1, 2, 2)$ would be a valid preference level where $a, b, d, e$ vote for $0$ so $r$ votes for $0$. Note that $(2, 1, 1, 1, 1)$ is a valid preference level and would result to the majority again voting for 1. So the set of outcomes is $\{0, 1\}$ which is better than $\{1\}$ for agent $a$.
+\begin{lemma}
+    Let $r$ be a rule such that for $n \geq 5$ voters if $n-2$ voters vote for $d$ then $r$ assigns $d$. Let $\mathcal{F}$ contain LIQUID. Then there are examples that unravelling with \textsc{MinMax} violates cast-participation for any $n$.
+\end{lemma}
+
+\begin{proof}
+    Let $N = \{v, v', a, u_1, \ldots, u_{n-3}\}$ and $r$ as described. Then, let $B_v = (0), B_{v'} = (v > 0), B_a = (1), B_{u_i} = (a > 0)$. Then \textsc{MinMax} would simply assign each individual to first preferences and the majority votes for 1. So the outcome set is $\{1\}$.
+
+    But, if $B_v = (v' > 0)$ then a cycle is formed and so necessarily, \textsc{MinMax} will have to use some second preferences. Hence setting $v, u_1, \ldots, u_{n-3}$ to their second preference would be a valid solution. So every voter except $a$ vote for $0$, so that $r$ resolves to $0$. 
+    Note that we can still assign first preference to all voters except than $v$ so that $(2, 1, \ldots, 1)$ is a consistent certificate and would result to the majority again voting for 1. So the set of outcomes is $\{0, 1\}$ which is better than $\{1\}$ for agent $a$.
 \end{proof}
 
 We can further prove that \textsc{MinSum} doesn't hold when using three symbols. To do this set $D = \{0, 1, *\}$ where $*$ denote abstentions.
