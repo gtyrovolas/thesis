@@ -47,15 +47,13 @@
 An election consists of a finite set of voters, voting on a finite set of issues. For each issue there is a finite set of alternatives. A special alternative is the abstention represented by $*$. Finally, there is an aggregation function that decides what the result of the election is. Formally:
 
 \begin{definition}[Election]
-    An \emph{election} consists of a tuple $\langle N, I, D, \mathcal{G}\rangle $ where $N = \{1,..., n\} $ is a finite non-empty set. The finite non-empty set $I$ holds represents the issues of the election. For each $i \in I$, $D(i)$ is a finite non-empty set. The function $\mathcal{G}$ is an aggregation function that inputs the votes on every voter on every issue and outputs the resulting vote of the group on each issue.
+    An \emph{election} consists of a tuple $\langle N, D, r\rangle $ where $N = \{1,..., n\} $ is a finite non-empty set of voters. The set $D$ is a finite set with $\abs{D} \geq 1$. The function $r \colon D^n \longrightarrow D$ is a resolute aggregation function that inputs the votes of every voter and outputs the outcome of the election.
 \end{definition}
-
-For single-issue elections we omit the reference to $I$ and abbreviate $D(i)$ to $D$. So, that function $\mathcal{G}$ is $\mathcal{G} \colon D^N \longrightarrow D$. We also focus on non-trivial issues where $\abs{D} > 1$.
 
 The model we will consider allows each voter to submit a smart ballot. A smart ballot is a preference list of smart votes. Each smart vote is a function with domain the other voters. A special requirement is that the final preference in the preference list is a direct vote on an alternative in $D$. Formally:
 
 \begin{definition}[Smart Ballots]
-    A smart ballot of an agent $a$ on issue $i \in I$ is an ordering $( (S^0, F^0) > \ldots > (S^{k-1}, F^{k-1}) > d)$ where $k \geq 0$. Each $S^h$ for $h \leq k$ is a subset of $N$ and $F^h \colon D(i)^{S^h} \longrightarrow D(i)$ is a resolute non-trivial aggregation function. We also have that $d \in D(i)$.   
+    A smart ballot of an agent $a$ is an ordering $( (S^0, F^0) > \ldots > (S^{k-1}, F^{k-1}) > d)$ where $k \geq 0$. Each $S^h$ for $h \leq k$ is a subset of $N$ and $F^h \colon D^{S^h} \longrightarrow D$ is a resolute non-trivial aggregation function. We also have that $d \in D$.   
 \end{definition}
 
 Further when relevant we will consider $F^{k}$ to be the constant function with output $d$. Now, in most cases the sets $S^h$ are implicit and we will drop any mention to them. That is supported by the fact that we will treat two functions $F, G$ as identical if they are extensionally equal. Additionally we will disallow a voter to delegate to themselves. This is formalised by the following definition:
@@ -106,17 +104,27 @@ It is good that there is only one way to unravel consistent certificates. The fo
 So, that when we refer to consistent certificates we do not need to specify the votes of each agent. Now that we have settled the framework it's time to consider some ``good'' certificates. There is a very natural ``cost'' in this scenario and that is using a lot of the later preferences of each agent. So, we can set two very natural ways of minimising this cost. We can attempt to minimise the sum of the cost or in a more utilitarian setting attempt to minimise the maximum of the cost. Formally:
 
 \begin{definition}[MinSum]
-    For a given profile $\mathbf{B}$, the \textsc{MinSum} unravelling procedure is define as:
+    For a given profile $\mathbf{B}$, the \textsc{MinSum} unravelling procedure is defined as:
     \[
-        \textsc{MinSum}(\mathbf{B}) = \{X_{\mathbf{c}} \mid \mathrm{arg} \min_{\mathbf{c} \in C(\mathbf{B})} \sum_{i=1}^n c_i \}
+        \textsc{MinSum}(\mathbf{B}) = \left\{X_{\mathbf{c}} \mid \mathrm{arg} \min_{\mathbf{c} \in C(\mathbf{B})} \sum_{i=1}^n c_i \right\}
     \]
 \end{definition}
 
 \begin{definition}[MinMax]
-    For a given profile $\mathbf{B}$, the \textsc{MinMax} unravelling procedure is define as:
+    For a given profile $\mathbf{B}$, the \textsc{MinMax} unravelling procedure is defined as:
     \[
-        \textsc{MinMax}(\mathbf{B}) = \{X_{\mathbf{c}} \mid \mathrm{arg} \min_{\mathbf{c} \in C(\mathbf{B})} \max (\mathbf{c}) \}
+        \textsc{MinMax}(\mathbf{B}) = \left\{X_{\mathbf{c}} \mid \mathrm{arg} \min_{\mathbf{c} \in C(\mathbf{B})} \max (\mathbf{c}) \right\}
     \]
+\end{definition}
+
+A natural extension of \textsc{MinMax} is that of \textsc{LexiMin} that selects from the \textsc{MinMax} certificates the ones with minimum sum. Formally:
+
+\begin{definition}[LexiMin]
+    For a given profile $\mathbf{B}$, the \textsc{LexiMin} unravelling procedure s defined as:
+    \[
+        \textsc{LexiMin}(\mathbf{B}) =  \left\{ X_{\mathbf{c}}\mid \arg  \min_{\vec{c} \in \mathit{minC}(\mathbf{B})} \sum_{i=1}^n c_i \right\}
+    \]
+    where $\mathit{minC}(\vec{B})$ is the set of consistent certificates minimise the maximum $c_i$. 
 \end{definition}
 
 
@@ -238,8 +246,79 @@ This is demonstrated by the following figure:
 
 
 \begin{proposition}[Hardness of \textsc{BoundedMinMax}]
-    Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$. Then \textsc{BoundedMinMax} is NP-hard.    
+    Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ and the maximum number of delegations is at most 3. Then \textsc{BoundedMinMax} is NP-hard.    
 \end{proposition}
+
+\begin{proof}
+    We follow a similar construction as above. We reduce from the NP-hard problem \textsc{3-SAT}. Suppose $\varphi$ is an instance of \textsc{3-SAT} as above on $k$ terms and $n$ variables. We again introduce constant voter \underline{zero} with smart ballot $B_{\text{\underline{zero}}} = (0)$. For each variable $x_i$ we create a voter $x_i$ with smart ballot $B_{x_i} = (\text{\underline{zero}} > 1)$. Now for each term $t_h$ we create the following gadgets depending on the form of $t_h$.
+
+    Case $t_h = \overline{x_i} \lor x_j \lor x_k$:
+    For each term we construct additional voters $a, a', b, b', c, c', t_h$. With voting profiles: 
+    \begin{align*}
+        B_a = (a' > t_h > 0) \\
+        B_{a'} = (a > t_h > 0) \\
+        B_{b} = (b' > x_i \land a > 0) \\
+        B_{b'} = (b > x_i \land a > 0) \\
+        B_{c} = (c' > x_j \lor b > 0) \\
+        B_{c'} = (c > x_j \lor b > 0) \\
+        B_{t_h} = (t_h' > c \lor x_k > 0) \\
+        B_{t_h'} = (t_h > c \lor x_k > 0)
+    \end{align*}
+
+    We present this smart ballot in this much easier to parse figure where filled lines indicate first preferences and dashed lines indicate second preferences:
+\tikzset{circ/.style={circle,draw, solid, inner sep=0pt,minimum size=10mm}}
+    \begin{figure}[h]
+        \centering
+    \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=2cm]
+    
+    \node[circ] (xi){$x_i$};
+    \node[circ, right of=xi] (a){$a$};
+    \node[circ, right of=a] (a'){$a'$};    
+
+    \node[circ, below of=xi] (xj){$x_j$};
+    \node[circ, right of=xj] (b){$b$};
+    \node[circ, right of=b] (b'){$b'$};
+    
+    \node[circ, below of=xj] (xk){$x_k$};
+    \node[circ, right of=xk] (c){$c$};
+    \node[circ, right of=c] (c'){$c'$};
+    
+    \node[circ, below of=elli3, yshift=-5mm](t){$t_h$};
+    \node[circ, right of=t](t'){$t_h'$};
+
+    \node[draw, dashed, rounded rectangle, fit={(xi)(a)}] (elli1) {};
+    \node[draw, dashed, rounded rectangle, fit={(b)(xj)}](elli2) {};
+    \node[draw, dashed, rounded rectangle, fit={(c)(xk)}](elli3) {};
+
+
+    
+    \draw [->] (a) to [bend right] (a');
+    \draw [->] (a') to [bend right] (a);
+    \draw[->, dashed] (a) .. controls (-3, 4) and (-2, -7) .. (t);
+    \draw[->, dashed] (a') .. controls (6, 3) and (6, -7) .. (t');
+
+
+    \draw[->] (b) to [bend right] (b');
+    \draw[->] (b') to [bend right] (b);
+    \draw [->, dashed] (b) -- (elli1) node[midway,left]{$\land$};
+    \draw [->, dashed] (b') -- (elli1) node[midway,right]{$\land$};
+
+    \draw[->] (c) to [bend right] (c');
+    \draw[->] (c') to [bend right] (c);
+    \draw [->, dashed] (c) -- (elli2) node[midway,left]{$\lor$};
+    \draw [->, dashed] (c') -- (elli2) node[midway,right]{$\lor$};
+    
+
+    \draw[->] (t) to [bend right] (t');
+    \draw[->] (t') to [bend right] (t);
+    \draw [->, dashed] (t) -- (elli3) node[midway,left]{$\lor$};
+    \draw [->, dashed] (t') -- (elli3) node[midway,right]{$\lor$};
+    
+    \end{tikzpicture}
+    \end{figure}
+
+
+\end{proof}
 
 \begin{proposition}[\textsc{BoundedMinMax} is not approximable]
     If $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ then a non-trivial approximation of \textsc{BoundedMinMax} is NP-hard.
