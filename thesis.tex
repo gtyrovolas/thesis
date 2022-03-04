@@ -135,6 +135,8 @@ A natural extension of \textsc{MinMax} is that of \textsc{LexiMin} that selects 
 
 \section{Complexity Results}
 
+\subsection{Function classes strictly larger than LIQUID}
+
 \begin{definition}[\textsc{BoundedMinSum}]
     Let \textsc{BoundedMinSum}$_\mathcal{F}$ be the decision problem with input a target constant $M$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. The YES instances are those with a consistent certificate  $\vec{c}$ with $\sum_i \vec{c}_i \leq M$. 
 \end{definition}
@@ -143,10 +145,6 @@ A natural extension of \textsc{MinMax} is that of \textsc{LexiMin} that selects 
     Let \textsc{BoundedMinMax}$_\mathcal{F}$ be the decision problem with input a target constant $M$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. The YES instances are those with a consistent certificate  $\vec{c}$ with $\max_i \vec{c}_i \leq M$. 
 \end{definition}
 
-\begin{proposition}
-    Suppose that $r$ is monotone and the agents are only allowed to delegate using LIQUID ballots. Then for any outcome $d \in D$ there is an algorithm that determines if there is an \textsc{MinMax} certificate such that the election resolves in favour of $d$.
-\end{proposition}
-
 Let $\lor$ the binary logical OR and $\land$ the binary logical AND. Then:
 
 \begin{proposition}[Hardness of \textsc{BoundedMinSum}]
@@ -154,42 +152,43 @@ Let $\lor$ the binary logical OR and $\land$ the binary logical AND. Then:
 \end{proposition}
 
 \begin{proof}
-    We reduce from the NP-hard problem of \textsc{3-SAT}. Let $\varphi = \bigwedge_{i = 1}^k t_i $ a \textsc{3-SAT} instance on boolean variables $x_1, \ldots, x_n$ with $t_i = l_a \lor l_b \lor l_c $ where $l_a, l_b, l_c$ correspond to literals of variables $x_a, x_b, x_c$ or the negations the variables.
+    We reduce from the NP-hard problem of \textsc{NAE-SAT}. An instance of \textsc{NAE-SAT} is an instance of \textsc{3-SAT} without terms of the forms $x_i \lor x_j \lor x_k$ and $\overline{x_i} \lor \overline{x_j} \lor \overline{x_k}$. 
+    Let $\varphi = \bigwedge_{i = 1}^k t_i $ a \textsc{NAE-SAT} instance on boolean variables $x_1, \ldots, x_n$ with $t_i = l_a \lor l_b \lor l_c $ where $l_a, l_b, l_c$ correspond to literals of variables $x_a, x_b, x_c$ or their negations.
     
-    We first define constant voters \underline{zero}, \underline{one} that always vote for 0 and 1 respectively. So that $B_{\text{\underline{zero}}} = (0)$ and $B_{\text{\underline{one}}} = (1)$. 
+    We first define constant voter \underline{zero}, that always votes for 0. So that $B_{\text{\underline{zero}}} = (0)$.
 
 \tikzset{circ/.style={circle,draw, solid, inner sep=0pt,minimum size=10mm}}
-\begin{figure}[h]
+
+
+For each variable $x_i$ we construct a voter $x_i$ with voting profile $B_{x_i} = (  \text{\underline{zero}} > 1) $. These are drawn in Figure \ref{fig:votes} We denote the first preferences as full lines and second preferences as dashed lines.
+
+
+We then construct gadgets for each term $t_h$. These gadgets will have the property that they incur no additional cost if $t_h$ is satisfied and a cost of at least one if $t_h$ is satisfied.
+\begin{figure}
     \centering
+    \subfloat[\underline{zero} voter]{
 \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=2cm]
 
 \node[circle,draw] (z){\underline{zero}} [grow = up]
     child{node [circle,draw]{0}
     };
-
-\node[right of=z, circle,draw] {\underline{one}} [grow = up]
-    child{node [circle,draw]{1}
-    };
-
 \end{tikzpicture}
+    }
+    \qquad
+    \subfloat[Voter $x_i$]{
+        \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=2cm]
+
+            \node[circ] (x){$x_i$} [grow = up]
+            
+                child{node[circ] (1){1}  edge from parent [dashed]}
+                child{node [circ] (z){\underline{zero}}{
+                    child{node[circ](0){0}}}
+                };
+            \end{tikzpicture}
+    }
+    \caption{Setting up the variables voters}
+    \label{fig:votes}
 \end{figure}
-
-For each variable $x_i$ we construct a voter $x_i$ with voting profile $B_{x_i} = (  \text{\underline{zero}} > 1) $. We denote the primary preferences as full lines and the secondary preferences as dashed lines.
-
-\begin{figure}[h]
-    \centering
-\begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=2cm]
-
-\node[circ] (x){$x_i$} [grow = up]
-
-    child{node[circ] (1){1}  edge from parent [dashed]}
-    child{node [circ] (z){\underline{zero}}{
-        child{node[circ](0){0}}}
-    };
-\end{tikzpicture}
-\end{figure}
-
-We then construct gadgets for each term $t_h$. These gadgets will have the property that they incur no additional cost if $t_h$ is satisfied and a cost of at least one if $t_h$ is satisfied.
 
 Case $\overline{x_i} \lor x_j \lor x_k$: We construct additional voters $t_h$ and $a$, $b$ and $c$, with smart profiles:
 
@@ -200,10 +199,10 @@ Case $\overline{x_i} \lor x_j \lor x_k$: We construct additional voters $t_h$ an
     &B_{t_h} = (x_k \lor c > 0)
 \end{align*}
 
-This is demonstrated by the following figure:
+This is demonstrated by figure \ref{fig:MinSum}:
 
 \tikzset{circ/.style={circle,draw, solid, inner sep=0pt,minimum size=10mm}}
-    \begin{figure}[h]
+    \begin{figure}
         \centering
     \subfloat[\centering Case $\overline{x_i} \lor x_j \lor x_k$]{{
     \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=1.75cm]
@@ -259,6 +258,7 @@ This is demonstrated by the following figure:
         \end{tikzpicture}
     }}
     \caption{Gadgets for \textsc{MinSum}}
+    \label{fig:MinSum}
     \end{figure}
     
     Now, we analyse when first preferences of the additional voters can be resolved without producing cycles. 
@@ -270,7 +270,7 @@ This is demonstrated by the following figure:
     
     Now, suppose $x_i = 0, x_j = 0, x_k = 1$. Then $t_h$ cannot immediately resolve the logical OR as it is dependent on the vote of $c$, similarly $c$ is waiting for $b$ to decide, and $b$ is waiting for $a$. But $a$ is waiting for $t_h$ to decide. There is no way to resolve this cycle and so one of the additional voters we've introduced will have to vote for their second preference. This will incur an additional cost of at least 1.
 
-    Case $\overline{x_i} \lor \overline{x_j} \lor x_k$: The proof is absolutely symmetrical for this case. We need to switch some ANDs to ORs and vice versa but other than that it is identical. For completeness we show the resulting gadget in figure 1(b). This is the result of a smart profile of:
+    Case $\overline{x_i} \lor \overline{x_j} \lor x_k$: The proof is absolutely symmetrical for this case. We need to switch some ANDs to ORs and vice versa but other than that it is identical. For completeness we show the resulting gadget in Figure \ref{fig:MinSum}. This is the result of a smart profile of:
 
     \begin{align*}
         &B_a = (t_h > 0) \\
@@ -279,7 +279,7 @@ This is demonstrated by the following figure:
         &B_{t_h} = (x_i \land c > 0)
     \end{align*}
 
-    Now suppose that for each term we construct $n + 1$ such gadgets. Then if every term is satisfied by some assignment of the variables the maximum cost will be that of $n$. If a term is not satisfied then at least $n+1$ gadgets will incur a cost of $1$ so that the cost is at least $n+1$. Hence we have reduced the satisfiability of a \textsc{3-SAT} instance $\varphi$ to querying if there is a certificate $\vec{c}$ for the above election with $\sum_{i} \vec{c}_i \leq n$. Thus \textsc{BoundedMinSum}$_\mathcal{F}$ is NP-hard.
+    Now suppose that for each term we construct $n + 1$ such gadgets. Then if every term is satisfied by some assignment of the variables the maximum cost will be that of $n$. If a term is not satisfied then at least $n+1$ gadgets will incur a cost of $1$ so that the cost is at least $n+1$. Hence we have reduced the satisfiability of a \textsc{NAE-SAT} instance $\varphi$ to querying if there is a certificate $\vec{c}$ for the above election with $\sum_{i} c_i \leq n$. Thus \textsc{BoundedMinSum}$_\mathcal{F}$ is NP-hard.
 \end{proof}
 
 \begin{corollary}[Inapproximability of \textsc{BoundedMinSum}] A constant factor approximation of \textsc{BoundedMinSum}$_\mathcal{F}$ is NP-hard.    
@@ -295,7 +295,7 @@ This is demonstrated by the following figure:
 \end{proposition}
 
 \begin{proof}
-    We follow a similar construction as above. We reduce from the NP-hard problem \textsc{3-SAT}. Suppose $\varphi$ is an instance of \textsc{3-SAT} as above on $k$ terms and $n$ variables. We again introduce constant voter \underline{zero} with smart ballot $B_{\text{\underline{zero}}} = (0)$. For each variable $x_i$ we create a voter $x_i$ with smart ballot $B_{x_i} = (\text{\underline{zero}} > 1)$. Now for each term $t_h$ we create the following gadgets depending on the form of $t_h$.
+    We follow a similar construction as above. We reduce from the NP-hard problem \textsc{NAE-SAT}. Suppose $\varphi$ is an instance of \textsc{NAE-SAT} as above on $k$ terms and $n$ variables. We again introduce constant voter \underline{zero} with smart ballot $B_{\text{\underline{zero}}} = (0)$. For each variable $x_i$ we create a voter $x_i$ with smart ballot $B_{x_i} = (\text{\underline{zero}} > 1)$. Now for each term $t_h$ we create the following gadgets depending on the form of $t_h$.
 
     Case $t_h = \overline{x_i} \lor x_j \lor x_k$:
     For each term we construct additional voters $a, a', b, b', c, c', t_h$. With voting profiles: 
@@ -444,6 +444,21 @@ This is demonstrated by the following figure:
 \begin{proposition}[\textsc{BoundedMinMax} is not approximable]
     If $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ then a non-trivial approximation of \textsc{BoundedMinMax} is NP-hard.
 \end{proposition}
+
+\begin{proof}
+    This result can be proven by modifying the above proof. Instead of constructing a cycle of size 2 for voters $a, b, c, t_h$ we construct a cycle of size $k + 1$. So every voter $a, b, c, t_h$ can be thought of as a voter $v$ with $B_v = (v' > u > 0)$. Then we construct voters $v_1, \ldots, v_k$ and set $B_v = (v_1 > v_2 > \ldots > v_k > u > 0)$ and for $v_i$, $B_{v_i} = (v > v_1 > \ldots > v_{i - 1} > v_{i+1} > \ldots > v_k > u > 0)$.
+    Now, since the maximum size of the smart ballots is $k + 2$ then clearly for the \textsc{MinMax} certificate $\vec{c}$, $\max{\vec{c}} \leq k + 2$. 
+    But suppose that an algorithm was able to decide if there was $\vec{c}$ with $\max{\vec{c}} \leq k + 1$. Then this algorithm would be able to determine if the original instance is satisfied. So, it would solve \textsc{NAE-SAT}.
+\end{proof}
+
+\subsection{For function classes equal to LIQUID}
+
+\begin{proposition}
+    Suppose that $r$ is monotone and $D = \{0, 1\}$. Then for any outcome $d \in D$ there is an algorithm that determines if there is a \textsc{MinMax} certificate such that the election resolves in favour of $d$.
+\end{proposition}
+\begin{proof}
+    Our algorithm iteratively constructs a graph and tests if there is a path from each voter to an outcome.
+\end{proof}
 
 \newpage
 \section{Axiomatisation}
