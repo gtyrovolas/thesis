@@ -138,17 +138,21 @@ A natural extension of \textsc{MinMax} is that of \textsc{LexiMin} that selects 
 \subsection{Function classes strictly larger than LIQUID}
 
 \begin{definition}[\textsc{BoundedMinSum}]
-    Let \textsc{BoundedMinSum}$_\mathcal{F}$ be the decision problem with input a target constant $M$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. The YES instances are those with a consistent certificate  $\vec{c}$ with $\sum_i \vec{c}_i \leq M$. 
+    Let \textsc{BoundedMinSum}$_\mathcal{F}$ be the decision problem with input a target constant $M$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. The YES instances are those with a consistent certificate  $\vec{c}$ with $\sum_i c_i \leq M$. 
 \end{definition}
 
 \begin{definition}[\textsc{BoundedMinMax}]
-    Let \textsc{BoundedMinMax}$_\mathcal{F}$ be the decision problem with input a target constant $M$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. The YES instances are those with a consistent certificate  $\vec{c}$ with $\max_i \vec{c}_i \leq M$. 
+    Let \textsc{BoundedMinMax}$_\mathcal{F}$ be the decision problem with input a target constant $M$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. The YES instances are those with a consistent certificate  $\vec{c}$ with $\max(\vec{c}) \leq M$. 
+\end{definition}
+
+\begin{definition}[\textsc{BoundedLexiMin}]
+    Let \textsc{BoundedLexiMin}$_\mathcal{F}$ be the decision problem with input target constants $M, S$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. The YES instances are those with a consistent certificate  $\vec{c}$ with $\max (\vec{c}) \leq M$ and $\sum_i c_i \leq S$.
 \end{definition}
 
 Let $\lor$ the binary logical OR and $\land$ the binary logical AND. Then:
 
 \begin{proposition}[Hardness of \textsc{BoundedMinSum}]
-    Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ and that every voter is allowed only 1 non-constant delegation. Then \textsc{BoundedMinSum} is NP-hard.    
+    Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ and that every voter is allowed only 1 non-constant delegation. Then \textsc{BoundedMinSum}$_\mathcal{F}$ is NP-hard.    
 \end{proposition}
 
 \begin{proof}
@@ -199,7 +203,7 @@ Case $\overline{x_i} \lor x_j \lor x_k$: We construct additional voters $t_h$ an
     &B_{t_h} = (x_k \lor c > 0)
 \end{align*}
 
-This is demonstrated by figure \ref{fig:MinSum}:
+This is demonstrated by Figure \ref{fig:MinSum}.
 
 \tikzset{circ/.style={circle,draw, solid, inner sep=0pt,minimum size=10mm}}
     \begin{figure}
@@ -286,12 +290,14 @@ This is demonstrated by figure \ref{fig:MinSum}:
 \end{corollary}
 
 \begin{proof}
-    We can adapt the above proof to prove that \textsc{BoundedMinSum} is not constant-factor approximable. Following our construction above we can incur a cost of $k$ for when the expression $\varphi$ is not satisfiable by simply creating $k$ gadgets for each term. So for a \textsc{MinSum} outcome $\vec{c}$:   $\sum_i \vec{c}_i \leq n$ if and only if $\varphi$ is satisfiable and $\sum_i \vec{c}_i \geq k$ if and only if $\varphi$ is not satisfiable. So, any constant factor approximator would solve \textsc{3-SAT}, thus proving hardness.
+    We can adapt the above proof to prove that \textsc{BoundedMinSum} is not constant-factor approximable. 
+    Following our construction above we can incur a cost of $k$ for when the expression $\varphi$ is not satisfiable by simply creating $k$ gadgets for each term. 
+    So for a \textsc{MinSum} outcome $\vec{c}$:   $\sum_i \vec{c}_i \leq n$ if and only if $\varphi$ is satisfiable and $\sum_i c_i \geq k$ if and only if $\varphi$ is not satisfiable. 
+    So, any constant factor approximator would solve \textsc{3-SAT}, thus proving hardness.
 \end{proof}
 
-
 \begin{proposition}[Hardness of \textsc{BoundedMinMax}]
-    Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ and the maximum number of delegations is at most 3. Then \textsc{BoundedMinMax} is NP-hard.    
+    Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$. Then \textsc{BoundedMinMax} is NP-hard even if the maximum size of a smart ballot is 3.    
 \end{proposition}
 
 \begin{proof}
@@ -442,13 +448,21 @@ This is demonstrated by figure \ref{fig:MinSum}:
 
 
 \begin{proposition}[\textsc{BoundedMinMax} is not approximable]
-    If $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ then a non-trivial approximation of \textsc{BoundedMinMax} is NP-hard.
+    If $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ then a non-trivial approximation of \textsc{BoundedMinMax}$_\mathcal{F}$ is NP-hard.
 \end{proposition}
 
 \begin{proof}
     This result can be proven by modifying the above proof. Instead of constructing a cycle of size 2 for voters $a, b, c, t_h$ we construct a cycle of size $k + 1$. So every voter $a, b, c, t_h$ can be thought of as a voter $v$ with $B_v = (v' > u > 0)$. Then we construct voters $v_1, \ldots, v_k$ and set $B_v = (v_1 > v_2 > \ldots > v_k > u > 0)$ and for $v_i$, $B_{v_i} = (v > v_1 > \ldots > v_{i - 1} > v_{i+1} > \ldots > v_k > u > 0)$.
     Now, since the maximum size of the smart ballots is $k + 2$ then clearly for the \textsc{MinMax} certificate $\vec{c}$, $\max{\vec{c}} \leq k + 2$. 
     But suppose that an algorithm was able to decide if there was $\vec{c}$ with $\max{\vec{c}} \leq k + 1$. Then this algorithm would be able to determine if the original instance is satisfied. So, it would solve \textsc{NAE-SAT}.
+\end{proof}
+
+\begin{corollary}[Hardness of \textsc{BoundedLexiMin}]
+    If $ \mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ then \textsc{BoundedLexiMin}$\mathcal{F}$ is NP-hard. 
+\end{corollary}
+
+\begin{proof}
+    Every instance of \textsc{BoundedMinMax} is an instance of \textsc{BoundedLexiMin}. For target maximum $M$ and smart profile $\vec{B}$ a \textsc{MinMax} query, we can consider a \textsc{LexiMin} query with target maximum $M$, target sum $S$ and smart profile $\vec{B}$. Simply set $S$ to be the sum of all preference levels, i.e. $S = \sum_{a \in N} k_a$. Then the sum requirement of \textsc{LexiMin} is trivially satisfied and so we have reduced \textsc{BoundedMinMax} to \textsc{BoundedLexiMin}.
 \end{proof}
 
 \subsection{For function classes equal to LIQUID}
