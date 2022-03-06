@@ -79,7 +79,7 @@ Now that we have defined each agents preferences we need to formalise how to mak
 Now, every agent would like to know which preference level was used to compute their vote. To do so we introduce the notion of a certificate:
 
 \begin{definition}[Certificate]
-    A certificate $\mathbf{c} \in \mathbb{N}^n$ for a profile $\mathbf{B}$ is a vector where for each $a \in N$ such that $B_a = (B_a^0 > \ldots > B_a^{k_a})$, the entry $\mathbf{c}_a \in [0, k_a]$ corresponds to the preference level for agent $a$.  
+    A certificate $\mathbf{c} \in \mathbb{N}^n$ for a profile $\mathbf{B}$ is a vector where for each $a \in N$ such that $B_a = (B_a^0 > \ldots > B_a^{k_a})$, the entry $c_a \in [0, k_a]$ corresponds to the preference level for agent $a$.  
 \end{definition}
 
 Until now we have not actually used the agent's preferences. So, we need to introduce the concept of a consistent certificate. Consistent certificates are certificates where the vote of each agent is determined by the votes of other agents using the functions in their smart ballots. Formally:
@@ -470,10 +470,6 @@ This is demonstrated by Figure \ref{fig:MinSum}.
 \begin{proposition}
     Suppose that $r$ is monotone and $D = \{0, 1\}$. Then for any outcome $d \in D$ there is an algorithm that determines if there is a \textsc{MinMax} certificate such that the election resolves in favour of $d$.
 \end{proposition}
-\begin{proof}
-    Our algorithm iteratively constructs a graph and tests if there is a path from each voter to an outcome.
-\end{proof}
-
 \newpage
 \section{Axiomatisation}
 
