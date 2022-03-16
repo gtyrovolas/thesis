@@ -13,7 +13,7 @@
 \usetikzlibrary{shapes.geometric,positioning, arrows, trees, positioning, fit, calc}
 \usepackage{amsthm}
 
-\title{An Analysis of smart voting in liquid democracy}
+\title{An Analysis of Smart Voting in Liquid Democracy}
 \author{Giannis Tyrovolas}
 \date{\today}
 \newtheorem{theorem}{Theorem}[section]
@@ -30,6 +30,7 @@
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem*{idea}{Idea}
+
 \let\vec\mathbf
 
 \begin{document}
@@ -45,87 +46,99 @@
 \subsection{Ballots}
 
 
-An election consists of a finite set of voters, voting on a finite set of issues. For each issue there is a finite set of alternatives. A special alternative is the abstention represented by $*$. Finally, there is an aggregation function that decides what the result of the election is. Formally:
+An election consists of a finite set of voters, voting on a finite set of issues. For each issue there is a finite set of alternatives. A special alternative is the \emph{abstention} represented by $*$. Finally, there is an aggregation function that decides what the result of the election is. Formally:
 
 \begin{definition}[Election]
     An \emph{election} consists of a tuple $\langle N, D, r\rangle $ where $N = \{1,..., n\} $ is a finite non-empty set of voters. The set $D$ is a finite set with $\abs{D} \geq 1$. The function $r \colon D^n \longrightarrow D$ is a resolute aggregation function that inputs the votes of every voter and outputs the outcome of the election.
 \end{definition}
 
-The model we will consider allows each voter to submit a smart ballot. A smart ballot is a preference list of smart votes. Each smart vote is a function with domain the other voters. A special requirement is that the final preference in the preference list is a direct vote on an alternative in $D$. Formally:
+Throughout this work we will focus on binary issues. 
+That is because most of our hardness results hold for binary issues and we can easily extend them to $n$-ary issues. Therefore, unless otherwise stated we will consider $D = \{0, 1\}$.
+
+The model we will consider allows each voter to submit a smart ballot. 
+A smart ballot is a preference list of smart votes. 
+Each smart vote is a function whose domain is a subset of $N$. 
+A special requirement is that the final preference in the preference list is a direct vote on an alternative in $D$. Formally:
 
 \begin{definition}[Smart Ballots]
-    A smart ballot of an agent $a$ is an ordering $( (S^0, F^0) > \ldots > (S^{k-1}, F^{k-1}) > d)$ where $k \geq 0$. Each $S^h$ for $h \leq k$ is a subset of $N$ and $F^h \colon D^{S^h} \longrightarrow D$ is a resolute non-trivial aggregation function. We also have that $d \in D$.   
+    A \emph{smart ballot} of an agent $a$ is an ordering $( (S^0, F^0) > \ldots > (S^{k-1}, F^{k-1}) > d)$ where $k \geq 0$. Each $S^h$ for $h \leq k$ is a subset of $N$ and $F^h \colon D^{S^h} \longrightarrow D$ is a resolute non-trivial aggregation function. We also have that $d \in D$.   
 \end{definition}
 
-Further when relevant we will consider $F^{k}$ to be the constant function with output $d$. Now, in most cases the sets $S^h$ are implicit and we will drop any mention to them. That is supported by the fact that we will treat two functions $F, G$ as identical if they are extensionally equal. Additionally we will disallow a voter to delegate to themselves. This is formalised by the following definition:
+Further when relevant we will consider $F^{k}$ to be the constant function with output $d$. Now, in most cases the sets $S^h$ are implicit and we will drop any mention of them. That is supported by the fact that we will treat two functions $F, G$ as identical if they are extensionally equal. Additionally we will disallow a voter to delegate to themselves. This is formalised by the following definition:
 
 \begin{definition}[Valid Smart Ballot]
-    A valid smart ballot of an agent $a$ is a smart ballot $B_a$ such that for all $ 0 \leq s < t \leq k$ $F^s$ is not equivalent to $F^t$. Additionally $a \notin S_t$.
+    A \emph{valid smart ballot} of an agent $a$ is a smart ballot $B_a$ such that for all $ 0 \leq s < t \leq k$ $F^s$ is not equivalent to $F^t$. Additionally for all $0 \geq t \geq k$, $a \notin S_t$.
 \end{definition}
 
 
 We collect the $n$ smart ballots into a smart profile $\mathbf{B}$.
 
+Throughout this work it will be meaningful to restrict the functions agents can delegate from. The most notable classes of functions we will consider are: 
+
+\begin{itemize}
+    \item Direct delegations to voter $v$ denoted by $\mathit{LIQUID} = \{\mathit{id}_v \mid v \in N\}$.
+    \item Boolean functions in conjunctive normal form denoted by $\mathit{BOOL}$. 
+\end{itemize}
+
 \subsection{Unravellings}
 
-Now that we have defined each agents preferences we need to formalise how to make sense of these preferences. To do so we use \emph{unravelling procedures} to determine each agent's vote.
+Now that we have defined each agent's preferences we need to formalise how to make sense of these preferences. To do so, we use \emph{unravelling procedures} to determine each agent's vote.
 
 \begin{definition}[Unravelling Procedure]
-    An unravelling procedure is any computable function $\mathcal{U}$ where $\mathbf{B} \mapsto^\mathcal{U} \vec{d}$ with $\vec{d} \in D^n$.
-
-
+    An \emph{unravelling procedure} is any computable function $\mathcal{U}$ where $\mathbf{B} \mapsto^\mathcal{U} \vec{d}$ with $\vec{d} \in D^n$.
 \end{definition}
 
 Now, every agent would like to know which preference level was used to compute their vote. To do so we introduce the notion of a certificate:
 
 \begin{definition}[Certificate]
-    A certificate $\mathbf{c} \in \mathbb{N}^n$ for a profile $\mathbf{B}$ is a vector where for each $a \in N$ such that $B_a = (B_a^0 > \ldots > B_a^{k_a})$, the entry $c_a \in [0, k_a]$ corresponds to the preference level for agent $a$.  
+    A \emph{certificate} $\mathbf{c} \in \mathbb{N}^n$ for a profile $\mathbf{B}$ is a vector where for each $a \in N$ such that $B_a = (B_a^0 > \ldots > B_a^{k_a})$, the entry $c_a \in [0, k_a]$ corresponds to the preference level for agent $a$.  
 \end{definition}
 
-Until now we have not actually used the agent's preferences. So, we need to introduce the concept of a consistent certificate. Consistent certificates are certificates where the vote of each agent is determined by the votes of other agents using the functions in their smart ballots. Formally:
+Until now we have not actually used the agents' preferences. So, we need to introduce the concept of a consistent certificate. Consistent certificates are certificates where the vote of each agent is determined by the votes of other agents using the functions in their smart ballots. Formally:
 
 \begin{definition}[Consistent certificate]
-    For a profile $\mathbf{B}$, a certificate $\mathbf{c}$ is consistent if there is an ordering $\mathbf{\sigma} \colon N \longrightarrow N$ of agents which starting from vector $X^0 = \{\Delta\}^n$ with placeholder values $\Delta$ for all agents, iteratively constructs an outcome vector of direct votes $X \in D^n$ as follows for $\sigma(a) = z \in [1,n]$:
+    For a profile $\mathbf{B}$, a certificate $\mathbf{c}$ is \emph{consistent} if there is an ordering $\mathbf{\sigma} \colon N \longrightarrow N$ of agents which starting from vector $\vec{X}^0 = \{\Delta\}^n$ with placeholder values $\Delta$ for all agents, iteratively constructs an outcome vector of direct votes $\vec{X} \in D^n$ as follows for $\sigma(a) = z \in [1,n]$:
     \[
-        X^z_a = F^{\mathbf{c}_a}_a(X^{z-1} \restriction_{S^{\mathbf{c}_a}_a} )
+        X^z_a = F^{\mathbf{c}_a}_a(\vec{X}^{z-1} \restriction_{S^{c_a}_a} ).
     \]
-    where $X_a$ represents agent $a$'s entry in $X$ and $X \restriction_S = \prod_{s \in S} X_s$.
+    Where $X_a$ represents agent $a$'s entry in $\vec{X}$. The restriction of vector $\vec{X}$ in $S$, written as $\vec{X} \restriction_S$, is a vector indexed by $S$ where for each $s \in S$,  $(\vec{X} \restriction_S)_s = X_s$.
 
 \end{definition}
 Now what allows the computation of $F$ on a partial input is the concept of a \emph{necessary winner}. A necessary winner occurs when the available input of $F$ is enough to decide  the output of $F$. For example, $\mathit{Maj}(1, 1, a)$ will always resolve to 1 regardless of agent $a$'s vote. So, in this case the necessary winner is $1$.
 
-Now, we are only interested in consistent certificates as these are the ones that respect the agents' votes. We will denote the set of consistent certificates of a profile $\mathbf{B}$ as $C(\mathbf{B})$
+Now, we are only interested in consistent certificates as these are the ones that respect the agents' votes. We will denote the set of consistent certificates of a profile $\mathbf{B}$ as $C(\mathbf{B})$.
 
-It is good that there is only one way to unravel consistent certificates. The following proposition is proven in .
+It is good that there is only one way to unravel consistent certificates. The following proposition is proven in Grandi et al.
 
 \begin{proposition}
     If a consistent certificate $\mathbf{c}$ can be given by two orderings $\sigma$ and $\sigma'$ of the agents, then the orderings yield the same outcome $X_\mathbf{c} \in D^n$.
 \end{proposition}
 
-So, that when we refer to consistent certificates we do not need to specify the votes of each agent. Now that we have settled the framework it's time to consider some ``good'' certificates. There is a very natural ``cost'' in this scenario and that is using a lot of the later preferences of each agent. So, we can set two very natural ways of minimising this cost. We can attempt to minimise the sum of the cost or in a more utilitarian setting attempt to minimise the maximum of the cost. Formally:
+So, that when we refer to consistent certificates we do not need to specify the votes of each agent. Now that we have settled the framework it's time to consider some ``good'' certificates. There is a very natural ``cost'' in this scenario and that is using a lot of the later preferences of each agent. So, we can set two very natural ways of minimising this cost. We can attempt to minimise the sum of the cost or in a more egalitarian setting attempt to minimise the maximum of the cost. Formally:
 
 \begin{definition}[MinSum]
     For a given profile $\mathbf{B}$, the \textsc{MinSum} unravelling procedure is defined as:
     \[
-        \textsc{MinSum}(\mathbf{B}) = \left\{X_{\mathbf{c}} \mid \mathrm{arg} \min_{\mathbf{c} \in C(\mathbf{B})} \sum_{i=1}^n c_i \right\}
+        \textsc{MinSum}(\mathbf{B}) = 
+        \left\{X_{\mathbf{c}} \bigm| \mathrm{arg} \min_{\mathbf{c} \in C(\mathbf{B})} \sum_{i=1}^n c_i\right\}
     \]
 \end{definition}
 
 \begin{definition}[MinMax]
     For a given profile $\mathbf{B}$, the \textsc{MinMax} unravelling procedure is defined as:
     \[
-        \textsc{MinMax}(\mathbf{B}) = \left\{X_{\mathbf{c}} \mid \mathrm{arg} \min_{\mathbf{c} \in C(\mathbf{B})} \max (\mathbf{c}) \right\}
+        \textsc{MinMax}(\mathbf{B}) = \left\{X_{\mathbf{c}} \bigm| \mathrm{arg} \min_{\mathbf{c} \in C(\mathbf{B})} \max (\mathbf{c}) \right\}
     \]
 \end{definition}
 
-A natural extension of \textsc{MinMax} is that of \textsc{LexiMin} that selects from the \textsc{MinMax} certificates the ones with minimum sum. Formally:
+A natural extension of \textsc{MinMax} is that of \textsc{MinMaxSum} that selects from the \textsc{MinMax} certificates the ones with minimum sum. Formally:
 
 \begin{definition}[LexiMin]
-    For a given profile $\mathbf{B}$, the \textsc{LexiMin} unravelling procedure s defined as:
+    For a given profile $\mathbf{B}$, the \textsc{MinMaxSum} unravelling procedure s defined as:
     \[
-        \textsc{LexiMin}(\mathbf{B}) =  \left\{ X_{\mathbf{c}}\mid \arg  \min_{\vec{c} \in \mathit{minC}(\mathbf{B})} \sum_{i=1}^n c_i \right\}
+        \textsc{MinMaxSum}(\mathbf{B}) =  \left\{ X_{\mathbf{c}}\mid \arg  \min_{\vec{c} \in \mathit{minC}(\mathbf{B})} \sum_{i=1}^n c_i \right\}
     \]
-    where $\mathit{minC}(\vec{B})$ is the set of consistent certificates minimise the maximum $c_i$. 
+    where $\mathit{minC}(\vec{B})$ is the set of consistent certificates that minimise the maximum $c_i$. 
 \end{definition}
 
 
