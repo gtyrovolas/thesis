@@ -46,28 +46,38 @@
 \subsection{Ballots}
 
 
-An election consists of a finite set of voters, voting on a finite set of issues. For each issue there is a finite set of alternatives. A special alternative is the \emph{abstention} represented by $*$. Finally, there is an aggregation function that decides what the result of the election is. Formally:
+A single-issue election consists of a finite set of voters that vote on a single issue. 
+Each voter is presented with a finite set of alternatives to pick from. 
+A special alternative is the \emph{abstention} represented by $*$. 
+Finally, there is an aggregation function that decides the result of the election. 
+Formally:
 
-\begin{definition}[Election]
-    An \emph{election} consists of a tuple $\langle N, D, r\rangle $ where $N = \{1,..., n\} $ is a finite non-empty set of voters. The set $D$ is a finite set with $\abs{D} \geq 1$. The function $r \colon D^n \longrightarrow D$ is a resolute aggregation function that inputs the votes of every voter and outputs the outcome of the election.
+\begin{definition}[Single-issue election]
+    A \emph{single-issue election} consists of a tuple $\langle N, D, r\rangle $ where $N = \{1,..., n\} $ is a finite non-empty set of voters. The set $D$ is a finite set with $\abs{D} \geq 1$. The function $r \colon D^n \longrightarrow D$ is a resolute aggregation function that inputs the votes of every voter and outputs the outcome of the election.
 \end{definition}
 
-Throughout this work we will focus on binary issues. 
-That is because most of our hardness results hold for binary issues and we can easily extend them to $n$-ary issues. Therefore, unless otherwise stated we will consider $D = \{0, 1\}$.
+Throughout this work we will focus on single issues with a binary set of outcomes. 
+That is because all of our hardness results hold for binary issues and we can easily extend them to $n$-ary issues. 
+Therefore, unless otherwise stated we will consider $D = \{0, 1\}$.
 
-The model we will consider allows each voter to submit a smart ballot. 
+The model we will consider generalises the above and allows each voter to submit a smart ballot. 
 A smart ballot is a preference list of smart votes. 
 Each smart vote is a function whose domain is a subset of $N$. 
-A special requirement is that the final preference in the preference list is a direct vote on an alternative in $D$. Formally:
+A special requirement is that the final preference in the preference list is a direct vote on an alternative in $D$. 
+Formally:
 
 \begin{definition}[Smart Ballots]
-    A \emph{smart ballot} of an agent $a$ is an ordering $( (S^0, F^0) > \ldots > (S^{k-1}, F^{k-1}) > d)$ where $k \geq 0$. Each $S^h$ for $h \leq k$ is a subset of $N$ and $F^h \colon D^{S^h} \longrightarrow D$ is a resolute non-trivial aggregation function. We also have that $d \in D$.   
+    A \emph{smart ballot} of an agent $a$ is an ordering $( (S^0, F^0) > \ldots > (S^{k-1}, F^{k-1}) > d)$ where $k \geq 0$. Each $S^h$ for $h \leq k$ is a subset of $N$ and $F^h \colon D^{S^h} \longrightarrow D$ is a resolute non-constant aggregation function. We also have that $d \in D$.   
 \end{definition}
 
-Further when relevant we will consider $F^{k}$ to be the constant function with output $d$. Now, in most cases the sets $S^h$ are implicit and we will drop any mention of them. That is supported by the fact that we will treat two functions $F, G$ as identical if they are extensionally equal. Additionally we will disallow a voter to delegate to themselves. This is formalised by the following definition:
+Further when relevant we will consider $F^{k}$ to be the constant function with output $d$. 
+Now, in most cases the sets $S^h$ are implicit and we will drop any mention of them. 
+That is supported by the fact that we will treat two functions $F, G$ as identical if they are extensionally equal. 
+Additionally we will disallow a voter to delegate to themselves. 
+This is formalised by the following definition:
 
 \begin{definition}[Valid Smart Ballot]
-    A \emph{valid smart ballot} of an agent $a$ is a smart ballot $B_a$ such that for all $ 0 \leq s < t \leq k$ $F^s$ is not equivalent to $F^t$. Additionally for all $0 \geq t \geq k$, $a \notin S_t$.
+    A \emph{valid smart ballot} of an agent $a$ is a smart ballot $B_a$ such that for all $ 0 \leq s < t \leq k$ $F^s$ is not equivalent to $F^t$. Additionally for all $0 \leq t \leq k$, $a \notin S_t$.
 \end{definition}
 
 
@@ -76,7 +86,7 @@ We collect the $n$ smart ballots into a smart profile $\mathbf{B}$.
 Throughout this work it will be meaningful to restrict the functions agents can delegate from. The most notable classes of functions we will consider are: 
 
 \begin{itemize}
-    \item Direct delegations to voter $v$ denoted by $\mathit{LIQUID} = \{\mathit{id}_v \mid v \in N\}$.
+    \item Direct delegations to voter $v$ denoted by $\mathit{LIQUID} = \{\mathit{id}_v \mid v \in N\}$, where $\mathit{id}_v$ is the identity function applied to the vote of voter $v$.
     \item Boolean functions in conjunctive normal form denoted by $\mathit{BOOL}$. 
 \end{itemize}
 
@@ -88,27 +98,54 @@ Now that we have defined each agent's preferences we need to formalise how to ma
     An \emph{unravelling procedure} is any computable function $\mathcal{U}$ where $\mathbf{B} \mapsto^\mathcal{U} \vec{d}$ with $\vec{d} \in D^n$.
 \end{definition}
 
-Now, every agent would like to know which preference level was used to compute their vote. To do so we introduce the notion of a certificate:
+The reason we need to consider unravelling procedures is that smart ballots can create cycles.
+Different choices on how to ``unravel'' cycles will produce different outcomes.
+For the majority of this work we will focus on the mathematical and computational properties of different unravelling procedures.
+
+
+Now as each outcome is calculated it is important for agents to know which preference level was used to compute their vote. 
+To do so we introduce the notion of a certificate:
 
 \begin{definition}[Certificate]
     A \emph{certificate} $\mathbf{c} \in \mathbb{N}^n$ for a profile $\mathbf{B}$ is a vector where for each $a \in N$ such that $B_a = (B_a^0 > \ldots > B_a^{k_a})$, the entry $c_a \in [0, k_a]$ corresponds to the preference level for agent $a$.  
 \end{definition}
 
-Until now we have not actually used the agents' preferences. So, we need to introduce the concept of a consistent certificate. Consistent certificates are certificates where the vote of each agent is determined by the votes of other agents using the functions in their smart ballots. Formally:
+Until now we have not actually used the agents' preferences. 
+So, we need to introduce the concept of a consistent certificate. 
+Consistent certificates are certificates where the vote of each agent is determined by the votes of other agents using the functions in their smart ballots. 
+But, note that there are cases where functions $F$ can be decided on partial input.
+We refer to these cases as \emph{necessary winners}.  
+For example, $\mathit{Maj}(1, 1, a)$ will always resolve to 1 regardless of agent $a$'s vote. 
+So, in this case the necessary winner is $1$.
+In the following definition we will extend functions to return necessary winners on partial input.
+Formally:
+
+\begin{definition}[Necessary winner]
+    Let $F \colon D^n \longrightarrow D $ be a function. Consider $F' \colon \left\{D \cup \left\{\Delta\right\}\right\} \longrightarrow D \cup \left\{\Delta\right\}$ defined as:
+    \[
+        F'(\vec{d}) = \begin{cases}
+            F(\vec{d}) \text{ if } \vec{d} \in D
+            F(\vec{d}) \text{ if for all }
+        \end{cases}
+    \]
+    Then we define the function $F' \colon \left\{D \cup \left\{\Delta\right\}\right\} \longrightarrow D \cup \left\{\Delta\right\}$ as its extension on \emph{necessary winners}.
+\end{definition}
 
 \begin{definition}[Consistent certificate]
-    For a profile $\mathbf{B}$, a certificate $\mathbf{c}$ is \emph{consistent} if there is an ordering $\mathbf{\sigma} \colon N \longrightarrow N$ of agents which starting from vector $\vec{X}^0 = \{\Delta\}^n$ with placeholder values $\Delta$ for all agents, iteratively constructs an outcome vector of direct votes $\vec{X} \in D^n$ as follows for $\sigma(a) = z \in [1,n]$:
+    For a profile $\mathbf{B}$, a certificate $\mathbf{c}$ is \emph{consistent} if there is an ordering $\mathbf{\sigma} \colon N \longrightarrow \{1,\ldots, n\}$ of agents starting from vector $\vec{X}^0 = \{\Delta\}^n$ with placeholder values $\Delta$ for all agents, iteratively constructs an outcome vector of direct votes $\vec{X} \in D^n$ as follows for $\sigma(a) = z \in [1,n]$:
     \[
-        X^z_a = F^{\mathbf{c}_a}_a(\vec{X}^{z-1} \restriction_{S^{c_a}_a} ).
+        X^z_a = F^{c_a}_a(\vec{X}^{z-1} \restriction_{S^{c_a}_a} ).
     \]
-    Where $X_a$ represents agent $a$'s entry in $\vec{X}$. The restriction of vector $\vec{X}$ in $S$, written as $\vec{X} \restriction_S$, is a vector indexed by $S$ where for each $s \in S$,  $(\vec{X} \restriction_S)_s = X_s$.
+    Here $X_a$ represents agent $a$'s entry in $\vec{X}$. 
+    The restriction of vector $\vec{X}$ in $S$, written as $\vec{X} \restriction_S$, is a vector indexed by $S$ where for each $s \in S$,  $(\vec{X} \restriction_S)_s = X_s$. 
+    Additionally, for vector $\vec{X} \in \left\{D \cup \{\Delta\}\right\}^n$ with entries $X_i $with  $F^{c_a}_a(\vec{X}) = X_a$  
 
 \end{definition}
-Now what allows the computation of $F$ on a partial input is the concept of a \emph{necessary winner}. A necessary winner occurs when the available input of $F$ is enough to decide  the output of $F$. For example, $\mathit{Maj}(1, 1, a)$ will always resolve to 1 regardless of agent $a$'s vote. So, in this case the necessary winner is $1$.
+
 
 Now, we are only interested in consistent certificates as these are the ones that respect the agents' votes. We will denote the set of consistent certificates of a profile $\mathbf{B}$ as $C(\mathbf{B})$.
 
-It is good that there is only one way to unravel consistent certificates. The following proposition is proven in Grandi et al.
+It is good that there is only one way to unravel consistent certificates. The following proposition is proven by Colley et al. \cite{grandi}.
 
 \begin{proposition}
     If a consistent certificate $\mathbf{c}$ can be given by two orderings $\sigma$ and $\sigma'$ of the agents, then the orderings yield the same outcome $X_\mathbf{c} \in D^n$.
@@ -151,7 +188,8 @@ A natural extension of \textsc{MinMax} is that of \textsc{MinMaxSum} that select
 \subsection{Function classes strictly larger than LIQUID}
 
 \begin{definition}[\textsc{BoundedMinSum}]
-    Let \textsc{BoundedMinSum}$_\mathcal{F}$ be the decision problem with input a target constant $M$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. The YES instances are those with a consistent certificate  $\vec{c}$ with $\sum_i c_i \leq M$. 
+    Let \textsc{BoundedMinSum}$_\mathcal{F}$ be the decision problem with input a target constant $M$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. 
+    The YES instances are those with a consistent certificate  $\vec{c}$ with $\sum_i c_i \leq M$. 
 \end{definition}
 
 \begin{definition}[\textsc{BoundedMinMax}]
@@ -553,8 +591,9 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
 \newpage
 \section{Axiomatisation}
 
-We introduce the axiom of cast participation. This axiom states that: voters preferring outcome $d$ benefit from voting directly for $d$. This axiom is introduced in Kotsialou et al for binary issues and in Grandi et al for binary issues with abstentions. We use the definition for binary issues with abstentions i.e. $D = \{0, 1, *\}$.
-We denote that agent $a$ prefers outcome $d$ to $e$ as $d >_a e$. As in Grandi et al. we infer that if agent $a$ votes directly for outcome $d \in \{0, 1\}$ then agent $a$ prefers $d$ over any other outcome. 
+We introduce the axiom of cast participation. This axiom states that: voters preferring outcome $d$ benefit from voting directly for $d$. 
+This axiom is introduced by \cite{kotsialou} for binary issues and by \cite{grandi} for binary issues with abstentions. We use the definition for binary issues with abstentions i.e. $D = \{0, 1, *\}$.
+We denote that agent $a$ prefers outcome $d$ to $e$ as $d >_a e$. As in Colley et al. we infer that if agent $a$ votes directly for outcome $d \in \{0, 1\}$ then agent $a$ prefers $d$ over any other outcome. 
 Formally if $B_a = (d)$ then $ d >_a 1-d$ and $d >_a *$.
 Additionally, we consider that if agent $a$ votes directly for $d$ then $* >_a 1-d$.
 Now, an issue we face is that irresolute unravelling procedures might return multiple outcomes. 
@@ -646,7 +685,7 @@ We can further prove that \textsc{MinSum} doesn't satisfy cast-participation. In
 Note, that in the above case $\mathit{Maj}$ is a monotone rule. So, it is not the case that monotone rules guarantee cast participation for \textsc{MinSum}.
 
 \newpage
-\section{Proposals}
-
+\bibliographystyle{apalike}
+\bibliography{thesis-bib.bib}
 \end{document}
 
