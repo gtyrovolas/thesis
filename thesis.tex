@@ -554,15 +554,18 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
 \section{Axiomatisation}
 
 We introduce the axiom of cast participation. This axiom states that: voters preferring outcome $d$ benefit from voting directly for $d$. This axiom is introduced in Kotsialou et al for binary issues and in Grandi et al for binary issues with abstentions. We use the definition for binary issues with abstentions i.e. $D = \{0, 1, *\}$.
-We denote that agent $a$ prefers outcome $d$ to $e$ as $d >_a 1-d$. As in Grandi et al. we infer that if agent $a$ votes directly for outcome $d \in \{0, 1\}$ then agent $a$ prefers $d$ over any other outcome. Formally if $B_a = (d)$ then $ d >_a 1-d$ and $d >_a *$.
-Now, an issue we face is that irresolute unravelling procedures might return multiple outcomes. For example, \textsc{MinSum} can return outcomes for $0$ and for $1$.
+We denote that agent $a$ prefers outcome $d$ to $e$ as $d >_a e$. As in Grandi et al. we infer that if agent $a$ votes directly for outcome $d \in \{0, 1\}$ then agent $a$ prefers $d$ over any other outcome. 
+Formally if $B_a = (d)$ then $ d >_a 1-d$ and $d >_a *$.
+Additionally, we consider that if agent $a$ votes directly for $d$ then $* >_a 1-d$.
+Now, an issue we face is that irresolute unravelling procedures might return multiple outcomes. 
+For example, \textsc{MinSum} can return outcomes for $0$ and for $1$.
 So, we need to assign preferences over sets of outcomes rather than just for single outcomes.
-For the binary case with abstentions we posit that any reasonable preference over sets will satisfy that if $a$ prefers $d$ over $1-d$ then:
+For the case $D = \{0, 1, *\}$ we posit that reasonable extensions of the order $1-d <_a * <_a d$ would include the partial order:
 
 \[
     \{1-d\} < \{1-d, *\} < \{*\} \sim \{1-d, d\} \sim \{1-d, *, d\} < \{*, d \}< \{d\}.
 \]
-We write $S_1 \sim S_2$ if we do not make any assumptions about the relative ordering of $S_1$ and $S_2$.
+Where $S_1 \sim S_2$ denotes that $S_1$ is not comparable to $S_2$.
 Then we can formalise cast-participation for irresolute procedures:
 
 \begin{definition}[Cast-Participation for irresolute procedures]
@@ -570,16 +573,17 @@ Then we can formalise cast-participation for irresolute procedures:
     \[
         r(\mathcal{U}(\mathbf{B})) \geq_a r(\mathcal{U}(\mathbf{B}_{-a}, B_a'))
     \]
-
-    Where $\mathbf{B}_{-a}, B_a'$ denotes replacing $B_a$ with $B_a'$. 
+    Where $\mathbf{B}_{-a}, B_a'$ denotes replacing $B_a$ with $B_a'$ and $r$ is applied to subsets of $S \subseteq D^n$ as follows: $r(S) = \{r(\vec{d}) | \vec{d} \in S\}$.
 \end{definition}
 
-Cast participation can be thought of disallowing tactical voting. Unfortunatelly it does not always hold. 
-We first prove the cases of non-monotone $r$ and non-monotone delegating functions. To do so we first define monotonicity as follows:
+Cast participation can be thought of disallowing tactical voting. Unfortunately, it does not always hold. 
+We first prove the cases of some non-monotone $r$ and non-monotone delegating functions. 
+To do so we first define monotonicity as follows.
+Consider $D = \{0, 1, *\}$ to be ordered totally as $0 < * < 1$.
+Then, we can define a partial order on $D^n$ where $\vec{u} \leq \vec{v}$ if for all $i$, $u_i \leq v_i$. And $\vec{u} < \vec{v}$ if $\vec{u} \leq \vec{v}$ and $\vec{u} \neq \vec{v}$.
 
 \begin{definition}[Monotonicity]
-    Let $\vec{u}, \vec{v} \in D^n$, then $\vec{u} \leq_d \vec{v}$ if $u_i = d$ implies that $v_i = d$. 
-    Then function $f\colon D^n \longrightarrow D$ is \emph{monotone} if for all $\vec{u} \in D^n$, $f(\vec{u}) = d$ implies that for all $\vec{v} \in D^n$ with $\vec{u} \leq_d \vec{v}$, $f(\vec{v}) = d$.
+    Function $f\colon D^n \longrightarrow D$ is \emph{monotone} if for all $\vec{u}, \vec{v} \in D^n$, $\vec{u} \leq \vec{v}$ implies that $f(\vec{u}) \leq f(\vec{v})$.
 \end{definition}
 
 We now prove a series of negative results for cast participation.
@@ -587,30 +591,32 @@ We now prove a series of negative results for cast participation.
 
 
 \begin{lemma} Suppose that for the voting rule $r$ is not monotone. Additionally the counterexample to monotonicity is not caused by flipping a $*$ to a $0$ or $1$. 
-That is there exists $\vec{u} = (u_1, \ldots, u_{i-1}, d, u_{i+1}, \ldots, u_n)$ with $d \neq *$ and $\vec{u}' = (u_1, \ldots, u_{i-1}, e, u_{i+1}, \ldots, u_n)$ with $d \neq e$ but $r(\vec{u}) = e$ and $r(\vec{u}') \neq e$. 
+That is there exists $\vec{u} = (u_1, \ldots, u_{i-1}, 0, u_{i+1}, \ldots, u_n)$ and $\vec{u}' = (u_1, \ldots, u_{i-1}, e, u_{i+1}, \ldots, u_n)$ with $0 < e$ but $r(\vec{u}) > r(\vec{u}')$. 
 Then cast participation doesn't hold.
 \end{lemma}
 
 \begin{proof}
     Consider the smart profile where for each agent $a$, $B_a = (u_a)$. 
-    In particular voter $i$ prefers $d$ to $e$. We are allowed to deduce this because $i$ does not vote for an abstention.
-    But, by setting a smart ballot of $B_i = (e)$ then $r(\vec{u}') = d$, which violates cast-participation.
+    In particular $0 >_i * >_i 1$. We are allowed to deduce this because $i$ does not vote for an abstention.
+    But, by setting a smart ballot of $B_i = (e)$ then $r(\vec{u}') < r(\vec{u}')$. So voter $i$ prefers to vote directly for $e$ than $d$ despite preferring outcome $d$.
+    This violates cast-participation.
 \end{proof}
 
 We consider that reasonable unravelling procedures will not needlessly violate their agents first preferences. We formally say that $\mathcal{U}$ respects first preferences if whenever $\vec{c} = (1, 1, \ldots, 1)$ is a consistent certificate, $\mathcal{U}$ returns an outcome with certificate $\vec{c}$. Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect first preferences as well as any Pareto optimal unravelling procedure.
 
 \begin{lemma}
-    Suppose $r$ is a monotone rule, $\mathcal{U}$ respects first preferences. Suppose additionally, that for some $n$ there exists a ``deciding'' subset of voters $S$ with $\abs{S} \leq n - k$ such that if every voter in $S$ votes for 0, $r$ votes for 0 and if every voter in $S$ votes for 1, $r$ votes for 1. Then cast-participation doesn't hold.
+    Suppose $r$ is a monotone rule, $\mathcal{U}$ respects first preferences. Suppose additionally, that for some $n$ there exists a ``deciding'' subset of voters $S$ with $\abs{S} \leq n - k$ such that if every voter in $S$ votes for $d$, $r$ votes for $d$.
+    Then, cast-participation does not hold.
 \end{lemma}
 
 \begin{proof}
-    Let $S$ as defined above.
-    Let $f: \{0, 1\}^k \longrightarrow \{0,1\}$ and $f$ not monotone.
-    Suppose $\vec{u} < \vec{u}'$ with only $\vec{u}_i \neq \vec{u}_i$ and $f(\vec{u}) > f(\vec{u}')$. Then, enumerate voters $v_1, \ldots, v_k$ not in $S$ and let $B_{v_i} = (u_i)$. For all other agents $a$ set $B_{a} = (f(v_1, \ldots, v_k) > d)$ for some arbitrary $d$. 
+    Let $S$ as defined above and $f: \{0, 1, *\}^k \longrightarrow \{0,1, *\}$.
+    Further, suppose there exist $\vec{u} < \vec{u}'$ with only $u_i < u_i'$, $u_i = 0$ and $f(\vec{u}) > f(\vec{u}')$. Then, enumerate voters $v_1, \ldots, v_k$ not in $S$ and let $B_{v_i} = (u_i)$. 
+    For all other agents $a$ set $B_{a} = (f(v_1, \ldots, v_k) > d)$ for some arbitrary $d$. 
     Then the first preferences of the voters do not introduce cycles. 
     As $\mathcal{U}$ respects first preferences it picks an outcome where every agent votes for their first preference.
-    So $r$ resolves to vote for $1$ as all voters in $S$ vote for $1$.
-    Now if $v_i$ were to switch their vote from $0$ to $1$ everyone in $S$ would vote for $0$ and so $r$ would resolve to $0$. This breaks cast participation for voter $v_i$.
+    Hence, $r$ resolves to vote for $f(\vec{u})$ as all voters in $S$ vote for $f(\vec{u})$.
+    Now if agent $v_i$ were to switch their vote from $0$ to $u_i'$ everyone in $S$ would vote for $f(\vec{u}')$ and so $r$ would resolve to $f(\vec{u}')$. This breaks cast participation for voter $v_i$ as they prefer outcome 0 but are better not voting for 0.
 \end{proof}
 
 \begin{lemma}
@@ -621,13 +627,14 @@ We consider that reasonable unravelling procedures will not needlessly violate t
     Let $N = \{v, v', a, u_1, \ldots, u_{n-3}\}$ and $r$ as described. Then, let $B_v = (0), B_{v'} = (v > 0), B_a = (1), B_{u_i} = (a > 0)$. Then \textsc{MinMax} would simply assign each individual to first preferences and the majority votes for 1. So the outcome set is $\{1\}$.
 
     But, if $B_v = (v' > 0)$ then a cycle is formed and so necessarily, \textsc{MinMax} will have to use some second preferences. Hence setting $v, u_1, \ldots, u_{n-3}$ to their second preference would be a valid solution. So every voter except $a$ vote for $0$, so that $r$ resolves to $0$. 
-    Note that we can still assign first preference to all voters except than $v$ so that $(2, 1, \ldots, 1)$ is a consistent certificate and would result to the majority again voting for 1. So the set of outcomes is $\{0, 1\}$ which is better than $\{1\}$ for agent $a$.
+    Note that we can still assign first preference to all voters except than $v$ so that $(2, 1, \ldots, 1)$ is a consistent certificate and would result to the majority again voting for 1. 
+    Therefore, the set of outcomes is $\{0, 1\}$ which is better than $\{1\}$ for agent $a$.
 \end{proof}
 
 We can further prove that \textsc{MinSum} doesn't satisfy cast-participation. In the case where abstentions are allowed we denote $\mathit{Maj}(0, *) = 0, \mathit{Maj}(1, *) = 1$ and $\mathit{Maj}(0, 1) = *$.
 
 \begin{lemma}
-    Let $\mathcal{U}$ respect first preferences, $r$ such that if a strict majority votes for outcome $d$ then $r$ supports outcome $d$. Then if voters are allowed to delegate to even majorities, cast-participation doesn't hold for \textsc{MinSum}. 
+    Let $r$ such that if a strict majority votes for outcome $d$ then $r$ supports outcome $d$. Then if voters are allowed to delegate to even majorities, cast-participation doesn't hold for \textsc{MinSum}. 
 \end{lemma}
 
 \begin{proof}
@@ -636,7 +643,7 @@ We can further prove that \textsc{MinSum} doesn't satisfy cast-participation. In
     Now if $B_a' = (c > d > 1)$ then the unique result of \textsc{MinSum} is $c$ votes for $1$. Further, $a, d, e$ delegate to $c$ using first preferences and vote for $1$ as well. This results in a strict majority for $1$. So the set of outcomes is $\{1\}$ which is preferred to $\{*\}$.
 \end{proof}
 
-Note, that in the above case $\mathit{Maj}$ is a monotone rule. So, it is not the case that monotone rules guarantee cast participation.
+Note, that in the above case $\mathit{Maj}$ is a monotone rule. So, it is not the case that monotone rules guarantee cast participation for \textsc{MinSum}.
 
 \newpage
 \section{Proposals}
