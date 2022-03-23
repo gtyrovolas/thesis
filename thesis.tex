@@ -10,6 +10,7 @@
 \usepackage{mathtools}
 \usepackage{forest}
 \usepackage{subfig}
+\usepackage{natbib}
 \usetikzlibrary{shapes.geometric,positioning, arrows, trees, positioning, fit, calc}
 \usepackage{amsthm}
 
@@ -110,70 +111,73 @@ To do so we introduce the notion of a certificate:
     A \emph{certificate} $\mathbf{c} \in \mathbb{N}^n$ for a profile $\mathbf{B}$ is a vector where for each $a \in N$ such that $B_a = (B_a^0 > \ldots > B_a^{k_a})$, the entry $c_a \in [0, k_a]$ corresponds to the preference level for agent $a$.  
 \end{definition}
 
-Until now we have not actually used the agents' preferences. 
-So, we need to introduce the concept of a consistent certificate. 
-Consistent certificates are certificates where the vote of each agent is determined by the votes of other agents using the functions in their smart ballots. 
-But, note that there are cases where functions $F$ can be decided on partial input.
-We refer to these cases as \emph{necessary winners}.  
-For example, $\mathit{Maj}(1, 1, a)$ will always resolve to 1 regardless of agent $a$'s vote. 
-So, in this case the necessary winner is $1$.
-In the following definition we will extend functions to return necessary winners on partial input.
-Formally:
 
-\begin{definition}[Necessary winner]
-    Let $F \colon D^n \longrightarrow D $ be a function. Consider $F' \colon \left\{D \cup \left\{\Delta\right\}\right\} \longrightarrow D \cup \left\{\Delta\right\}$ defined as:
-    \[
-        F'(\vec{d}) = \begin{cases}
-            F(\vec{d}) \text{ if } \vec{d} \in D
-            F(\vec{d}) \text{ if for all }
-        \end{cases}
-    \]
-    Then we define the function $F' \colon \left\{D \cup \left\{\Delta\right\}\right\} \longrightarrow D \cup \left\{\Delta\right\}$ as its extension on \emph{necessary winners}.
+Something that will be of high importance is that functions of interest can be calculated on partial input.  
+For example, consider majority rule denote as $\mathit{Maj}$. For a variable $a$, $\mathit{Maj}(1, 1, a)$ will always resolve to 1 regardless of agent $a$'s vote. 
+We refer to these cases as \emph{necessary winners} as in Konczak's and Lang's work \cite{konczak2005voting}.
+We formalise this in the following definition where we use $\Delta$ to denote placeholder values.
+
+\begin{definition}[Necessary winner extensions]
+    Let $F \colon D^n \longrightarrow D $ be a function.
+    We define $F' \colon \left\{D \cup \left\{\Delta\right\}\right\}^n \longrightarrow D \cup \left\{\Delta\right\}$ function $F$'s \emph{necessary winner extension}. 
+    We set for all $\vec{d} \in D^n$, $F'(\vec{d}) = F(\vec{d})$.
+    Now for $\vec{d} \in \left\{D \cup \left\{\Delta\right\}\right\}^n$, let $i_1, i_2, \ldots, i_m$ be the indices such that $d_{i_j} = \Delta$.
+    Let $\vec{d}[x_1, \ldots, x_m]$ denote the vector $\vec{d}$ where $x_j$ replaces the value at index $i_j$. Then, if for some $y \in D$ and for all $\vec{x} \in D^m$, $F(\vec{d}[\vec{x}]) = y$ then $F'(\vec{d}) = y$.
+    Otherwise $F'(\vec{d}) = \Delta$.
 \end{definition}
 
+To actually use our agents' preferences we need to introduce the concept of a consistent certificate. 
+Consistent certificates are certificates where the vote of each agent is determined by the votes of other agents using the functions in their smart ballots. Formally:
+
 \begin{definition}[Consistent certificate]
-    For a profile $\mathbf{B}$, a certificate $\mathbf{c}$ is \emph{consistent} if there is an ordering $\mathbf{\sigma} \colon N \longrightarrow \{1,\ldots, n\}$ of agents starting from vector $\vec{X}^0 = \{\Delta\}^n$ with placeholder values $\Delta$ for all agents, iteratively constructs an outcome vector of direct votes $\vec{X} \in D^n$ as follows for $\sigma(a) = z \in [1,n]$:
+    For a profile $\mathbf{B}$, a certificate $\mathbf{c}$ is \emph{consistent} if there is an ordering $\mathbf{\sigma} \colon N \longrightarrow \{1,\ldots, n\}$ of agents starting from vector $\vec{X}^0 = \{\Delta\}^n$ with placeholder values $\Delta$ for all agents, iteratively constructs an outcome vector of direct votes $\vec{X} \in D^n$ as follows for $\sigma(a) = z \in [1,n]$. For ease of notation we abbreviate agent $a$'s $c_a$th function, $F_a^{c_a}$ to $F$.
     \[
-        X^z_a = F^{c_a}_a(\vec{X}^{z-1} \restriction_{S^{c_a}_a} ).
+        X^z_a = F'(\vec{X}^{z-1} \restriction_{S^{c_a}_a} ).
     \]
-    Here $X_a$ represents agent $a$'s entry in $\vec{X}$. 
-    The restriction of vector $\vec{X}$ in $S$, written as $\vec{X} \restriction_S$, is a vector indexed by $S$ where for each $s \in S$,  $(\vec{X} \restriction_S)_s = X_s$. 
-    Additionally, for vector $\vec{X} \in \left\{D \cup \{\Delta\}\right\}^n$ with entries $X_i $with  $F^{c_a}_a(\vec{X}) = X_a$  
+    Here, $X_a$ represents agent $a$'s entry in $\vec{X}$. 
+    The restriction of vector $\vec{X}$ in $S$, written as $\vec{X} \restriction_S$, is a vector indexed by $S$ where for each $s \in S$,  $(\vec{X} \restriction_S)_s = X_s$.
+
 
 \end{definition}
 
 
 Now, we are only interested in consistent certificates as these are the ones that respect the agents' votes. We will denote the set of consistent certificates of a profile $\mathbf{B}$ as $C(\mathbf{B})$.
-
-It is good that there is only one way to unravel consistent certificates. The following proposition is proven by Colley et al. \cite{grandi}.
+It is good that there is only one outcome matched to each consistent certificate regardless of the ordering $\sigma$. The following proposition is proven by Colley et al. \cite{grandi}.
 
 \begin{proposition}
     If a consistent certificate $\mathbf{c}$ can be given by two orderings $\sigma$ and $\sigma'$ of the agents, then the orderings yield the same outcome $X_\mathbf{c} \in D^n$.
 \end{proposition}
 
-Consequently, when we refer to consistent certificates we do not need to specify the votes of each agent. Now that we have settled the framework it's time to consider some ``good'' certificates. There is a very natural ``cost'' in this scenario and that is using a lot of the later preferences of each agent. So, we can set two very natural ways of minimising this cost. We can attempt to minimise the sum of the cost or in a more egalitarian setting attempt to minimise the maximum of the cost. Formally:
+Consequently, when we refer to consistent certificates are enough to determine every agent's vote. 
+Now that we have settled the framework it's time to consider some ``good'' certificates. 
+There is a very natural ``cost'' in this scenario and that is using a lot of the later preferences of each agent. 
+So, we can set two very natural ways of minimising this cost. 
+We can attempt to minimise the sum of the costs or in a more egalitarian spirit attempt to minimise the maximum cost. 
+Formally:
 
 \begin{definition}[MinSum]
     For a given profile $\mathbf{B}$, the \textsc{MinSum} unravelling procedure is defined as:
     \[
         \textsc{MinSum}(\mathbf{B}) = 
-        \left\{X_{\mathbf{c}} \bigm| \mathrm{arg} \min_{\mathbf{c} \in C(\mathbf{B})} \sum_{i=1}^n c_i\right\}
+        \left\{X_{\mathbf{c}} \bigm| \mathrm{arg} \min_{\mathbf{c} \in C(\mathbf{B})} \sum_{i=1}^n c_i\right\}.
     \]
 \end{definition}
 
 \begin{definition}[MinMax]
     For a given profile $\mathbf{B}$, the \textsc{MinMax} unravelling procedure is defined as:
     \[
-        \textsc{MinMax}(\mathbf{B}) = \left\{X_{\mathbf{c}} \bigm| \mathrm{arg} \min_{\mathbf{c} \in C(\mathbf{B})} \max (\mathbf{c}) \right\}
+        \textsc{MinMax}(\mathbf{B}) = \left\{X_{\mathbf{c}} \bigm| \mathrm{arg} \min_{\mathbf{c} \in C(\mathbf{B})} \max (\mathbf{c}) \right\}.
     \]
 \end{definition}
 
-A natural extension of \textsc{MinMax} is that of \textsc{MinMaxSum} that selects from the \textsc{MinMax} certificates the ones with minimum sum. Formally:
+The above unravelling procedures have already been introduced and studied by Colley et al. \cite{grandi}. 
+A natural extension of \textsc{MinMax}, not studied is that of \textsc{MinMaxSum} that selects from the \textsc{MinMax} certificates the ones with minimum sum. 
+Formally:
 
 \begin{definition}[MinMaxSum]
     For a given profile $\mathbf{B}$, the \textsc{MinMaxSum} unravelling procedure s defined as:
     \[
-        \textsc{MinMaxSum}(\mathbf{B}) =  \left\{ X_{\mathbf{c}}\mid \arg  \min_{\vec{c} \in \mathit{minC}(\mathbf{B})} \sum_{i=1}^n c_i \right\}
+        \textsc{MinMaxSum}(\mathbf{B}) =  \left\{ X_{\mathbf{c}}\mid \arg  \min_{\vec{c} \in \mathit{minC}(\mathbf{B})} \sum_{i=1}^n c_i \right\}.
     \]
     where $\mathit{minC}(\vec{B})$ is the set of consistent certificates that minimise the maximum $c_i$. 
 \end{definition}
@@ -186,6 +190,8 @@ A natural extension of \textsc{MinMax} is that of \textsc{MinMaxSum} that select
 \section{Complexity Results}
 
 \subsection{Function classes strictly larger than LIQUID}
+
+In order to study the computational properties of the unravelling procedures we set them up as decision problems:
 
 \begin{definition}[\textsc{BoundedMinSum}]
     Let \textsc{BoundedMinSum}$_\mathcal{F}$ be the decision problem with input a target constant $M$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. 
@@ -200,6 +206,7 @@ A natural extension of \textsc{MinMax} is that of \textsc{MinMaxSum} that select
     Let \textsc{BoundedMinMaxSum}$_\mathcal{F}$ be the decision problem with input target constants $M, S$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. The YES instances are those with a consistent certificate  $\vec{c}$ with $\max (\vec{c}) \leq M$ and $\sum_i c_i \leq S$.
 \end{definition}
 
+Now, the current status of 
 Let $\lor$ the binary logical OR and $\land$ the binary logical AND. Then:
 
 \begin{proposition}[Hardness of \textsc{BoundedMinSum}]
@@ -685,7 +692,7 @@ We can further prove that \textsc{MinSum} doesn't satisfy cast-participation. In
 Note, that in the above case $\mathit{Maj}$ is a monotone rule. So, it is not the case that monotone rules guarantee cast participation for \textsc{MinSum}.
 
 \newpage
-\bibliographystyle{apalike}
+\bibliographystyle{plain}
 \bibliography{thesis-bib.bib}
 \end{document}
 
