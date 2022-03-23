@@ -211,14 +211,11 @@ In order to study the computational properties of the unravelling procedures we 
 Now, \textsc{BoundedMinSum} and \textsc{BoundedMinMax} have been studied by Colley et al \cite{grandi}.
 They proved that \textsc{BoundedMinSum}$_\mathit{LIQUID}$ and \textsc{BoundedMinMax}$_\mathit{LIQUID}$ are poly-time computable and that \textsc{BoundedMinSum}$_\mathit{MON\text{-}BOOL}$ and \textsc{BoundedMinMax}$_\mathit{BOOL}$ are NP-complete.
 We improve on these hardness results and conclude some inapproximability results.
-Before delving any further we can consider the trivially easy cases.
 
-\begin{proposition}
-    Let $\mathcal{F}$ any class of computable 
-\end{proposition}
+Before delving any further we can consider the trivially easy cases. 
+For any function class $\mathcal{F}$, \textsc{BoundedMinSum}$_\mathcal{F}$ and \textsc{BoundedMinMax}$_\mathcal{F}$ are trivially solvable if the maximum size of the ballot is 1.
 
-
-Let $\lor$ be the binary logical OR and $\land$ be the binary logical AND. Then:
+Now, let $\lor$ be the binary logical OR and $\land$ be the binary logical AND. Then:
 
 \begin{proposition}[Hardness of \textsc{BoundedMinSum}]
     Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$. Then \textsc{BoundedMinSum}$_\mathcal{F}$ is NP-hard, even if the maximum size of a smart ballot is 2.    
