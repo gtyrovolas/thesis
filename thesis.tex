@@ -89,6 +89,7 @@ Throughout this work it will be meaningful to restrict the functions agents can 
 \begin{itemize}
     \item Direct delegations to voter $v$ denoted by $\mathit{LIQUID} = \{\mathit{id}_v \mid v \in N\}$, where $\mathit{id}_v$ is the identity function applied to the vote of voter $v$.
     \item Boolean functions in conjunctive normal form denoted by $\mathit{BOOL}$. 
+    \item Monotone boolean function in conjunctive normal form denoted by $\mathit{MON}$-$\mathit{BOOL}$.
 \end{itemize}
 
 \subsection{Unravellings}
@@ -191,7 +192,7 @@ Formally:
 
 \subsection{Function classes strictly larger than LIQUID}
 
-In order to study the computational properties of the unravelling procedures we set them up as decision problems:
+In order to study the computational properties of the unravelling procedures we set them up as decision problems.
 
 \begin{definition}[\textsc{BoundedMinSum}]
     Let \textsc{BoundedMinSum}$_\mathcal{F}$ be the decision problem with input a target constant $M$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. 
@@ -206,24 +207,33 @@ In order to study the computational properties of the unravelling procedures we 
     Let \textsc{BoundedMinMaxSum}$_\mathcal{F}$ be the decision problem with input target constants $M, S$ and a smart profile $\mathbf{B}$ which uses functions in the class $\mathcal{F}$. The YES instances are those with a consistent certificate  $\vec{c}$ with $\max (\vec{c}) \leq M$ and $\sum_i c_i \leq S$.
 \end{definition}
 
-Now, the current status of 
-Let $\lor$ the binary logical OR and $\land$ the binary logical AND. Then:
+
+Now, \textsc{BoundedMinSum} and \textsc{BoundedMinMax} have been studied by Colley et al \cite{grandi}.
+They proved that \textsc{BoundedMinSum}$_\mathit{LIQUID}$ and \textsc{BoundedMinMax}$_\mathit{LIQUID}$ are poly-time computable and that \textsc{BoundedMinSum}$_\mathit{MON\text{-}BOOL}$ and \textsc{BoundedMinMax}$_\mathit{BOOL}$ are NP-complete.
+We improve on these hardness results and conclude some inapproximability results.
+Before delving any further we can consider the trivially easy cases.
+
+\begin{proposition}
+    Let $\mathcal{F}$ any class of computable 
+\end{proposition}
+
+
+Let $\lor$ be the binary logical OR and $\land$ be the binary logical AND. Then:
 
 \begin{proposition}[Hardness of \textsc{BoundedMinSum}]
-    Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ and that every voter is allowed only 1 non-constant delegation. Then \textsc{BoundedMinSum}$_\mathcal{F}$ is NP-hard.    
+    Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$. Then \textsc{BoundedMinSum}$_\mathcal{F}$ is NP-hard, even if the maximum size of a smart ballot is 2.    
 \end{proposition}
 
 \begin{proof}
     We reduce from the NP-hard problem of \textsc{3-SAT}.
     Let $\varphi = \bigwedge_{i = 1}^k t_i $ a \textsc{3-SAT} instance on boolean variables $x_1, \ldots, x_n$ with $t_i = l_a \lor l_b \lor l_c $ where $l_a, l_b, l_c$ correspond to literals of variables $x_a, x_b, x_c$ or their negations.
     
-    We first define constant voter \underline{zero}, that always votes for 0. 
-    So that $B_{\text{\underline{zero}}} = (0)$.
+    We first define constant voter \underline{zero}, that always votes for 0, so that $B_{\text{\underline{zero}}} = (0)$.
 
 \tikzset{circ/.style={circle,draw, solid, inner sep=0pt,minimum size=10mm}}
 
 
-For each variable $x_i$ we construct a voter $x_i$ with voting profile $B_{x_i} = (  \text{\underline{zero}} > 1) $. These are drawn in Figure \ref{fig:votes} We denote the first preferences as full lines and second preferences as dashed lines.
+For each variable $x_i$ we construct a voter $x_i$ with voting profile $B_{x_i} = (  \text{\underline{zero}} > 1) $. These are drawn in Figure \ref{fig:votes}. We denote the first preferences as solid lines and second preferences as dashed lines.
 
 
 We then construct gadgets for each term $t_h$. 
@@ -343,7 +353,8 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
     \end{figure}
     
     Now, we analyse when first preferences of the additional voters can be resolved without producing cycles. 
-    If $x_k = 1$ then $t_h$ can resolve to $1$ and so will $a$. As $x_i$ and $a$ are set to a value $b$ can resolve its first preference. 
+    If $x_k = 1$ then $t_h$ can resolve to $1$ and so will $a$. 
+    As $x_i$ and $a$ are set to a value, $b$ can resolve its first preference. 
     As $x_j$ and $b$ are set, $c$ can resolve its first delegation as well. 
     Similarly if $x_j = 1$ then $c$ is immediately resolved to $1$ and so $t_h$ is resolved. 
     Hence $a$ and then $b$ can be resolved. 
@@ -351,7 +362,7 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
     
     Now, suppose $x_i = 1, x_j = 0, x_k = 0$. Then $t_h$ cannot immediately resolve the logical OR as it is dependent on the vote of $c$, similarly $c$ is waiting for $b$ to decide, and $b$ is waiting for $a$. 
     But $a$ is waiting for $t_h$ to decide. 
-    There is no way to resolve this cycle and so one of the additional voters we've introduced will have to vote for their second preference. 
+    There is no way to resolve this cycle, and so one of the additional voters we have introduced will have to vote for their second preference. 
     This will incur an additional cost of at least 1.
 
     \textbf{Case} $\overline{x_i} \lor \overline{x_j} \lor x_k$: 
@@ -386,9 +397,12 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
 \begin{proof}
     We can adapt the above proof to prove that \textsc{BoundedMinSum} is not constant-factor approximable. 
     Following our construction above we can incur a cost of $k$ for when the expression $\varphi$ is not satisfiable by simply creating $k$ gadgets for each term. 
-    So for a \textsc{MinSum} outcome $\vec{c}$:   $\sum_i \vec{c}_i \leq n$ if and only if $\varphi$ is satisfiable and $\sum_i c_i \geq k$ if and only if $\varphi$ is not satisfiable. 
+    So for a \textsc{MinSum} outcome $\vec{c}$:   $\sum_i c_i \leq n$ if and only if $\varphi$ is satisfiable and $\sum_i c_i \geq k$ if and only if $\varphi$ is not satisfiable. 
     So, any constant factor approximator would solve \textsc{3-SAT}, thus proving hardness.
 \end{proof}
+
+A similar construction is used to prove hardness of \textsc{BoundedMinMax}. 
+Instead of using multiple gadgets to amplify the effect of cycles we create some additional cycles by introducing primed voters $a', b', c' \text{ and } t_h'$.
 
 \begin{proposition}[Hardness of \textsc{BoundedMinMax}]
     Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$. Then \textsc{BoundedMinMax} is NP-hard even if the maximum size of a smart ballot is 3.    
