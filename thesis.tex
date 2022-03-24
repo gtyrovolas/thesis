@@ -34,6 +34,11 @@
 
 \let\vec\mathbf
 
+% MACROS
+\newcommand{\BMM}{\textsc{BoundedMinMax}}
+\newcommand{\BMS}{\textsc{BoundedMinSum}}
+\newcommand{\BMMS}{\textsc{BoundedMinMaxSum}}
+
 \begin{document}
 
 \maketitle
@@ -398,11 +403,39 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
     So, any constant factor approximator would solve \textsc{3-SAT}, thus proving hardness.
 \end{proof}
 
-A similar construction is used to prove hardness of \textsc{BoundedMinMax}. 
+Now we shift our focus on \textsc{BoundedMinMax}.
+We first note that there is an additional easiness lemma for \BMM.
+
+\begin{proposition}
+    Let $\mathcal{F}$ be any computable family of functions and $\vec{B}$ a smart profile where each ballot has size at most 2.
+    Suppose for each function $f \in \mathcal{F}$, $f'$ can be computed instantly.
+    Then, there is an algorithm that decides $\BMM_\mathcal{F}$ which runs in $\mathcal{O}(n^2)$ steps. 
+\end{proposition}
+
+\begin{proof}
+    Let $m_i$ the size of the ballot of agent $i$, as always $\vec{c} = (m_1, \ldots, m_n)$ is a consistent certificate, as each delegate votes for a constant.
+    As each $m_i \leq 2$, the only possible certificate that improves on $\vec{c}$ is $\vec{1} = (1, \ldots, 1)$.
+    To check if $\vec{1}$ is consistent, we first set all agents $a$ with $F_a^1$ constant and equal to $d$ to $d$.
+    Then, we check iteratively if any of the unset agents can vote using their first preference.
+    We repeat this step until running this iteration makes no changes.
+    We return that $\vec{1}$ is a consistent certificate if and only if all agents are set at this final point.
+
+    We now prove correctness of the above.
+    If the algorithm returns that $\vec{1}$ is a consistent certificate then it truly is so. 
+    It can be proved by constructing $\sigma \colon N \longrightarrow \{1,\ldots, n\}$ where $\sigma(a)$ is the position in which $a$ was activated by our algorithm.
+    By our definition, $a$ then uses only the values of agents that were set before $a$ in this ordering.
+    Now consider every case where $\vec{1}$ is a consistent certificate with a corresponding ordering $\sigma$.
+    Then, without loss of generality all the agents that vote for constants are placed first in positions $1, \ldots, k$.
+    Then, for $\sigma(a) = k+1$, $F_a^{1}$ can be calculated using only agents $v$ with $\sigma(v) \leq k$, hence our algorithm will set $a$ to vote for $F_a^1$. Inductively, it will reconstruct an equivalent ordering to $\sigma$.
+
+\end{proof}
+
+Now that we have the easiness result the following hardness result will be tight.
+Our construction is similar to the one for \BMS.
 Instead of using multiple gadgets to amplify the effect of cycles we create some additional cycles by introducing primed voters $a', b', c' \text{ and } t_h'$.
 
 \begin{proposition}[Hardness of \textsc{BoundedMinMax}]
-    Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$. Then \textsc{BoundedMinMax} is NP-hard even if the maximum size of a smart ballot is 3.    
+    Suppose $\mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$. Then \textsc{BoundedMinMax} is NP-hard, even if the maximum size of a smart ballot is 3.    
 \end{proposition}
 
 \begin{proof}
@@ -421,13 +454,16 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
         &B_{t_h'} = (t_h > x_k \lor c > 0).
     \end{align*}
 
-    Now, we claim that if $t_h$ is satisfied then this component can be resolved with at most the second preference being used. If $x_k = 1$ then we can resolved $t_h, t_h'$ to $1$ using their second preferences. Hence, we can then resolve agents in order $(a, a', b, b', c, c')$ using the agents second preference. Similarly if $x_j = 1$ we can resolve in order $(c, c', t_h, t_h', a, a, b, b')$ using only the agents first two preferences. Similarly, for $x_i = 1$.
+    Now, we claim that if $t_h$ is satisfied then this component can be resolved with at most the second preference being used. 
+    If $x_k = 1$ then we can resolve $t_h, t_h'$ to $1$ using their second preferences. 
+    Hence, we can then resolve agents in order $(a, a', b, b', c, c')$ using the agents' second preference. 
+    Similarly if $x_j = 1$ we can resolve in order $(c, c', t_h, t_h', a, a, b, b')$ using only the agents' first two preferences. Similarly, for $x_i = 1$.
 
     Now consider the case where $x_i = x_j = x_k = 0$. Let $\sigma \colon N \longrightarrow \{1, \ldots, m\}$ be an ordering of the $m$ agents from which a consistent certificate arises. Suppose, this only uses the agents' first two preferences.
     As the fresh agents $a, b, c, t_h$ are identical with the primed versions $a', b', c', t_h'$, without loss of generality every unprimed agent appears before their primed counterpart so for instance $\sigma(t_h) < \sigma(t_h')$. 
     Then, $\sigma(c) < \sigma(t_h)$ as $x_k \lor c$ cannot be resolved with $x_k = 0$. 
     Similarly, $\sigma(b) < \sigma(c)$ and $ \sigma(a) < \sigma(b)$ but $\sigma(t_h) < \sigma(a)$. This leads to the contradiction $\sigma(t_h) < \sigma(t_h)$. 
-    Hence, if $t_h$ is not satisfied one of the fresh agents will use their third preferences and if $t_h$ is satisfied all fresh agents will use only their first two preferences.
+    Hence, if $t_h$ is not satisfied, one of the fresh agents will use their third preferences, and if $t_h$ is satisfied, all fresh agents will use only their first two preferences.
 
     \textbf{Case} $t_h = \overline{x_i} \lor x_j \lor x_k$:
     For each term we construct additional voters $a, a', b, b', c, c', t_h$. With voting profiles: 
@@ -442,7 +478,7 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
         &B_{t_h'} = (t_h > c \lor x_k > 0).
     \end{align*}
 
-    We present this smart ballot in the much easier to parse Figure \ref{fig:MinMax:1nots} where filled lines indicate first preferences and dashed lines indicate second preferences:
+    We present this smart ballot in the much easier to parse Figure \ref{fig:MinMax:1nots} where solid lines indicate first preferences and dashed lines indicate second preferences:
 \tikzset{circ/.style={circle,draw, solid, inner sep=0pt,minimum size=10mm}}
     \begin{figure}
         \centering
@@ -548,15 +584,19 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
     \caption{Gadgets for \textsc{MinMax}}
     \end{figure}
 
-    Now, we claim that if $t_h$ is satisfied then this component can be resolved with at most the second preference being used. If $x_k = 1$ then we can resolved $t_h, t_h'$ to $1$ using their second preferences. Hence, we can then resolve agents in order $(a, a', b, b', c, c')$. Similarly if $x_j = 1$ we can resolve in order $(c, c', t_h, t_h', a, a, b, b')$ using only the agents first two preferences. Now, if $x_i = 0$ the same argument holds as the logical AND is resolved to 0. 
+    Now, we claim that if $t_h$ is satisfied then this component can be resolved with at most the second preference being used. 
+    If $x_k = 1$ then we can resolve $t_h, t_h'$ to $1$ using their second preferences. 
+    Hence, we can then resolve agents in order $(a, a', b, b', c, c')$. 
+    Similarly if $x_j = 1$ we can resolve in order $(c, c', t_h, t_h', a, a, b, b')$ using only the agents first two preferences. 
+    Now, if $x_i = 0$ the same argument holds, as the logical AND is resolved to 0. 
 
     Now consider the case where $x_i = 1, x_j = 0$ and $x_k = 0$. Let $\sigma \colon N \longrightarrow \{1, \ldots, m\}$ be an ordering of the $m$ agents from which a consistent certificate arises. Suppose, this only uses the agents' first two preferences.
-    As the fresh agents $a, b, c, t_h$ are identical with the primed versions $a', b', c', t_h'$, without loss of generality every unprimed agent appears before their primed counterpart so for instance $\sigma(t_h) < \sigma(t_h')$. 
+    As the fresh agents $a, b, c, t_h$ are identical with the primed versions $a', b', c', t_h'$, without loss of generality every unprimed agent appears before their primed counterpart, so for instance $\sigma(t_h) < \sigma(t_h')$. 
     Then, $\sigma(c) < \sigma(t_h)$ as $x_k \lor c$ cannot be resolved with $x_k = 0$. 
     Similarly, $\sigma(b) < \sigma(c)$. Again, $ \sigma(a) < \sigma(b)$ as $x_i \land a = a$ as $x_i = 1$. But $\sigma(t_h) < \sigma(a)$. This leads to the contradiction $\sigma(t_h) < \sigma(t_h)$. 
     Hence, if $t_h$ is not satisfied one of the fresh agents will use their third preferences and if $t_h$ is satisfied all fresh agents will use only their first two preferences.
 
-    \textbf{Case} $\overline{x_i} \lor \overline{x_j} \lor x_k$: This case is symmetrical to the above. We only need to permute the agents and replace the logical ANDs with ORs and vice versa. For completeness the smart voting profiles are:     \begin{align*}
+    \textbf{Case} $\overline{x_i} \lor \overline{x_j} \lor x_k$: This case is symmetrical to the above. We only need to permute the agents and replace the logical ANDs with ORs and vice versa. For completeness, the smart voting profiles are:     \begin{align*}
         &B_a = (a' > t_h > 0) \\
         &B_{a'} = (a > t_h > 0) \\
         &B_{b} = (b' > x_k \lor a > 0) \\
@@ -580,7 +620,7 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
         &B_{t_h'} = (t_h > x_k \land c > 0).
     \end{align*}
 
-    So, if and only if $\varphi$ is satisfiable then there exists a consistent certificate $\vec{c}$ with $\max(\vec{c}) \leq 2$. So we have reduced any \textsc{3-SAT} instance to an instance of \textsc{BoundedMinMax}$_\mathcal{F}$, proving that \textsc{BoundedMinMax}$_\mathcal{F}$ is NP-hard.
+    So, $\varphi$ is satisfiable if and only if there exists a consistent certificate $\vec{c}$ with $\max(\vec{c}) \leq 2$. Hence, we have reduced \textsc{3-SAT} to \textsc{BoundedMinMax}$_\mathcal{F}$, proving that \textsc{BoundedMinMax}$_\mathcal{F}$ is NP-hard.
 \end{proof}
 
 \begin{proposition}[\textsc{BoundedMinMax} is not approximable]
@@ -588,13 +628,13 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
 \end{proposition}
 
 \begin{proof}
-    This result can be proven by modifying the above proof. Instead of constructing a cycle of size 2 for voters $a, b, c, t_h$ we construct a cycle of size $k + 1$. So every voter $a, b, c, t_h$ can be thought of as a voter $v$ with $B_v = (v' > u > 0)$. Then we construct voters $v_1, \ldots, v_k$ and set $B_v = (v_1 > v_2 > \ldots > v_k > u > 0)$ and for $v_i$, $B_{v_i} = (v > v_1 > \ldots > v_{i - 1} > v_{i+1} > \ldots > v_k > u > 0)$.
+    This result can be proven by modifying the above proof. Instead of constructing a cycle of size 2 for voters $a, b, c, t_h$, we construct a cycle of size $k + 1$. So every voter $a, b, c, t_h$ can be thought of as a voter $v$ with $B_v = (v' > u > 0)$. Then we construct voters $v_1, \ldots, v_k$ and set $B_v = (v_1 > v_2 > \ldots > v_k > u > 0)$ and for $v_i$, $B_{v_i} = (v > v_1 > \ldots > v_{i - 1} > v_{i+1} > \ldots > v_k > u > 0)$.
     Now, since the maximum size of the smart ballots is $k + 2$ then clearly for the \textsc{MinMax} certificate $\vec{c}$, $\max{\vec{c}} \leq k + 2$. 
     But suppose that an algorithm was able to decide if there was $\vec{c}$ with $\max{\vec{c}} \leq k + 1$. Then this algorithm would be able to determine if the original instance is satisfied. So, it would solve \textsc{3-SAT}.
 \end{proof}
 
 \begin{corollary}[Hardness of \textsc{BoundedMinMaxSum}]
-    If $ \mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ then \textsc{BoundedMinMaxSum}$\mathcal{F}$ is NP-hard. 
+    If $ \mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ then \textsc{BoundedMinMaxSum}$_\mathcal{F}$ is NP-hard. 
 \end{corollary}
 
 \begin{proof}
@@ -609,8 +649,9 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
 \newpage
 \section{Axiomatisation}
 
-We introduce the axiom of cast participation. This axiom states that: voters preferring outcome $d$ benefit from voting directly for $d$. 
-This axiom is introduced by \cite{kotsialou} for binary issues and by \cite{grandi} for binary issues with abstentions. We use the definition for binary issues with abstentions i.e. $D = \{0, 1, *\}$.
+We introduce the axiom of cast participation. This axiom states that voters preferring outcome $d$ benefit from voting directly for $d$. 
+This axiom is introduced by Kotsialou and Riley in \cite{kotsialou} for binary issues and by Colley et al. in \cite{grandi} for binary issues with abstentions. 
+We use the definition for binary issues with abstentions i.e. $D = \{0, 1, *\}$.
 We denote that agent $a$ prefers outcome $d$ to $e$ as $d >_a e$. As in Colley et al. we infer that if agent $a$ votes directly for outcome $d \in \{0, 1\}$ then agent $a$ prefers $d$ over any other outcome. 
 Formally if $B_a = (d)$ then $ d >_a 1-d$ and $d >_a *$.
 Additionally, we consider that if agent $a$ votes directly for $d$ then $* >_a 1-d$.
@@ -622,22 +663,22 @@ For the case $D = \{0, 1, *\}$ we posit that reasonable extensions of the order 
 \[
     \{1-d\} < \{1-d, *\} < \{*\} \sim \{1-d, d\} \sim \{1-d, *, d\} < \{*, d \}< \{d\}.
 \]
-Where $S_1 \sim S_2$ denotes that $S_1$ is not comparable to $S_2$.
+Here $S_1 \sim S_2$ denotes that $S_1$ is not comparable to $S_2$.
 Then we can formalise cast-participation for irresolute procedures:
 
 \begin{definition}[Cast-Participation for irresolute procedures]
     A resolute voting rule $r$ and a irresolute unravelling procedure $\mathcal{U}$ satisfy cast-participation if for all valid smart profiles $\mathbf{B}$ and agents $a \in N$ such that $B_a \in D \setminus \{*\}$ we have that for all $B_a' \neq B_a$:
     \[
-        r(\mathcal{U}(\mathbf{B})) \geq_a r(\mathcal{U}(\mathbf{B}_{-a}, B_a'))
+        r(\mathcal{U}(\mathbf{B})) \geq_a r(\mathcal{U}(\mathbf{B}_{-a}, B_a')).
     \]
-    Where $\mathbf{B}_{-a}, B_a'$ denotes replacing $B_a$ with $B_a'$ and $r$ is applied to subsets of $S \subseteq D^n$ as follows: $r(S) = \{r(\vec{d}) | \vec{d} \in S\}$.
+    Here $\mathbf{B}_{-a}, B_a'$ denotes replacing $B_a$ with $B_a'$ and $r$ is applied to subsets of $S \subseteq D^n$ as follows: $r(S) = \{r(\vec{d}) \mid \vec{d} \in S\}$.
 \end{definition}
 
-Cast participation can be thought of disallowing tactical voting. Unfortunately, it does not always hold. 
-We first prove the cases of some non-monotone $r$ and non-monotone delegating functions. 
+Cast participation can be thought of as disallowing tactical voting. Unfortunately, it is not always satisfied. 
+We first consider the cases of some non-monotone $r$ and non-monotone delegating functions. 
 To do so we first define monotonicity as follows.
 Consider $D = \{0, 1, *\}$ to be ordered totally as $0 < * < 1$.
-Then, we can define a partial order on $D^n$ where $\vec{u} \leq \vec{v}$ if for all $i$, $u_i \leq v_i$. And $\vec{u} < \vec{v}$ if $\vec{u} \leq \vec{v}$ and $\vec{u} \neq \vec{v}$.
+Then, we can define a partial order on $D^n$ where $\vec{u} \leq \vec{v}$ if for all $i$, $u_i \leq v_i$. Additionally, $\vec{u} < \vec{v}$ if $\vec{u} \leq \vec{v}$ and $\vec{u} \neq \vec{v}$.
 
 \begin{definition}[Monotonicity]
     Function $f\colon D^n \longrightarrow D$ is \emph{monotone} if for all $\vec{u}, \vec{v} \in D^n$, $\vec{u} \leq \vec{v}$ implies that $f(\vec{u}) \leq f(\vec{v})$.
@@ -647,22 +688,24 @@ We now prove a series of negative results for cast participation.
 
 
 
-\begin{lemma} Suppose that for the voting rule $r$ is not monotone. Additionally the counterexample to monotonicity is not caused by flipping a $*$ to a $0$ or $1$. 
-That is there exists $\vec{u} = (u_1, \ldots, u_{i-1}, 0, u_{i+1}, \ldots, u_n)$ and $\vec{u}' = (u_1, \ldots, u_{i-1}, e, u_{i+1}, \ldots, u_n)$ with $0 < e$ but $r(\vec{u}) > r(\vec{u}')$. 
-Then cast participation doesn't hold.
+\begin{lemma} Suppose that the voting rule $r$ is not monotone. Additionally the counterexample to monotonicity is not caused by flipping a $*$ to a $0$ or $1$. 
+That is there exists $\vec{u} = (u_1, \ldots, u_{i-1}, 0, u_{i+1}, \ldots, u_n)$ and $\vec{u}' = (u_1, \ldots, u_{i-1}, e, u_{i+1}, \ldots, u_n)$ with $0 \neq e$ but $r(\vec{u}) > r(\vec{u}')$. 
+Then cast participation does not hold.
 \end{lemma}
 
 \begin{proof}
     Consider the smart profile where for each agent $a$, $B_a = (u_a)$. 
     In particular $0 >_i * >_i 1$. We are allowed to deduce this because $i$ does not vote for an abstention.
-    But, by setting a smart ballot of $B_i = (e)$ then $r(\vec{u}') < r(\vec{u}')$. So voter $i$ prefers to vote directly for $e$ than $d$ despite preferring outcome $d$.
+    But, by setting a smart ballot of $B_i = (e)$ we obtain $r(\vec{u}') < r(\vec{u}')$. So voter $i$ prefers to vote directly for $e$ than $d$ despite preferring outcome $d$.
     This violates cast-participation.
 \end{proof}
 
-We consider that reasonable unravelling procedures will not needlessly violate their agents first preferences. We formally say that $\mathcal{U}$ respects first preferences if whenever $\vec{c} = (1, 1, \ldots, 1)$ is a consistent certificate, $\mathcal{U}$ returns an outcome with certificate $\vec{c}$. Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect first preferences as well as any Pareto optimal unravelling procedure.
+We consider that reasonable unravelling procedures will not needlessly violate their agents' first preferences. 
+We formally say that $\mathcal{U}$ respects first preferences if whenever $\vec{c} = (1, 1, \ldots, 1)$ is a consistent certificate, $\mathcal{U}$ returns an outcome with certificate $\vec{c}$. 
+Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect first preferences as well as any Pareto optimal unravelling procedure.
 
 \begin{lemma}
-    Suppose $r$ is a monotone rule, $\mathcal{U}$ respects first preferences. Suppose additionally, that for some $n$ there exists a ``deciding'' subset of voters $S$ with $\abs{S} \leq n - k$ such that if every voter in $S$ votes for $d$, $r$ votes for $d$.
+    Suppose $r$ is a monotone rule, $\mathcal{U}$ respects first preferences. Suppose additionally, that for some $n$ and $k > 0$ there exists a ``deciding'' subset of voters $S$ with $\abs{S} \leq n - k$ such that if every voter in $S$ votes for $d$, $r$ votes for $d$.
     Then, cast-participation does not hold.
 \end{lemma}
 
@@ -688,10 +731,13 @@ We consider that reasonable unravelling procedures will not needlessly violate t
     Therefore, the set of outcomes is $\{0, 1\}$ which is better than $\{1\}$ for agent $a$.
 \end{proof}
 
-We can further prove that \textsc{MinSum} doesn't satisfy cast-participation. In the case where abstentions are allowed we denote $\mathit{Maj}(0, *) = 0, \mathit{Maj}(1, *) = 1$ and $\mathit{Maj}(0, 1) = *$.
+Do note that the above counterexample works even when consider issues with binary outcomes.
+Additionally, the above proof would not work in the case of \textsc{MinMaxSum}, as \textsc{MinMaxSum} would only return the certificate $(2, 1, \ldots, 1)$ 
+We can further prove that \textsc{MinSum} does not satisfy cast-participation. 
+In the case where abstentions are allowed we denote $\mathit{Maj}(0, *) = 0, \mathit{Maj}(1, *) = 1$ and $\mathit{Maj}(0, 1) = *$.
 
 \begin{lemma}
-    Let $r$ such that if a strict majority votes for outcome $d$ then $r$ supports outcome $d$. Then if voters are allowed to delegate to even majorities, cast-participation doesn't hold for \textsc{MinSum}. 
+    Let $r$ be such that if a strict majority votes for outcome $d$ then $r$ supports outcome $d$. Then if voters are allowed to delegate to even majorities, cast-participation doesn't hold for \textsc{MinSum}. 
 \end{lemma}
 
 \begin{proof}
