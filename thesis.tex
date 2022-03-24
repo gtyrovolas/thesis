@@ -13,6 +13,7 @@
 \usepackage{natbib}
 \usetikzlibrary{shapes.geometric,positioning, arrows, trees, positioning, fit, calc}
 \usepackage{amsthm}
+\usepackage{cleveref}
 
 \title{An Analysis of Smart Voting in Liquid Democracy}
 \author{Giannis Tyrovolas}
@@ -32,12 +33,16 @@
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem*{idea}{Idea}
 
+\crefname{definition}{Definition}{Definitions}
+\crefname{figure}{Figure}{Figures}
 \let\vec\mathbf
 
 % MACROS
 \newcommand{\BMM}{\textsc{BoundedMinMax}}
 \newcommand{\BMS}{\textsc{BoundedMinSum}}
 \newcommand{\BMMS}{\textsc{BoundedMinMaxSum}}
+\newcommand{\Maj}{\mathit{Maj}}
+\newcommand{\LIQUID}{\mathit{LIQUID}}
 
 \begin{document}
 
@@ -50,7 +55,6 @@
 \section{Preliminaries}
 
 \subsection{Ballots}
-
 
 A single-issue election consists of a finite set of voters that vote on a single issue. 
 Each voter is presented with a finite set of alternatives to pick from. 
@@ -195,7 +199,7 @@ Formally:
 
 \section{Complexity Results}
 
-\subsection{Function classes strictly larger than LIQUID}
+\subsection{Hardness Results}
 
 In order to study the computational properties of the unravelling procedures we set them up as decision problems.
 
@@ -392,6 +396,15 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
     If a term is not satisfied then at least $n+1$ gadgets will incur a cost of at least $1$ so that the cost is at least $n+1$. 
     Hence we have reduced the satisfiability of any \textsc{3-SAT} instance $\varphi$ to querying if there is a certificate $\vec{c}$ for the above election with $\sum_{i} c_i \leq n$. Thus \textsc{BoundedMinSum}$_\mathcal{F}$ is NP-hard.
 \end{proof}
+
+\begin{corollary}[Hardness of \textsc{BoundedMinMaxSum}]
+    If $ \mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ then \textsc{BoundedMinMaxSum}$_\mathcal{F}$ is NP-hard. 
+\end{corollary}
+
+\begin{proof}
+    Every instance of \textsc{BoundedMinSum} is an instance of \textsc{BoundedMinMaxSum}. For target maximum sum $S$ and smart profile $\vec{B}$ a \textsc{MinMax} query, we can consider a \textsc{MinMaxSum} query with target maximum $M$, target sum $S$ and smart profile $\vec{B}$. Simply set $M$ to be the maximum of the size of smart ballots, i.e. $M = \max_{a \in N} k_a$. Then the max requirement of \textsc{MinMaxSum} is trivially satisfied and so we have reduced \textsc{BoundedMinMax} to \textsc{BoundedMinMaxSum}.
+\end{proof}
+
 
 \begin{corollary}[Inapproximability of \textsc{BoundedMinSum}] A constant factor approximation of \textsc{BoundedMinSum}$_\mathcal{F}$ is NP-hard.    
 \end{corollary}
@@ -633,12 +646,75 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
     But suppose that an algorithm was able to decide if there was $\vec{c}$ with $\max{\vec{c}} \leq k + 1$. Then this algorithm would be able to determine if the original instance is satisfied. So, it would solve \textsc{3-SAT}.
 \end{proof}
 
-\begin{corollary}[Hardness of \textsc{BoundedMinMaxSum}]
-    If $ \mathit{LIQUID} \cup \{\lor, \land\} \subseteq \mathcal{F}$ then \textsc{BoundedMinMaxSum}$_\mathcal{F}$ is NP-hard. 
-\end{corollary}
+\subsection{Extensions of Hardness}
+
+Throughout this process we have proven results for $\lor$ and $\land$.
+We can use these results to prove that hardness results extend to all ``reasonable" and sufficiently complex function classes.
+We make this precise below.
+First, we consider ``reasonable'' functions are monotone. 
+We define $0 < 1$ and extend this to a partial order in $\{0,1\}^n$ as $\vec{u} \leq \vec{v}$ if for all $i$, $u_i \leq v_i$.
+Then we can define monotonicity of a function.
+
+\begin{definition}[Monotonicity]
+    \label{monotonicity}
+    Function $f\colon \{0, 1\}^n \longrightarrow \{0, 1\}$ is \emph{monotone} if for all $\vec{u}, \vec{v} \in \{0,1\}^n$, $\vec{u} \leq \vec{v}$ implies that $f(\vec{u}) \leq f(\vec{v})$.
+\end{definition}
+
+We also, need to be able to refer to functions that are not merely delegating to someone else. 
+These functions are referred to as dictator functions by O'Donnell in \cite{boolean}.
+
+\begin{definition}[Dictator functions]
+    Function $f \colon \{0, 1\}^n \longrightarrow \{0, 1\}$ is a dictator function if there is some index $1 \leq i \leq n$ such that for every $\vec{x} \in \{0, 1\}^n$, $f(\vec{x}) = x_i$.
+\end{definition}
+
+\begin{lemma}
+    \label{lem:boolean}
+    Let $f \colon \{0,1\}^n \longrightarrow \{0,1\}$ for $k \geq 2$, be a function that is monotone, non-constant and not a dictator function.
+    Then there exist indices $i, j$ with $i < j$ and constants $c_k$ for $1 \leq k \leq n$ and $k \neq i$ and $k \neq j$ such that $f(c_1, \ldots, c_{i-1}, x_i, c_{i+1}, \ldots, c_{j-1}, x_j, c_{j+1}, \ldots, c_n) = x_i \lor x_j$ or $x_i \land x_j$.
+\end{lemma}
 
 \begin{proof}
-    Every instance of \textsc{BoundedMinMax} is an instance of \textsc{BoundedMinMaxSum}. For target maximum $M$ and smart profile $\vec{B}$ a \textsc{MinMax} query, we can consider a \textsc{MinMaxSum} query with target maximum $M$, target sum $S$ and smart profile $\vec{B}$. Simply set $S$ to be the sum of all preference levels, i.e. $S = \sum_{a \in N} k_a$. Then the sum requirement of \textsc{MinMaxSum} is trivially satisfied and so we have reduced \textsc{BoundedMinMax} to \textsc{BoundedMinMaxSum}.
+    By \cite{boolean} exercise 4.3, any monotone function $f$ can be written as a boolean formula in disjunctive normal form \emph{without negations}.
+    Let $f(\vec{x}) = \bigvee_{i = 1}^k t_i$, with $t_i = x_{j_1} \land x_{j_r}$.
+    Without loss of generality we can assume that for all $i$ and $j$, $t_i \nrightarrow t_j$.
+    Then, $k \geq 1$ as $f$ is not constant.
+    
+    Suppose $t_1 = x_{j_1} \land \ldots \land x_{j_r}$ for $j_r > 1$. 
+    Then, we can pick $j_1, j_2$ as distinguished indices. Set $c_{j_i} = 1$ for $i > 2$ and $c_i = 0$ otherwise.
+    So that for $i > 1$, terms $t_i$ evaluate to $0$ and $t_1 =x_{j_1} \lor x_{j_2}$.
+    So, that $f$ is equivalent to $x_{j_1} \land x_{j_2}$.
+    
+    If $t_1 = x_j$, then as $f$ is not a dictator, $k > 1$.
+    As $t_1 \nrightarrow t_2$, $t_2$ does not contain $x_j$.
+    Hence, for $t_2 = x_i \land \varphi$ for some $\varphi$, we can set all variables of $\phi$ to 1 and all variables not appearing in $t_1$ or $t_2$ to 0.
+    Then, for any $t_r$ for $r > 2$, $t_r = 0$. That is because $t_r$ cannot contain $x_j$ and the variables $t_r$ of $t_r$ cannot be a subset of the variables of $t_2$.
+    So, $t_r$ contains variables not in $t_1$ and not in $t_2$ which are set to $0$. So $t_r$ is set to 0.
+    Hence $f$ is made equivalent to $x_i \lor x_j$.
+\end{proof}
+
+Now, we need a final ingredient to add to our conditions for reasonable functions to discuss function classes.
+We think that it is reasonable that agents are offered functions of similar expressibility regardless of voting in favour of 0 or 1.
+For instance, if qualified majorities in favour of 0 are allowed then we would expect in most scenarios that qualified majorities in favour of 1 to be allowed.
+This concept can be formalised by considering the ``negation'' of each function.
+
+\begin{definition}[Function negation]
+    Let $f \colon \{0, 1\}^n \longrightarrow \{0, 1\}$. Then function $\bar{f} \colon \{0, 1\}^n \longrightarrow \{0, 1\}$ defined as $\overline{f}(\vec{x}) = \overline{f(\overline{\vec{x}})}$.
+\end{definition}
+
+In particular $\overline{\lor} = \land$, $\overline{\Maj} = \Maj$ and for $\Maj_k^0$ the qualified majority of $k$ in favour of $0$, $\overline{\Maj_k^0} = \Maj_k^1$.
+
+Then we can conclude the following key theorem.
+
+\begin{theorem}
+    Let $\mathcal{F}$ any function class such that $\mathcal{F}$ contains $\LIQUID$. Suppose $f, \overline{f} \in \mathcal{F}$ with $f$ non-constant, not dictatorial and monotone.
+    Then $\BMS_\mathcal{F}$ and $\BMMS_\mathcal{F}$ are NP-hard even if the maximum ballot size is 2, and $\BMM_{\mathcal{F}}$ is NP-hard even if the maximum ballot size is 3.
+\end{theorem}
+
+\begin{proof}
+    By Lemma \ref{lem:boolean} there are designated indexes $i, j$ and constants $c_k$ for $k \neq i, j$ such that $f$ is equivalent to $x_i \lor x_j$ or to $x_i \land x_j$.
+    Hence, for constants $\overline{c_k}$, $\overline{f}$ is equivalent to $x_i \lor x_j$ if $f$ is equivalent to $x_i \land x_j$ or vice versa.
+    Hence, by constructing suitably many constant voters \underline{zero} and \underline{one} with $B_{\text{\underline{zero}}} = (0)$ and $B_{\text{\underline{one}}} = (1)$, $f$ and $\overline{f}$ can be used to simulate $\lor$ and $\land$.
+    Hence our propositions of hardness hold here as well.
 \end{proof}
 
 \subsection{For function classes equal to LIQUID}
@@ -676,13 +752,9 @@ Then we can formalise cast-participation for irresolute procedures:
 
 Cast participation can be thought of as disallowing tactical voting. Unfortunately, it is not always satisfied. 
 We first consider the cases of some non-monotone $r$ and non-monotone delegating functions. 
-To do so we first define monotonicity as follows.
-Consider $D = \{0, 1, *\}$ to be ordered totally as $0 < * < 1$.
-Then, we can define a partial order on $D^n$ where $\vec{u} \leq \vec{v}$ if for all $i$, $u_i \leq v_i$. Additionally, $\vec{u} < \vec{v}$ if $\vec{u} \leq \vec{v}$ and $\vec{u} \neq \vec{v}$.
-
-\begin{definition}[Monotonicity]
-    Function $f\colon D^n \longrightarrow D$ is \emph{monotone} if for all $\vec{u}, \vec{v} \in D^n$, $\vec{u} \leq \vec{v}$ implies that $f(\vec{u}) \leq f(\vec{v})$.
-\end{definition}
+Note that we have defined monotonicity for binary issues in \cref{monotonicity}. 
+We extend this to issues with abstentions by considering $D = \{0, 1, *\}$ to be totally ordered as $0 < * < 1$.
+Then, we can define a partial order on $D^n$ where $\vec{u} \leq \vec{v}$ if for all $i$, $u_i \leq v_i$. Then monotonicity is defined identically.
 
 We now prove a series of negative results for cast participation.
 
