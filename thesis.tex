@@ -88,6 +88,31 @@ This is one of the key extensions we consider in our work.
     \item Additional theorem: If competence levels are bounded away from $0$ and $1$ then there exists a relatively simple global delegation algorithm.
 \end{itemize}
 
+An important strand of work in Liquid Democracy is that which considers the ability of Liquid Democracy to find a ground truth. An important contribution is by \citet{kahng2021liquid}. 
+The model considers binary issues $\{0, 1\}$ with $0$ being the incorrect outcome and $1$ being the correct outcome. Every voter $i$ has a competence level $0 \leq p_i \leq 1$, which is the probability that a direct vote of voter $i$ is a correct vote.
+Further, voters are only able to delegate their votes to a predefined social network. This is claimed to capture the spirit of liquid democracy as voters may be familiar only with some delegates.
+These delegates are called the neighbours of $i$.
+Further, agents are only allowed to delegate to agents more competent than them by a global constant $\alpha >0$.
+So, voter $i$ may delegate to their neighbour $j$ if and only if $p_i + \alpha \leq p_j$. So, $i$ approves of $j$.
+This rules out the problem of cyclical delegations a priori as $\alpha >0$
+
+Delegation mechanisms in this context are functions which input an instance of the model and output, for each voter $i$, a delegation probability distribution over the agents $i$ approves of.
+After, the delegation mechanism decides the delegation distribution for each voter the majority rule is applied, with ties broken arbitrarily.
+The probability that the group votes for the correct outcome for a particular instance of the model $G$ and a delegation mechanism $M$ is $P^M(G)$.
+A particular delegation mechanism is that of direct voting denoted as $D$.
+An important distinction, the authors make are between \emph{local} and non-local delegation mechanisms. \emph{Local} delegation mechanisms are delegation mechanisms where the resulting distribution for agent $i$ depends only on the set of agents $i$ approves of, the set of neighbours of $i$ and an arbitrary ranking $\pi_i$.
+For example, every voter voting directly or voting for a random approved delegate is a local mechanism. Voting for the most competent approved delegate or voting for a delegate with a specific identifier are non-local mechanisms.
+
+In this setting, \citeauthor{kahng2021liquid} compare liquid democracy to direct voting. They set out two desirable properties.
+Mechanism $M$ satisfies the \emph{do no harm} property if, the improvement that direct voting $D$ has on $M$ in instances of size $n$ vanishes as $n$ tends to infinity.
+Formally, for every $\varepsilon > 0$ there exists $N$ such that for all $n > N$ and graphs $G$ of size $n$, $P^M(G) - P^D(G) \geq - \varepsilon$.
+Mechanism $M$ satisfies the \emph{positive gain} property if for some constant $\gamma$ and for every large enough $n$ there exist instances with size $n$ such that $M$ outperforms $D$ by $\gamma$.
+
+After this lengthy setup, we arrive at the key result of the paper. No local delegation satisfies both \emph{positive gain} and \emph{do no harm}.
+As this is an impossibility result, the requirement that agents are only able to delegate to more informed voters seems to strenghten this result rather than weaken it.
+The paper's secondary result is that if we bound voters competence away from 0 and 1. A simple non-local delegation mechanism exists.
+
+
 \newpage
 \section{Preliminaries}
 
@@ -858,7 +883,7 @@ In the case where abstentions are allowed we denote $\mathit{Maj}(0, *) = 0, \ma
 Note, that in the above case $\mathit{Maj}$ is a monotone rule. So, it is not the case that monotone rules guarantee cast participation for \textsc{MinSum}.
 
 \newpage
-\bibliographystyle{plain}
+\bibliographystyle{plainnat}
 \bibliography{thesis-bib.bib}
 \end{document}
 
