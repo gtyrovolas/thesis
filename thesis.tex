@@ -76,18 +76,6 @@ Of interest is the ability to split votes, where agents can delegate fractions o
 Even more interesting is that Ford introduces the ability of agents to submit ``multiple delegation choices in order of preference.'' This is done partly to deal with the case of cycles, where Alice delegates to Bob but also Bob delegates to Alice.
 This is one of the key extensions we consider in our work.
 
-\textbf{An Algorithmic Perspective:} This paper has the following elements:
-\begin{itemize}
-    \item Binary issues $\{0, 1\}$ with a correct outcome
-    \item Every voter has a competence level $p_i$, the probability to vote for the correct outcome.
-    \item Voters may only delegate to better informed voters, i.e. there is a constant $\alpha > 0$, with the property that voter $i$ may delegate to voter $j$ if and only if $p_j \geq p_i + \alpha$.
-    \item There exists a relation of approval where voter $i$ may delegate to voter $j$ if and only if $(i, j) \in E$.
-    \item Axiom \emph{Do No Harm}: For all $\varepsilon$ there exist $n_1 \in \mathbb{N}$, such that for all $n \geq n_1$, and graphs $G_n$ with $n$ vertices, $\text{gain}(M, G_n) \geq -\varepsilon$.
-    \item Axiom \emph{Positive Gain}: There exists $\gamma > 0$ and $n_0$  such that for all $n$ $n > n_0$ there exists $G_m$ with $\text{gain}(M, G_n) > \gamma$.
-    \item Main theorem: Local delegation mechanisms cannot both satisfy PG and DNH.
-    \item Additional theorem: If competence levels are bounded away from $0$ and $1$ then there exists a relatively simple global delegation algorithm.
-\end{itemize}
-
 An important strand of work in Liquid Democracy is that which considers the ability of Liquid Democracy to find a ground truth. An important contribution is by \citet{kahng2021liquid}. 
 The model considers binary issues $\{0, 1\}$ with $0$ being the incorrect outcome and $1$ being the correct outcome. Every voter $i$ has a competence level $0 \leq p_i \leq 1$, which is the probability that a direct vote of voter $i$ is a correct vote.
 Further, voters are only able to delegate their votes to a predefined social network. This is claimed to capture the spirit of liquid democracy as voters may be familiar only with some delegates.
