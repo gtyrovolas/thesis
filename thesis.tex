@@ -104,13 +104,37 @@ An important distinction, the authors make are between \emph{local} and non-loca
 For example, every voter voting directly or voting for a random approved delegate is a local mechanism. Voting for the most competent approved delegate or voting for a delegate with a specific identifier are non-local mechanisms.
 
 In this setting, \citeauthor{kahng2021liquid} compare liquid democracy to direct voting. They set out two desirable properties.
-Mechanism $M$ satisfies the \emph{do no harm} property if, the improvement that direct voting $D$ has on $M$ in instances of size $n$ vanishes as $n$ tends to infinity.
+Mechanism $M$ satisfies the \emph{do no harm} property if, the improvement that direct voting $D$ has on $M$ applied to any instance of size $n$ vanishes as $n$ tends to infinity.
 Formally, for every $\varepsilon > 0$ there exists $N$ such that for all $n > N$ and graphs $G$ of size $n$, $P^M(G) - P^D(G) \geq - \varepsilon$.
-Mechanism $M$ satisfies the \emph{positive gain} property if for some constant $\gamma$ and for every large enough $n$ there exist instances with size $n$ such that $M$ outperforms $D$ by $\gamma$.
+Mechanism $M$ satisfies the \emph{positive gain} property if for some constant $\gamma > 0$ and for every large enough $n$ there exist instances with size $n$ such that $M$ outperforms $D$ by $\gamma$.
+Note that in both cases 
 
 After this lengthy setup, we arrive at the key result of the paper. No local delegation satisfies both \emph{positive gain} and \emph{do no harm}.
 As this is an impossibility result, the requirement that agents are only able to delegate to more informed voters seems to strenghten this result rather than weaken it.
-The paper's secondary result is that if we bound voters competence away from 0 and 1. A simple non-local delegation mechanism exists.
+Something mitigating the impossibility result is that the do no harm property focuses on worst case instances rather than average instances.
+It is still undecided if there exist local delegation mechanisms that do no harm \emph{on average}.
+The paper's secondary result is that if we bound voters competence away from 0 and 1, a simple non-local delegation mechanism exists.
+The mechanism iteratively constructs delegations by having voter $i$ delegate their vote to the most competent approved voter of $i$ that has at most $\sqrt[3]{\log n}$ already delegating to them.
+
+This model was further considered by \citet{caragiannis2019contribution} after the preprint of \citet{kahng2021liquid} was published.
+The authors first disagree with the premise that $\alpha$-delgations capture the essence of disagreeing opinions.
+They claim that a voter $i$ with competency level of $0.1$ would never delegate to voter $j$ with a competency level of $0.6$ as voter $i$ would consider $j$ to be horribly misinformed.
+Instead in their paper, for $\alpha \geq 0$, if $p_i \geq \frac{1}{2}$, agent $i$ would be able to delegate only to agents with $p_j > p_i + \alpha$, and symmetrically if $p_i \leq \frac{1}{2}$.
+A small objection to this modelling is that the model implicitly gives meta-information to agents with competency less than $\frac{1}{2} - \varepsilon$ or greater than $\frac{1}{2} + \varepsilon$. Nevertheless, the paper only proves hardness results and so this meta-information strenghtens the results.
+
+A more important objection to $\alpha$-delegations is that there are cases where voting for someone less competent can be beneficial.
+A simple example is that for $2k + 1$ voters, let $p_1 = \ldots = p_k = 0$, $p_{k+1} = \ldots = p_{2k} = 1 - \varepsilon$ and $p_{2k+1} = 1 - 2\varepsilon$.
+Agents $k+1, \ldots, 2k$ form a star with agent $2k+1$ in the middle.
+Then, if agents are restricted to delegating to more competent agents, all voters need to independently vote for $1$ for the majority to vote for 1.
+The probability of this occurring is bounded by $(1 - \varepsilon)^k$ which tends to 0 as $k$ goes to infinity.
+On the contrary if agents delegate to the central node the probability of correct vote is $1 - 2\varepsilon$.
+
+The paper then proves the following two hardness results.
+For any local delegation mechanism $M$ and any $\delta > 0$ there are instances where direct voting or complete dictatorship outperforms $M$ by $\frac{1}{2} - \delta - \alpha$.
+Their construction does not use transitive delegations and so apply to simpler models of Liquid Democracy like Proxy Voting.
+The more striking hardness result is that even if we consider \emph{non-local} delegation mechanisms the optimal delegation is hard to approximate.
+By a reduction to a special version of \textsc{3-SAT} approximating the success rate of the optimal delegation structure within an additive term of $\frac{1}{16}$ is NP-hard.
+
 
 
 \newpage
