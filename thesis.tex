@@ -55,7 +55,7 @@
 \section{Context}
 
 Liquid democracy, also referred to as delegative democracy, is a decision-making mechanism that allows greater choice to voters than representative democracy.
-Firstly, every voter is allowed to vote directly on an issue. Additionally, delegations are \emph{transitive}. So that a scenario where Alice delegates to Bob and Bob delegates to Charlie is allowed and in this case Charlie votes with the combined power of all three.
+Firstly, every voter is allowed to vote directly on an issue. Additionally, delegations are \emph{transitive}. So that a scenario where Alice delegates to Bob and Bob delegates to Charlie is allowed. In this case Charlie votes with the combined power of all three.
 
 One of the first published proposals of this model is Ford's non-technical work in \cite{ford2002delegative}. 
 Ford claims that large-scale direct democracy is infeasible and likely undesirable.
@@ -96,16 +96,15 @@ In this setting, \citeauthor{kahng2021liquid} compare liquid democracy to direct
 Mechanism $M$ satisfies the \emph{do no harm} property if, the improvement that direct voting $D$ has on $M$ applied to any instance of size $n$ vanishes as $n$ tends to infinity.
 Formally, for every $\varepsilon > 0$ there exists $N$ such that for all $n > N$ and graphs $G$ of size $n$, $P^M(G) - P^D(G) \geq - \varepsilon$.
 Mechanism $M$ satisfies the \emph{positive gain} property if for some constant $\gamma > 0$ and for every large enough $n$ there exist instances with size $n$ such that $M$ outperforms $D$ by $\gamma$.
-Note that in both cases 
 
 After this lengthy setup, we arrive at the key result of the paper. No local delegation satisfies both \emph{positive gain} and \emph{do no harm}.
-As this is an impossibility result, the requirement that agents are only able to delegate to more informed voters seems to strenghten this result rather than weaken it.
+As this is an impossibility result, the requirement that agents are only able to delegate to more informed voters seems to strengthen this result rather than weaken it.
 Something mitigating the impossibility result is that the do no harm property focuses on worst case instances rather than average instances.
 It is still undecided if there exist local delegation mechanisms that do no harm \emph{on average}.
 The paper's secondary result is that if we bound voters competence away from 0 and 1, a simple non-local delegation mechanism exists.
 The mechanism iteratively constructs delegations by having voter $i$ delegate their vote to the most competent approved voter of $i$ that has at most $\sqrt[3]{\log n}$ already delegating to them.
 
-This model was further considered by \citet{caragiannis2019contribution} after the preprint of \citet{kahng2021liquid} was published in 2018.
+\citeauthor{caragiannis2019contribution} further considered this model after the preprint of \citet{kahng2021liquid} was published in 2018.
 The authors first disagree with the premise that $\alpha$-delgations capture the essence of disagreeing opinions.
 They claim that a voter $i$ with competency level of $0.1$ would never delegate to voter $j$ with a competency level of $0.6$ as voter $i$ would consider $j$ to be horribly misinformed.
 Instead in their paper, for $\alpha \geq 0$, if $p_i \geq \frac{1}{2}$, agent $i$ would be able to delegate only to agents with $p_j > p_i + \alpha$, and symmetrically if $p_i \leq \frac{1}{2}$.
@@ -146,7 +145,7 @@ Nevertheless, their experimental data suggest that their heuristics improve as m
 \subsection{Ballots}
 
 A single-issue election consists of a finite set of voters that vote on a single issue. 
-Each voter is presented with a finite set of alternatives to pick from. 
+Each voter can choose from a  finite set of alternatives. 
 A special alternative is the \emph{abstention} represented by $*$. 
 Finally, there is an aggregation function that decides the result of the election. 
 Formally:
@@ -156,7 +155,7 @@ Formally:
 \end{definition}
 
 Throughout this work we will focus on single issues with a binary set of outcomes. 
-That is because all of our hardness results hold for binary issues and we can easily extend them to $n$-ary issues. 
+That is because all of our hardness results hold for binary issues, and we can easily extend them to $n$-ary issues. 
 Therefore, unless otherwise stated we will consider $D = \{0, 1\}$.
 
 The model we will consider generalises the above and allows each voter to submit a smart ballot. 
@@ -172,7 +171,7 @@ Formally:
 Further when relevant we will consider $F^{k}$ to be the constant function with output $d$. 
 Now, in most cases the sets $S^h$ are implicit and we will drop any mention of them. 
 That is supported by the fact that we will treat two functions $F, G$ as identical if they are extensionally equal. 
-Additionally we will disallow a voter to delegate to themselves. 
+Additionally, we will disallow a voter to delegate to themselves. 
 This is formalised by the following definition:
 
 \begin{definition}[Valid Smart Ballot]
