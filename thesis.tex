@@ -18,7 +18,7 @@
 \title{An Analysis of Smart Voting in Liquid Democracy}
 \author{Giannis Tyrovolas}
 \date{\today}
-\newtheorem{theorem}{Theorem}[section]
+\newtheorem{theorem}{Theorem}
 \newtheorem{prop}[theorem]{Proposition}
 \newtheorem*{remark}{Remark}
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}
@@ -76,6 +76,7 @@ Of interest is the ability to split votes, where agents can delegate fractions o
 Even more interesting is that Ford introduces the ability of agents to submit ``multiple delegation choices in order of preference.'' This is done partly to deal with the case of cycles, where Alice delegates to Bob but also Bob delegates to Alice.
 This is one of the key extensions we consider in our work.
 
+\subsection{Liquid Democracy and Ground Truth}
 An important strand of work in Liquid Democracy is that which considers the ability of Liquid Democracy to find a ground truth. An important contribution is by \citet{kahng2021liquid}. 
 The model considers binary issues $\{0, 1\}$ with $0$ being the incorrect outcome and $1$ being the correct outcome. Every voter $i$ has a competence level $0 \leq p_i \leq 1$, which is the probability that a direct vote of voter $i$ is a correct vote.
 Further, voters are only able to delegate their votes to a predefined social network. This is claimed to capture the spirit of liquid democracy as voters may be familiar only with some delegates.
@@ -104,7 +105,7 @@ It is still undecided if there exist local delegation mechanisms that do no harm
 The paper's secondary result is that if we bound voters competence away from 0 and 1, a simple non-local delegation mechanism exists.
 The mechanism iteratively constructs delegations by having voter $i$ delegate their vote to the most competent approved voter of $i$ that has at most $\sqrt[3]{\log n}$ already delegating to them.
 
-This model was further considered by \citet{caragiannis2019contribution} after the preprint of \citet{kahng2021liquid} was published.
+This model was further considered by \citet{caragiannis2019contribution} after the preprint of \citet{kahng2021liquid} was published in 2018.
 The authors first disagree with the premise that $\alpha$-delgations capture the essence of disagreeing opinions.
 They claim that a voter $i$ with competency level of $0.1$ would never delegate to voter $j$ with a competency level of $0.6$ as voter $i$ would consider $j$ to be horribly misinformed.
 Instead in their paper, for $\alpha \geq 0$, if $p_i \geq \frac{1}{2}$, agent $i$ would be able to delegate only to agents with $p_j > p_i + \alpha$, and symmetrically if $p_i \leq \frac{1}{2}$.
@@ -121,7 +122,21 @@ The paper then proves the following two hardness results.
 For any local delegation mechanism $M$ and any $\delta > 0$ there are instances where direct voting or complete dictatorship outperforms $M$ by $\frac{1}{2} - \delta - \alpha$.
 Their construction does not use transitive delegations and so apply to simpler models of Liquid Democracy like Proxy Voting.
 The more striking hardness result is that even if we consider \emph{non-local} delegation mechanisms the optimal delegation is hard to approximate.
-By a reduction to a special version of \textsc{3-SAT} approximating the success rate of the optimal delegation structure within an additive term of $\frac{1}{16}$ is NP-hard.
+The authors then introduce the \textsc{OptimalDelegationProblem} or \textsc{ODP}.
+\textsc{ODP} is the optimisation problem of finding the optimal success rate for a given instance of a Liquid Democracy setting.
+By a reduction to a special version of \textsc{3-SAT} approximating \textsc{ODP} within an additive term of $\frac{1}{16}$ is NP-hard.
+
+\citet{becker2021can} published a collection of results about \textsc{ODP}. 
+They firstly do away with $\alpha$-delegations and do not consider any restrictions on who agents can delegate to.
+Their negative result consider \textsc{ODP}$_r$ where for every voter $i$ the competence level $p_i$ is at least  $r$.
+If $r \in \left(0, \frac{1}{2} \right)$ then for any instance with $n$ voters and for any constant $C > 0$ it is NP-complete to approximate \textsc{ODP}$_r$ within $(\ln n)^{-C}$.
+The bound on $r$ is tight as for $r \geq \frac{1}{2}$ direct voting is a $\frac{1}{2}$-approximation.
+Their positive result is a $\frac{1}{2}$-approximation algorithm for the case that the graph given by the neighbourhood relation is strongly connected.
+The algorithm is to have every voter delegate to the most competent voter.
+\citeauthor{becker2021can} then proceed to outline heuristics and experimentally compare them to direct democracy.
+All of their heuristics consistently outperform direct democracy.
+A particular modelling assumption of interest is that the average competence of agents is $0.48$, which dooms direct democracy's outcome to tend to 0 as the number of voters grows.
+Nevertheless, their experimental data suggest that their heuristics improve as more agents are added.
 
 
 
@@ -172,7 +187,7 @@ Throughout this work it will be meaningful to restrict the functions agents can 
 \begin{itemize}
     \item Direct delegations to voter $v$ denoted by $\mathit{LIQUID} = \{\mathit{id}_v \mid v \in N\}$, where $\mathit{id}_v$ is the identity function applied to the vote of voter $v$.
     \item Boolean functions in conjunctive normal form denoted by $\mathit{BOOL}$. 
-    \item Monotone boolean function in conjunctive normal form denoted by $\mathit{MON}$-$\mathit{BOOL}$.
+    \item Monotone boolean function in disjunctive normal form denoted by $\mathit{MON}$-$\mathit{BOOL}$.
 \end{itemize}
 
 \subsection{Unravellings}
@@ -201,11 +216,11 @@ For example, consider majority rule denote as $\mathit{Maj}$. For a variable $a$
 We refer to these cases as \emph{necessary winners} as in Konczak's and Lang's work \cite{konczak2005voting}.
 We formalise this in the following definition where we use $\Delta$ to denote placeholder values.
 
-\begin{definition}[Necessary winner extensions]
+\begin{definition}[Necessary winners]
     Let $F \colon D^n \longrightarrow D $ be a function.
-    We define $F' \colon \left\{D \cup \left\{\Delta\right\}\right\}^n \longrightarrow D \cup \left\{\Delta\right\}$ function $F$'s \emph{necessary winner extension}. 
+    We define the \emph{necessary winner extension} $F' \colon \left\{D \cup \left\{\Delta\right\}\right\}^n \longrightarrow D \cup \left\{\Delta\right\}$ of function $F$. 
     We set for all $\vec{d} \in D^n$, $F'(\vec{d}) = F(\vec{d})$.
-    Now for $\vec{d} \in \left\{D \cup \left\{\Delta\right\}\right\}^n$, let $i_1, i_2, \ldots, i_m$ be the indices such that $d_{i_j} = \Delta$.
+    For $\vec{d} \in \left\{D \cup \left\{\Delta\right\}\right\}^n$, let $i_1, i_2, \ldots, i_m$ be the indices such that $d_{i_j} = \Delta$.
     Let $\vec{d}[x_1, \ldots, x_m]$ denote the vector $\vec{d}$ where $x_j$ replaces the value at index $i_j$. Then, if for some $y \in D$ and for all $\vec{x} \in D^m$, $F(\vec{d}[\vec{x}]) = y$ then $F'(\vec{d}) = y$.
     Otherwise $F'(\vec{d}) = \Delta$.
 \end{definition}
@@ -226,7 +241,7 @@ Consistent certificates are certificates where the vote of each agent is determi
 
 
 Now, we are only interested in consistent certificates as these are the ones that respect the agents' votes. We will denote the set of consistent certificates of a profile $\mathbf{B}$ as $C(\mathbf{B})$.
-It is good that there is only one outcome matched to each consistent certificate regardless of the ordering $\sigma$. The following proposition is proven by Colley et al. \cite{grandi}.
+It is good that there is only one outcome matched to each consistent certificate regardless of the ordering $\sigma$. The following proposition is proven by \cite{grandi}.
 
 \begin{proposition}
     If a consistent certificate $\mathbf{c}$ can be given by two orderings $\sigma$ and $\sigma'$ of the agents, then the orderings yield the same outcome $X_\mathbf{c} \in D^n$.
@@ -291,7 +306,7 @@ In order to study the computational properties of the unravelling procedures we 
 \end{definition}
 
 
-Now, \textsc{BoundedMinSum} and \textsc{BoundedMinMax} have been studied by Colley et al \cite{grandi}.
+Now, \textsc{BoundedMinSum} and \textsc{BoundedMinMax} have been studied by \citeauthor{grandi}.
 They proved that \textsc{BoundedMinSum}$_\mathit{LIQUID}$ and \textsc{BoundedMinMax}$_\mathit{LIQUID}$ are poly-time computable and that \textsc{BoundedMinSum}$_\mathit{MON\text{-}BOOL}$ and \textsc{BoundedMinMax}$_\mathit{BOOL}$ are NP-complete.
 We improve on these hardness results and conclude some inapproximability results.
 
@@ -322,16 +337,16 @@ These gadgets will have the property that they incur no additional cost if $t_h$
 \begin{figure}
     \centering
     \subfloat[\underline{zero} voter]{
-\begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=2cm]
+\begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=1.75cm]
 
 \node[circle,draw] (z){\underline{zero}} [grow = up]
-    child{node [circle,draw]{0}
+    child{node [circ]{0}
     };
 \end{tikzpicture}
     }
     \qquad
     \subfloat[Voter $x_i$]{
-        \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=2cm]
+        \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=1.75cm]
 
             \node[circ] (x){$x_i$} [grow = up]
             
@@ -492,11 +507,12 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
 
 Now we shift our focus on \textsc{BoundedMinMax}.
 We first note that there is an additional easiness lemma for \BMM.
+The point of this lemma is that \BMM does not introduce any additional hardness beyond the hardness needed for computing the necessary winner of a function.
 
 \begin{proposition}
     Let $\mathcal{F}$ be any computable family of functions and $\vec{B}$ a smart profile where each ballot has size at most 2.
-    Suppose for each function $f \in \mathcal{F}$, $f'$ can be computed instantly.
-    Then, there is an algorithm that decides $\BMM_\mathcal{F}$ which runs in $\mathcal{O}(n^2)$ steps. 
+    Suppose for each function $f \in \mathcal{F}$, the necessary winner $f'$ can be computed in time $T$.
+    Then, there is an algorithm that decides $\BMM_\mathcal{F}$ which runs in $\mathcal{O}(n^2\cdot T)$ steps. 
 \end{proposition}
 
 \begin{proof}
@@ -571,7 +587,7 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
         \centering
 
     \subfloat[\centering Case $\overline{x_i} \lor x_j \lor x_k$]{{
-    \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=2cm]
+    \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=1.75cm]
     
     \node[circ] (xi){$x_i$};
     \node[circ, right of=xi] (a){$a$};
@@ -585,7 +601,7 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
     \node[circ, right of=xk] (c){$c$};
     \node[circ, right of=c] (c'){$c'$};
     
-    \node[circ, below of=elli3, yshift=-5mm](t){$t_h$};
+    \node[circ, below of=elli3](t){$t_h$};
     \node[circ, right of=t](t'){$t_h'$};
 
     \node[draw, dashed, rounded rectangle, fit={(xi)(a)}] (elli1) {};
@@ -621,7 +637,7 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
     \label{fig:MinMax:1nots}
     }
     \subfloat[\centering Case $\overline{x_i} \lor \overline{x_j} \lor x_k$]{{
-        \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=2cm]
+        \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=1.75cm]
     
             \node[circ] (xk){$x_k$};
             \node[circ, right of=xk] (a){$a$};
@@ -734,8 +750,8 @@ Then we can define monotonicity of a function.
     Function $f\colon \{0, 1\}^n \longrightarrow \{0, 1\}$ is \emph{monotone} if for all $\vec{u}, \vec{v} \in \{0,1\}^n$, $\vec{u} \leq \vec{v}$ implies that $f(\vec{u}) \leq f(\vec{v})$.
 \end{definition}
 
-We also, need to be able to refer to functions that are not merely delegating to someone else. 
-These functions are referred to as dictator functions by O'Donnell in \cite{boolean}.
+We also, need to be able to refer to functions that are not equivalent to direct delegation. 
+These functions are referred to as dictator functions by \cite{boolean} and are equivalent to projection functions.
 
 \begin{definition}[Dictator functions]
     Function $f \colon \{0, 1\}^n \longrightarrow \{0, 1\}$ is a dictator function if there is some index $1 \leq i \leq n$ such that for every $\vec{x} \in \{0, 1\}^n$, $f(\vec{x}) = x_i$.
@@ -749,7 +765,7 @@ These functions are referred to as dictator functions by O'Donnell in \cite{bool
 
 \begin{proof}
     By \cite{boolean} exercise 4.3, any monotone function $f$ can be written as a boolean formula in disjunctive normal form \emph{without negations}.
-    Let $f(\vec{x}) = \bigvee_{i = 1}^k t_i$, with $t_i = x_{j_1} \land x_{j_r}$.
+    Let $f(\vec{x}) = \bigvee_{i = 1}^k t_i$, with $t_i = x_{j_1} \land \ldots \land x_{j_r}$.
     Without loss of generality we can assume that for all $i$ and $j$, $t_i \nrightarrow t_j$.
     Then, $k \geq 1$ as $f$ is not constant.
     
@@ -777,11 +793,12 @@ This concept can be formalised by considering the dual of each function as state
 
 In particular $\lor^\dagger = \land,\Maj^\dagger= \Maj$ and for $\Maj_k^0$ the qualified majority of $k$ in favour of $0$, $(\Maj_k^0)^\dagger = \Maj_k^1$.
 
-Then we can conclude the following key theorem.
+So, we would expect that in most settings the choices of voters to be closed under taking duals.
+Nevertheless, the following key theorem works even if there is only one sufficiently ``complex'' but monotone function $f$ and the dual $f^\dagger$.
 
 \begin{theorem}
     Let $\mathcal{F}$ any function class such that $\mathcal{F}$ contains $\LIQUID$. Suppose $f, f^\dagger \in \mathcal{F}$ with $f$ non-constant, not dictatorial and monotone.
-    Then $\BMS_\mathcal{F}$ and $\BMMS_\mathcal{F}$ are NP-hard even if the maximum ballot size is 2, and $\BMM_{\mathcal{F}}$ is NP-hard even if the maximum ballot size is 3.
+    Then $\BMS_\mathcal{F}$ and $\BMMS_\mathcal{F}$ are NP-hard even if the maximum ballot size is 2. $\BMM_{\mathcal{F}}$ is NP-hard even if the maximum ballot size is 3.
 \end{theorem}
 
 \begin{proof}
