@@ -137,9 +137,39 @@ All of their heuristics consistently outperform direct democracy.
 A particular modelling assumption of interest is that the average competence of agents is $0.48$, which dooms direct democracy's outcome to tend to 0 as the number of voters grows.
 Nevertheless, their experimental data suggest that their heuristics improve as more agents are added.
 
+\subsection{A Game-Theoretic Approach}
+
+The first game-theoretic approach to liquid democracy is by \citet{bloembergen2019rational}.
+In their model, as above, there is a social network and agents can only delegate to their neighbours in their social network. Here as well, agents vote on binary issues.
+\citeauthor{bloembergen2019rational} introduce a new concept of types. 
+There is no objectively correct answer but every agent has a preferred alternative.
+Voter $i$ does not know what their preferred type is but if $i$ votes directly they vote with accuracy $q_i \geq 0.5$ in favour of their type.
+In their full model, types are independent random variables.
+
+To create a game the authors introduce the following utility function, with minimum payoff $0.5$ and maximum payoff $1$.
+When voter $v$ directly or indirectly delegates their vote to voter $u$, the payoff for agent $v$ is the probability that $u$ votes for $v$'s type.
+If voter $v$ is part of a delegation cycle, $v$'s payoff is $0.5$.
+If voter $v$ votes directly, $v$'s payoff is the accuracy minus their effort to manifest the accuracy $q_i - e_i$.
+The authors model $q_i - e_i \geq 0.5$ as otherwise the voter could flip a coin for zero effort.
+Note that the authors have made the decision to have users benefit from maximising the accuracy of the delegated vote.
+Individual payoffs are \emph{independent of the final outcome}.
+For instance this model does not account for agents being lazy and essentially abstaining while other voters make a decision that benefits them.
+Or it does not account for cases where individual agents maximise their accuracy by delegating to a dictator but the group accuracy is lower than if agents voted independently.
+The focus is strictly on agents conveying their type truthfully to the model.
+
+After setting up the framework they prove two results. 
+Firstly, for deterministic type profiles there exist pure strategy Nash Equilibria (NE).
+The assumption that the profiles are deterministic is important as the proof separates all agents with type $0$ and all agents of type $1$ and deals with them independently.
+In particular Nash Equilibria exist if agents all have the same type, as in the setting where they discover a correct ground truth.
+Secondly, for non-deterministic but independent types, if voting is effortless, i.e. $e_i = 0$, there exist pure strategy Nash Equilibria.
+This is done by proving that best responses to any state of the game does not decrease the utility of any agent.
+They then provide an example of a NE providing group accuracy of almost a coin toss whereas it would be easy to get an accuracy of 1. 
+
+This model is refined by \citet{zhang2021power} by introducing a power index.
 
 
 \newpage
+
 \section{Preliminaries}
 
 \subsection{Ballots}
