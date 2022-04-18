@@ -165,7 +165,26 @@ Secondly, for non-deterministic but independent types, if voting is effortless, 
 This is done by proving that best responses to any state of the game does not decrease the utility of any agent.
 They then provide an example of a NE providing group accuracy of almost a coin toss whereas it would be easy to get an accuracy of 1. 
 
-This model is refined by \citet{zhang2021power} by introducing a power index.
+\citet{zhang2021power} study a modified version of the above model. In doing so, they introduce a power index in liquid democracy which extends the index introduced by \citet{banzhaf1964weighted}.
+The original Banzhaf index is in the context of weighted voting on binary issues.
+The power index of voter $v$ is proportional to the number of outcomes $v$ can swing.
+These are the coalitions which would fail without $v$ but succeed with $v$.
+
+Now, for the delegative setting, \citeauthor{zhang2021power} only consider liquid democracy \emph{after} each agent has cast their votes.
+In the resulting graph they consider that a coalition can only use the voting power that is accrued within the coalition. 
+For instance in a delegation chain $a \to b \to c$, the coalition $\{a, c\}$ has a voting power of 1.
+Given these details. If $b$ were to join $\{a, c\}$ the voting power of the coalition would be 3.
+The authors then axiomatically characterise the index. These axioms include that a dummy voter has no power, a dictator has power of 1, agents which swing the same coalitions have equal power and some reasonable composition properties.
+Further, this power index gives more power to agents voting directly for their final delegator than voting indirectly.
+This comes in contrast with liquid democracy's transitive delegations.
+
+After the power index is introduced they revisit the game theoretic model by \citet{bloembergen2019rational}.
+They change the reward of voter $v$ from being the accuracy of the final delegator to being the accuracy of the final delegator \emph{multiplied} by the power index of $v$.
+They also abstract away the concept of direct voting requiring effort.
+They then prove that there are delegation games without pure strategy NE.
+Nevertheless, if the underlying social network is complete pure strategy NE do exist.
+
+
 
 
 \newpage
@@ -839,9 +858,63 @@ Nevertheless, the following key theorem works even if there is only one sufficie
 
 \subsection{For function classes equal to LIQUID}
 
+Now that we've shown hardness results for function classes stronger than $\LIQUID$ we focus on what we can do with $\LIQUID$.
+
+Consider the problem of finding a \textsc{MinMax} certificate on instances with $n$ voters and at most $l$ preference levels.
+The paper by \citet{grandi} provides a $\mathcal{O}(n^2l^2)$ algorithm for finding a \textsc{MinMax} certificate. With two tweaks we construct an algorithm that runs in $\mathcal{O}(nl \log l)$.
+
 \begin{proposition}
-    Suppose that $r$ is monotone and $D = \{0, 1\}$. Then for any outcome $d \in D$ there is an algorithm that determines if there is a \textsc{MinMax} certificate such that the election resolves in favour of $d$.
+    Consider an instance with voters $N = \{1, \ldots, n\}$ and smart ballot $\vec{B}$. 
+    Let maximum preference used by any voter is $l$.
+    Then there is a $\mathcal{O}(nl \log l)$ algorithm that returns a \textsc{MinMax} certificate.
 \end{proposition}
+
+\begin{proof}
+    To check if there is a consistent certificate using the first $m$ preferences we can use the following construction.
+    Construct a graph $G = (N \cup \{0, 1, r\}, E)$ with $0, 1, r$ fresh vertices.
+    For each voter $v$ with ballot $B_v = (a_1 > \ldots > a_k)$, for each $i \leq m$ add an edge $(a_i, v)$.
+    Additionally add edges $(r, 0)$, $(r, 1)$.
+    
+    If there is a path from $r$ to every node then we can recover a certificate.
+    Simply run DFS on $r$ and consider the resulting DFS arboresence $A$.
+    As this is an arboresence every node has a unique parent. Hence, by construction every agent can delegate to their parents.
+    As there is a directed path $(r, d, v_1, \ldots, v_t, u)$ from $r$ to every $u$, reversing the path shows us that $u$ will eventually vote for an alternative $d$.
+
+    If there is no path from $r$ to a voter $v$ then there is no way to delegate such that $v$ votes for a constant. Hence, $m$ is too small to result in a consistent certificate.
+
+    Now that we have proven the correctness of the algorithm the complexity is that of building the graph and of running DFS. This gives a total complexity $\mathcal{O}(nm)$, as $m \leq l$ we can simplify to $\mathcal{O}(nl)$.
+
+    Now that we have established the above algorithm, we can binary search the smallest value of $m$  for which the above process returns a valid certificate. Doing so would raise the total complexity to $\mathcal{O}(nl \log l)$.
+\end{proof}
+
+The above algorithm works for cases where voters are offered more than two alternatives.
+To retain the complexity of $\mathcal{O}(nl \log l)$ it suffices to assume that $d \leq n$.
+
+
+\begin{proposition}
+    Suppose that $r$ is monotone and $D = \{0, 1\}$. 
+    Then for any outcome $d \in D$ there is an algorithm that determines if there is a \textsc{MinMax} certificate such that the election resolves in favour of $d$.
+\end{proposition}
+
+\begin{proof}
+    By the results in \citet{grandi} there is an algorithm that returns a certificate that minimises the maximum of preferences used that runs in $\mathcal{O}(\abs{N}^2)$.
+    Suppose the maximum preference level used in this certificate be $m$.
+    Now, consider a directed graph $G = (V, E)$ with $V = N \cup \{0, 1\}$.
+    For each $u \in N$, let voter $u$'s smart ballot be $B_u = (a_1 > \ldots > a_k)$.
+    Then, we construct an edge $(a_i, u)$ for each $i \leq m$.
+
+    We claim that every voter in the connected component of $d$ can vote at the same time for $d$.
+    We run Breadth First Search starting from $d$.
+    In the resulting BFS tree, $u$ votes for $v$ if there is an edge $(v, u)$ in the tree.
+    Any agent $u$ with an edge $(d, u)$ can vote for $d$ directly by our construction. Then, every agent voting for $u$ would vote for $d$ indirectly and so on.
+    This is a valid delegation as every agent has only one incoming edge in the BFS tree, this is equivalent to only voting for one alternative.
+    Now, a voter $v$ not reachable from $0$ must be reachable from $1$.
+    Otherwise $v$ cannot vote for any of the two options, which contradicts the fact that there is a \textsc{MinMax} certificate using only the first $m$ preferences.
+
+    The above process returns a vector $\vec{x}$ maximal with respect to $d$.
+    As $r$ is monotone the answer is equal to whether $r(\vec{x}) = d$.
+    
+\end{proof}
 \newpage
 \section{Axiomatisation}
 
