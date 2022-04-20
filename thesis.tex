@@ -46,7 +46,31 @@
 
 \begin{document}
 
-\maketitle
+\begin{titlepage}
+    \begin{center}
+        \huge
+        \textbf{The Limits of Smart Voting in Liquid Democracy}
+
+        \vfill
+        
+        \includegraphics[width=0.35\textwidth]{logo.jpeg}
+        
+        \vfill
+        
+        \LARGE
+        Giannis Tyrovolas \\
+        \Large
+        Supervisor: Edith Elkind\\
+        
+        \vspace*{1.5cm}
+        
+        4\textsuperscript{th} Year Project Report\\
+        Honour School of Mathematics and Computer Science (Part C) \\
+        \vspace*{.5cm}
+        Trinity Term 2022
+    \end{center}
+
+\end{titlepage}
 
 \tableofcontents
 
@@ -55,15 +79,16 @@
 \section{Context}
 
 Liquid democracy, also referred to as delegative democracy, is a decision-making mechanism that allows greater choice to voters than representative democracy.
-Firstly, every voter is allowed to vote directly on an issue. Additionally, delegations are \emph{transitive}. So that a scenario where Alice delegates to Bob and Bob delegates to Charlie is allowed. In this case Charlie votes with the combined power of all three.
+Firstly, every voter is allowed to vote directly on an issue. Voters can delegate their vote to other voters.
+Importantly delegations are \emph{transitive}. So we allow Alice to delegate to Bob and Bob to delegate to Charlie. In this case Charlie votes with the combined power of all three.
 
-One of the first published proposals of this model is Ford's non-technical work in \cite{ford2002delegative}. 
+One of the first published proposals of this model is a non-technical work by \cite{ford2002delegative}. 
 Ford claims that large-scale direct democracy is infeasible and likely undesirable.
 It is infeasible because of the frequency of policy decisions and likely undesirable because the ``effective wisdom of the collective can easily turn out to be much worse than its average.''
 Representative democracy on the other hand, holds elections every so often. Winners get to represent their constituency while losers gain no representative power.
 Additionally, there is a prescribed limit on the total number of elected representatives and every voter can pick from a limited number of representatives.
 
-Delegative democracy is introduced as a balance of the two by challenging the premise that the size of representatives needs to be kept small.
+Delegative democracy is introduced as a balance of the two by challenging the premise that the number of representatives needs to be kept small.
 In this model, voters to wish to do so, can vote directly on issues.
 Passive voters can delegate to the representatives called delegates.
 Delegates are not chosen through time-specific elections but need to canvas voters continually.
@@ -74,16 +99,19 @@ Ford then introduces notions to replace the parliamentary committees in a settin
 Then, Ford introduces strengthenings of liquid democracy.
 Of interest is the ability to split votes, where agents can delegate fractions of their votes to different delegates. 
 Even more interesting is that Ford introduces the ability of agents to submit ``multiple delegation choices in order of preference.'' This is done partly to deal with the case of cycles, where Alice delegates to Bob but also Bob delegates to Alice.
-This is one of the key extensions we consider in our work.
+This is one of the key extensions of Liquid Democracy we consider in our work.
 
 \subsection{Liquid Democracy and Ground Truth}
-An important strand of work in Liquid Democracy is that which considers the ability of Liquid Democracy to find a ground truth. An important contribution is by \citet{kahng2021liquid}. 
+An important strand of work in Liquid Democracy is to have Liquid Democracy find a ground truth. 
+A key contribution is by \citet{kahng2021liquid}. 
 The model considers binary issues $\{0, 1\}$ with $0$ being the incorrect outcome and $1$ being the correct outcome. Every voter $i$ has a competence level $0 \leq p_i \leq 1$, which is the probability that a direct vote of voter $i$ is a correct vote.
-Further, voters are only able to delegate their votes to a predefined social network. This is claimed to capture the spirit of liquid democracy as voters may be familiar only with some delegates.
+Further, voters are only able to pick delegators from a predefined social network. This can be thought of as a directed graph. 
+The authors claim that this captures the spirit of liquid democracy 
 These delegates are called the neighbours of $i$.
-Further, agents are only allowed to delegate to agents more competent than them by a global constant $\alpha >0$.
-So, voter $i$ may delegate to their neighbour $j$ if and only if $p_i + \alpha \leq p_j$. So, $i$ approves of $j$.
-This rules out the problem of cyclical delegations a priori as $\alpha >0$
+Further, agents are only allowed to delegate to agents that are more competent than them by some global constant $\alpha >0$.
+So, voter $i$ may delegate to their neighbour $j$ if and only if $p_i + \alpha \leq p_j$. 
+We say that $i$ approves of $j$.
+This rules out the problem of cyclical delegations a priori as $\alpha > 0$.
 
 Delegation mechanisms in this context are functions which input an instance of the model and output, for each voter $i$, a delegation probability distribution over the agents $i$ approves of.
 After, the delegation mechanism decides the delegation distribution for each voter the majority rule is applied, with ties broken arbitrarily.
@@ -317,7 +345,7 @@ Formally:
     \]
 \end{definition}
 
-The above unravelling procedures have already been introduced and studied by Colley et al. \cite{grandi}. 
+The above unravelling procedures have already been introduced and studied by  \cite{grandi}. 
 A natural extension of \textsc{MinMax}, not studied is that of \textsc{MinMaxSum} that selects from the \textsc{MinMax} certificates the ones with minimum sum. 
 Formally:
 
@@ -856,7 +884,7 @@ Nevertheless, the following key theorem works even if there is only one sufficie
     Hence our propositions of hardness hold here as well.
 \end{proof}
 
-\subsection{For function classes equal to LIQUID}
+\subsection{Results for $\LIQUID$}
 
 Now that we've shown hardness results for function classes stronger than $\LIQUID$ we focus on what we can do with $\LIQUID$.
 
@@ -892,41 +920,51 @@ To retain the complexity of $\mathcal{O}(nl \log l)$ it suffices to assume that 
 
 
 \begin{proposition}
-    Suppose that $r$ is monotone and $D = \{0, 1\}$. 
-    Then for any outcome $d \in D$ there is an algorithm that determines if there is a \textsc{MinMax} certificate such that the election resolves in favour of $d$.
+    Consider an instance of a monotone aggregation rule $r$ that translates the votes of the agents to the final vote of the group . 
+    Then for $d \in \{0, 1\}$ there is a $\mathcal{O}(nl \log l)$ algorithm that determines if there is a \textsc{MinMax} certificate such that the election resolves in favour of $d$ and if it exists it returns it.
 \end{proposition}
 
 \begin{proof}
-    By the results in \citet{grandi} there is an algorithm that returns a certificate that minimises the maximum of preferences used that runs in $\mathcal{O}(\abs{N}^2)$.
-    Suppose the maximum preference level used in this certificate be $m$.
-    Now, consider a directed graph $G = (V, E)$ with $V = N \cup \{0, 1\}$.
-    For each $u \in N$, let voter $u$'s smart ballot be $B_u = (a_1 > \ldots > a_k)$.
-    Then, we construct an edge $(a_i, u)$ for each $i \leq m$.
 
-    We claim that every voter in the connected component of $d$ can vote at the same time for $d$.
-    We run Breadth First Search starting from $d$.
-    In the resulting BFS tree, $u$ votes for $v$ if there is an edge $(v, u)$ in the tree.
-    Any agent $u$ with an edge $(d, u)$ can vote for $d$ directly by our construction. Then, every agent voting for $u$ would vote for $d$ indirectly and so on.
-    This is a valid delegation as every agent has only one incoming edge in the BFS tree, this is equivalent to only voting for one alternative.
-    Now, a voter $v$ not reachable from $0$ must be reachable from $1$.
-    Otherwise $v$ cannot vote for any of the two options, which contradicts the fact that there is a \textsc{MinMax} certificate using only the first $m$ preferences.
+    For ease of notation we assume without loss of generality that $d = 0$.
+    We first determine by the previous algorithm the smallest $m$ for which there exists a \textsc{MinMax} certificate using at most $m$ preferences.
+    Then we construct a graph as above for the first $m$ preferences.
+    Then, instead of initiating a DFS search from the root we initiate it from node $0$.
+    This returns the directly connected component of $0$ and as above this can be to valid delegations.
+    Let this set of voters be $S$ and $\vec{x}$ with $x_i = 1$ if and only if $i \in S$.
+    Any voter outside of $S$  cannot be made to vote for $0$, so that $S$ is maximal. As $r$ is monotonic, if and only if  there is a possible way of resolving the election to $0$ $r(\vec{x})$ will be equal to 0.
 
-    The above process returns a vector $\vec{x}$ maximal with respect to $d$.
-    As $r$ is monotone the answer is equal to whether $r(\vec{x}) = d$.
-    
+    If $r(\vec{x}) = 1$ then we return that every valid \textsc{MinMax} outcome votes for 1.
+    Otherwise we run DFS from $1$ on the subgraph not visited by our previous DFS.
+    From this we recover a valid certificate from the rest of the agent.
+    We only need to return this certificate to conclude the algorithm.
+    The complexity is inherited by the algorithm to determine $m$ and it is $\mathcal{O}(nl \log l)$.
 \end{proof}
+
+The above result implies that there need to be clear and predetermined rules on tie-breaking of results.
+That is because it is computationally cheap to adversarially break ties to rig the election in someone's favour.
+
+We have not been able to develop an algorithm or a proof of hardness for a similar result in \textsc{MinMaxSum}.
+But, we have been able to reduce it to a graph theoretic problem in the case of qualified majorities.
+A qualified majority is a rule where outcome $1$ is selected if and only if at least $k$ voters vote for $1$.
+
+To do so, we repeat the construction for \textsc{MinMax}. 
+Instead of iteratively building the graph for the first $m$ levels we build the complete graph from the beginning.
+Hence, suppose  we are looking for a certificate in favour of 1.The equivalent graph theoretic question is, is there a minimum weight arboresence with the size of subtree of $1$ greater than $k$? We leave whether this is polynomial time computable or NP-hard as an open question.
+
 \newpage
 \section{Axiomatisation}
 
 We introduce the axiom of cast participation. This axiom states that voters preferring outcome $d$ benefit from voting directly for $d$. 
-This axiom is introduced by Kotsialou and Riley in \cite{kotsialou} for binary issues and by Colley et al. in \cite{grandi} for binary issues with abstentions. 
+This axiom is introduced by \cite{kotsialou} for binary issues and \cite{grandi} for binary issues with abstentions. 
 We use the definition for binary issues with abstentions i.e. $D = \{0, 1, *\}$.
-We denote that agent $a$ prefers outcome $d$ to $e$ as $d >_a e$. As in Colley et al. we infer that if agent $a$ votes directly for outcome $d \in \{0, 1\}$ then agent $a$ prefers $d$ over any other outcome. 
+We denote that agent $a$ prefers outcome $d$ to $e$ as $d >_a e$. As in \citeauthor{grandi} we infer that if agent $a$ votes directly for outcome $d \in \{0, 1\}$ then agent $a$ prefers $d$ over any other outcome. 
 Formally if $B_a = (d)$ then $ d >_a 1-d$ and $d >_a *$.
-Additionally, we consider that if agent $a$ votes directly for $d$ then $* >_a 1-d$.
-Now, an issue we face is that irresolute unravelling procedures might return multiple outcomes. 
-For example, \textsc{MinSum} can return outcomes for $0$ and for $1$.
-So, we need to assign preferences over sets of outcomes rather than just for single outcomes.
+Additionally, we consider that if agent $a$ votes directly for $d$ then $* >_a 1-d$. 
+Originally, \citeauthor{kotsialou} focus on resolute unravelling procedures. \citeauthor{grandi} do so as well and only examine the axioms for their resolute heuristics.
+We will extend these to the irresolute unravelling procedures we have studied.
+So, we need to extend the original definition. 
+We need to assign preferences over sets of outcomes rather than just for single outcomes.
 For the case $D = \{0, 1, *\}$ we posit that reasonable extensions of the order $1-d <_a * <_a d$ would include the partial order:
 
 \[
@@ -953,10 +991,10 @@ We now prove a series of negative results for cast participation.
 
 
 
-\begin{lemma} Suppose that the voting rule $r$ is not monotone. Additionally the counterexample to monotonicity is not caused by flipping a $*$ to a $0$ or $1$. 
-That is there exists $\vec{u} = (u_1, \ldots, u_{i-1}, 0, u_{i+1}, \ldots, u_n)$ and $\vec{u}' = (u_1, \ldots, u_{i-1}, e, u_{i+1}, \ldots, u_n)$ with $0 \neq e$ but $r(\vec{u}) > r(\vec{u}')$. 
+\begin{proposition} Suppose that the voting rule $r$ is not monotone. Additionally the counterexample to monotonicity is not caused by flipping a $*$ to a $0$ or $1$. 
+That is, there exists $\vec{u} = (u_1, \ldots, u_{i-1}, 0, u_{i+1}, \ldots, u_n)$ and $\vec{u}' = (u_1, \ldots, u_{i-1}, e, u_{i+1}, \ldots, u_n)$ with $0 \neq e$ but $r(\vec{u}) > r(\vec{u}')$. 
 Then cast participation does not hold.
-\end{lemma}
+\end{proposition}
 
 \begin{proof}
     Consider the smart profile where for each agent $a$, $B_a = (u_a)$. 
@@ -969,10 +1007,10 @@ We consider that reasonable unravelling procedures will not needlessly violate t
 We formally say that $\mathcal{U}$ respects first preferences if whenever $\vec{c} = (1, 1, \ldots, 1)$ is a consistent certificate, $\mathcal{U}$ returns an outcome with certificate $\vec{c}$. 
 Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect first preferences as well as any Pareto optimal unravelling procedure.
 
-\begin{lemma}
+\begin{proposition}
     Suppose $r$ is a monotone rule, $\mathcal{U}$ respects first preferences. Suppose additionally, that for some $n$ and $k > 0$ there exists a ``deciding'' subset of voters $S$ with $\abs{S} \leq n - k$ such that if every voter in $S$ votes for $d$, $r$ votes for $d$.
     Then, cast-participation does not hold.
-\end{lemma}
+\end{proposition}
 
 \begin{proof}
     Let $S$ as defined above and $f: \{0, 1, *\}^k \longrightarrow \{0,1, *\}$.
@@ -984,9 +1022,9 @@ Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect 
     Now if agent $v_i$ were to switch their vote from $0$ to $u_i'$ everyone in $S$ would vote for $f(\vec{u}')$ and so $r$ would resolve to $f(\vec{u}')$. This breaks cast participation for voter $v_i$ as they prefer outcome 0 but are better not voting for 0.
 \end{proof}
 
-\begin{lemma}
+\begin{proposition}
     Let $r$ be a rule such that for $n \geq 5$ voters if $n-2$ voters vote for $d$ then $r$ assigns $d$. Then there are examples that unravelling with \textsc{MinMax} violates cast-participation for any $n$. This result holds even if we only allow agents to vote using LIQUID.
-\end{lemma}
+\end{proposition}
 
 \begin{proof}
     Let $N = \{v, v', a, u_1, \ldots, u_{n-3}\}$ and $r$ as described. Then, let $B_v = (0), B_{v'} = (v > 0), B_a = (1), B_{u_i} = (a > 0)$. Then \textsc{MinMax} would simply assign each individual to first preferences and the majority votes for 1. So the outcome set is $\{1\}$.
@@ -996,14 +1034,15 @@ Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect 
     Therefore, the set of outcomes is $\{0, 1\}$ which is better than $\{1\}$ for agent $a$.
 \end{proof}
 
-Do note that the above counterexample works even when consider issues with binary outcomes.
-Additionally, the above proof would not work in the case of \textsc{MinMaxSum}, as \textsc{MinMaxSum} would only return the certificate $(2, 1, \ldots, 1)$ 
-We can further prove that \textsc{MinSum} does not satisfy cast-participation. 
+Do note that the above counterexample works even when consider issues with binary outcomes without abstentions.
+Additionally, the above proof would not work in the case of \textsc{MinMaxSum}, as \textsc{MinMaxSum} would only return the certificate $(2, 1, \ldots, 1)$.
+
+We can further prove that \textsc{MinSum} does not satisfy cast-participation in general. 
 In the case where abstentions are allowed we denote $\mathit{Maj}(0, *) = 0, \mathit{Maj}(1, *) = 1$ and $\mathit{Maj}(0, 1) = *$.
 
-\begin{lemma}
+\begin{proposition}
     Let $r$ be such that if a strict majority votes for outcome $d$ then $r$ supports outcome $d$. Then if voters are allowed to delegate to even majorities, cast-participation doesn't hold for \textsc{MinSum}. 
-\end{lemma}
+\end{proposition}
 
 \begin{proof}
     Let $N = \{a, b, c, d, e\}$. Let $B_a = (1), B_b = (0), B_c = (\mathit{Maj}(a, b) > 1), B_d = B_e = (c > 1)$. So that agent $a$ prefers outcome $1$. Then we can resolve this smart profile by assigning everyone to first preferences. Then $r$ resolves to $*$. So the set of outcomes is $\{*\}$.
@@ -1012,6 +1051,19 @@ In the case where abstentions are allowed we denote $\mathit{Maj}(0, *) = 0, \ma
 \end{proof}
 
 Note, that in the above case $\mathit{Maj}$ is a monotone rule. So, it is not the case that monotone rules guarantee cast participation for \textsc{MinSum}.
+
+The final result which is a positive result which is a separation result is the following:
+
+\begin{proposition}
+    Suppose that $r$ is a monotone rule and voters are restricted to casting $\LIQUID$ ballots. Then \textsc{MinSum} satisfies cast-participation.
+\end{proposition}
+
+\begin{proof}
+    Suppose that without loss of generality agent $a$ votes for $0$ directly.
+    We claim that if $a$ were to change their vote, $a$ would only affect the votes of those already voting for $a$. As $r$ is monotone that would imply that $a$ can only turn voters away from $0$ by voting ``tactically''.
+
+\end{proof}
+
 
 \newpage
 \bibliographystyle{plainnat}
