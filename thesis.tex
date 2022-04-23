@@ -18,7 +18,7 @@
 \title{An Analysis of Smart Voting in Liquid Democracy}
 \author{Giannis Tyrovolas}
 \date{\today}
-\newtheorem{theorem}{Theorem}[section]
+\newtheorem{theorem}{Theorem}
 \newtheorem{prop}[theorem]{Proposition}
 \newtheorem*{remark}{Remark}
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}
@@ -46,7 +46,31 @@
 
 \begin{document}
 
-\maketitle
+\begin{titlepage}
+    \begin{center}
+        \huge
+        \textbf{The Limits of Smart Voting in Liquid Democracy}
+
+        \vfill
+        
+        \includegraphics[width=0.35\textwidth]{logo.jpeg}
+        
+        \vfill
+        
+        \LARGE
+        Giannis Tyrovolas \\
+        \Large
+        Supervisor: Edith Elkind\\
+        
+        \vspace*{1.5cm}
+        
+        4\textsuperscript{th} Year Project Report\\
+        Honour School of Mathematics and Computer Science (Part C) \\
+        \vspace*{.5cm}
+        Trinity Term 2022
+    \end{center}
+
+\end{titlepage}
 
 \tableofcontents
 
@@ -55,15 +79,16 @@
 \section{Context}
 
 Liquid democracy, also referred to as delegative democracy, is a decision-making mechanism that allows greater choice to voters than representative democracy.
-Firstly, every voter is allowed to vote directly on an issue. Additionally, delegations are \emph{transitive}. So that a scenario where Alice delegates to Bob and Bob delegates to Charlie is allowed and in this case Charlie votes with the combined power of all three.
+Firstly, every voter is allowed to vote directly on an issue. Voters can delegate their vote to other voters.
+Importantly delegations are \emph{transitive}. So we allow Alice to delegate to Bob and Bob to delegate to Charlie. In this case Charlie votes with the combined power of all three.
 
-One of the first published proposals of this model is Ford's non-technical work in \cite{ford2002delegative}. 
+One of the first published proposals of this model is a non-technical work by \cite{ford2002delegative}. 
 Ford claims that large-scale direct democracy is infeasible and likely undesirable.
 It is infeasible because of the frequency of policy decisions and likely undesirable because the ``effective wisdom of the collective can easily turn out to be much worse than its average.''
 Representative democracy on the other hand, holds elections every so often. Winners get to represent their constituency while losers gain no representative power.
 Additionally, there is a prescribed limit on the total number of elected representatives and every voter can pick from a limited number of representatives.
 
-Delegative democracy is introduced as a balance of the two by challenging the premise that the size of representatives needs to be kept small.
+Delegative democracy is introduced as a balance of the two by challenging the premise that the number of representatives needs to be kept small.
 In this model, voters to wish to do so, can vote directly on issues.
 Passive voters can delegate to the representatives called delegates.
 Delegates are not chosen through time-specific elections but need to canvas voters continually.
@@ -74,15 +99,19 @@ Ford then introduces notions to replace the parliamentary committees in a settin
 Then, Ford introduces strengthenings of liquid democracy.
 Of interest is the ability to split votes, where agents can delegate fractions of their votes to different delegates. 
 Even more interesting is that Ford introduces the ability of agents to submit ``multiple delegation choices in order of preference.'' This is done partly to deal with the case of cycles, where Alice delegates to Bob but also Bob delegates to Alice.
-This is one of the key extensions we consider in our work.
+This is one of the key extensions of Liquid Democracy we consider in our work.
 
-An important strand of work in Liquid Democracy is that which considers the ability of Liquid Democracy to find a ground truth. An important contribution is by \citet{kahng2021liquid}. 
+\subsection{Liquid Democracy and Ground Truth}
+An important strand of work in Liquid Democracy is to have Liquid Democracy find a ground truth. 
+A key contribution is by \citet{kahng2021liquid}. 
 The model considers binary issues $\{0, 1\}$ with $0$ being the incorrect outcome and $1$ being the correct outcome. Every voter $i$ has a competence level $0 \leq p_i \leq 1$, which is the probability that a direct vote of voter $i$ is a correct vote.
-Further, voters are only able to delegate their votes to a predefined social network. This is claimed to capture the spirit of liquid democracy as voters may be familiar only with some delegates.
+Further, voters are only able to pick delegators from a predefined social network. This can be thought of as a directed graph. 
+The authors claim that this captures the spirit of liquid democracy 
 These delegates are called the neighbours of $i$.
-Further, agents are only allowed to delegate to agents more competent than them by a global constant $\alpha >0$.
-So, voter $i$ may delegate to their neighbour $j$ if and only if $p_i + \alpha \leq p_j$. So, $i$ approves of $j$.
-This rules out the problem of cyclical delegations a priori as $\alpha >0$
+Further, agents are only allowed to delegate to agents that are more competent than them by some global constant $\alpha >0$.
+So, voter $i$ may delegate to their neighbour $j$ if and only if $p_i + \alpha \leq p_j$. 
+We say that $i$ approves of $j$.
+This rules out the problem of cyclical delegations a priori as $\alpha > 0$.
 
 Delegation mechanisms in this context are functions which input an instance of the model and output, for each voter $i$, a delegation probability distribution over the agents $i$ approves of.
 After, the delegation mechanism decides the delegation distribution for each voter the majority rule is applied, with ties broken arbitrarily.
@@ -95,16 +124,15 @@ In this setting, \citeauthor{kahng2021liquid} compare liquid democracy to direct
 Mechanism $M$ satisfies the \emph{do no harm} property if, the improvement that direct voting $D$ has on $M$ applied to any instance of size $n$ vanishes as $n$ tends to infinity.
 Formally, for every $\varepsilon > 0$ there exists $N$ such that for all $n > N$ and graphs $G$ of size $n$, $P^M(G) - P^D(G) \geq - \varepsilon$.
 Mechanism $M$ satisfies the \emph{positive gain} property if for some constant $\gamma > 0$ and for every large enough $n$ there exist instances with size $n$ such that $M$ outperforms $D$ by $\gamma$.
-Note that in both cases 
 
 After this lengthy setup, we arrive at the key result of the paper. No local delegation satisfies both \emph{positive gain} and \emph{do no harm}.
-As this is an impossibility result, the requirement that agents are only able to delegate to more informed voters seems to strenghten this result rather than weaken it.
+As this is an impossibility result, the requirement that agents are only able to delegate to more informed voters seems to strengthen this result rather than weaken it.
 Something mitigating the impossibility result is that the do no harm property focuses on worst case instances rather than average instances.
 It is still undecided if there exist local delegation mechanisms that do no harm \emph{on average}.
 The paper's secondary result is that if we bound voters competence away from 0 and 1, a simple non-local delegation mechanism exists.
 The mechanism iteratively constructs delegations by having voter $i$ delegate their vote to the most competent approved voter of $i$ that has at most $\sqrt[3]{\log n}$ already delegating to them.
 
-This model was further considered by \citet{caragiannis2019contribution} after the preprint of \citet{kahng2021liquid} was published.
+\citeauthor{caragiannis2019contribution} further considered this model after the preprint of \citet{kahng2021liquid} was published in 2018.
 The authors first disagree with the premise that $\alpha$-delgations capture the essence of disagreeing opinions.
 They claim that a voter $i$ with competency level of $0.1$ would never delegate to voter $j$ with a competency level of $0.6$ as voter $i$ would consider $j$ to be horribly misinformed.
 Instead in their paper, for $\alpha \geq 0$, if $p_i \geq \frac{1}{2}$, agent $i$ would be able to delegate only to agents with $p_j > p_i + \alpha$, and symmetrically if $p_i \leq \frac{1}{2}$.
@@ -121,17 +149,80 @@ The paper then proves the following two hardness results.
 For any local delegation mechanism $M$ and any $\delta > 0$ there are instances where direct voting or complete dictatorship outperforms $M$ by $\frac{1}{2} - \delta - \alpha$.
 Their construction does not use transitive delegations and so apply to simpler models of Liquid Democracy like Proxy Voting.
 The more striking hardness result is that even if we consider \emph{non-local} delegation mechanisms the optimal delegation is hard to approximate.
-By a reduction to a special version of \textsc{3-SAT} approximating the success rate of the optimal delegation structure within an additive term of $\frac{1}{16}$ is NP-hard.
+The authors then introduce the \textsc{OptimalDelegationProblem} or \textsc{ODP}.
+\textsc{ODP} is the optimisation problem of finding the optimal success rate for a given instance of a Liquid Democracy setting.
+By a reduction to a special version of \textsc{3-SAT} approximating \textsc{ODP} within an additive term of $\frac{1}{16}$ is NP-hard.
 
+\citet{becker2021can} published a collection of results about \textsc{ODP}. 
+They firstly do away with $\alpha$-delegations and do not consider any restrictions on who agents can delegate to.
+Their negative result consider \textsc{ODP}$_r$ where for every voter $i$ the competence level $p_i$ is at least  $r$.
+If $r \in \left(0, \frac{1}{2} \right)$ then for any instance with $n$ voters and for any constant $C > 0$ it is NP-complete to approximate \textsc{ODP}$_r$ within $(\ln n)^{-C}$.
+The bound on $r$ is tight as for $r \geq \frac{1}{2}$ direct voting is a $\frac{1}{2}$-approximation.
+Their positive result is a $\frac{1}{2}$-approximation algorithm for the case that the graph given by the neighbourhood relation is strongly connected.
+The algorithm is to have every voter delegate to the most competent voter.
+\citeauthor{becker2021can} then proceed to outline heuristics and experimentally compare them to direct democracy.
+All of their heuristics consistently outperform direct democracy.
+A particular modelling assumption of interest is that the average competence of agents is $0.48$, which dooms direct democracy's outcome to tend to 0 as the number of voters grows.
+Nevertheless, their experimental data suggest that their heuristics improve as more agents are added.
+
+\subsection{A Game-Theoretic Approach}
+
+The first game-theoretic approach to liquid democracy is by \citet{bloembergen2019rational}.
+In their model, as above, there is a social network and agents can only delegate to their neighbours in their social network. Here as well, agents vote on binary issues.
+\citeauthor{bloembergen2019rational} introduce a new concept of types. 
+There is no objectively correct answer but every agent has a preferred alternative.
+Voter $i$ does not know what their preferred type is but if $i$ votes directly they vote with accuracy $q_i \geq 0.5$ in favour of their type.
+In their full model, types are independent random variables.
+
+To create a game the authors introduce the following utility function, with minimum payoff $0.5$ and maximum payoff $1$.
+When voter $v$ directly or indirectly delegates their vote to voter $u$, the payoff for agent $v$ is the probability that $u$ votes for $v$'s type.
+If voter $v$ is part of a delegation cycle, $v$'s payoff is $0.5$.
+If voter $v$ votes directly, $v$'s payoff is the accuracy minus their effort to manifest the accuracy $q_i - e_i$.
+The authors model $q_i - e_i \geq 0.5$ as otherwise the voter could flip a coin for zero effort.
+Note that the authors have made the decision to have users benefit from maximising the accuracy of the delegated vote.
+Individual payoffs are \emph{independent of the final outcome}.
+For instance this model does not account for agents being lazy and essentially abstaining while other voters make a decision that benefits them.
+Or it does not account for cases where individual agents maximise their accuracy by delegating to a dictator but the group accuracy is lower than if agents voted independently.
+The focus is strictly on agents conveying their type truthfully to the model.
+
+After setting up the framework they prove two results. 
+Firstly, for deterministic type profiles there exist pure strategy Nash Equilibria (NE).
+The assumption that the profiles are deterministic is important as the proof separates all agents with type $0$ and all agents of type $1$ and deals with them independently.
+In particular Nash Equilibria exist if agents all have the same type, as in the setting where they discover a correct ground truth.
+Secondly, for non-deterministic but independent types, if voting is effortless, i.e. $e_i = 0$, there exist pure strategy Nash Equilibria.
+This is done by proving that best responses to any state of the game does not decrease the utility of any agent.
+They then provide an example of a NE providing group accuracy of almost a coin toss whereas it would be easy to get an accuracy of 1. 
+
+\citet{zhang2021power} study a modified version of the above model. In doing so, they introduce a power index in liquid democracy which extends the index introduced by \citet{banzhaf1964weighted}.
+The original Banzhaf index is in the context of weighted voting on binary issues.
+The power index of voter $v$ is proportional to the number of outcomes $v$ can swing.
+These are the coalitions which would fail without $v$ but succeed with $v$.
+
+Now, for the delegative setting, \citeauthor{zhang2021power} only consider liquid democracy \emph{after} each agent has cast their votes.
+In the resulting graph they consider that a coalition can only use the voting power that is accrued within the coalition. 
+For instance in a delegation chain $a \to b \to c$, the coalition $\{a, c\}$ has a voting power of 1.
+Given these details. If $b$ were to join $\{a, c\}$ the voting power of the coalition would be 3.
+The authors then axiomatically characterise the index. These axioms include that a dummy voter has no power, a dictator has power of 1, agents which swing the same coalitions have equal power and some reasonable composition properties.
+Further, this power index gives more power to agents voting directly for their final delegator than voting indirectly.
+This comes in contrast with liquid democracy's transitive delegations.
+
+After the power index is introduced they revisit the game theoretic model by \citet{bloembergen2019rational}.
+They change the reward of voter $v$ from being the accuracy of the final delegator to being the accuracy of the final delegator \emph{multiplied} by the power index of $v$.
+They also abstract away the concept of direct voting requiring effort.
+They then prove that there are delegation games without pure strategy NE.
+Nevertheless, if the underlying social network is complete, pure strategy NE do exist.
+
+\subsection{Preference Aggregation Properties}
 
 
 \newpage
+
 \section{Preliminaries}
 
 \subsection{Ballots}
 
 A single-issue election consists of a finite set of voters that vote on a single issue. 
-Each voter is presented with a finite set of alternatives to pick from. 
+Each voter can choose from a  finite set of alternatives. 
 A special alternative is the \emph{abstention} represented by $*$. 
 Finally, there is an aggregation function that decides the result of the election. 
 Formally:
@@ -141,7 +232,7 @@ Formally:
 \end{definition}
 
 Throughout this work we will focus on single issues with a binary set of outcomes. 
-That is because all of our hardness results hold for binary issues and we can easily extend them to $n$-ary issues. 
+That is because all of our hardness results hold for binary issues, and we can easily extend them to $n$-ary issues. 
 Therefore, unless otherwise stated we will consider $D = \{0, 1\}$.
 
 The model we will consider generalises the above and allows each voter to submit a smart ballot. 
@@ -157,7 +248,7 @@ Formally:
 Further when relevant we will consider $F^{k}$ to be the constant function with output $d$. 
 Now, in most cases the sets $S^h$ are implicit and we will drop any mention of them. 
 That is supported by the fact that we will treat two functions $F, G$ as identical if they are extensionally equal. 
-Additionally we will disallow a voter to delegate to themselves. 
+Additionally, we will disallow a voter to delegate to themselves. 
 This is formalised by the following definition:
 
 \begin{definition}[Valid Smart Ballot]
@@ -167,12 +258,16 @@ This is formalised by the following definition:
 
 We collect the $n$ smart ballots into a smart profile $\mathbf{B}$.
 
+Key example:
+
+
+
 Throughout this work it will be meaningful to restrict the functions agents can delegate from. The most notable classes of functions we will consider are: 
 
 \begin{itemize}
     \item Direct delegations to voter $v$ denoted by $\mathit{LIQUID} = \{\mathit{id}_v \mid v \in N\}$, where $\mathit{id}_v$ is the identity function applied to the vote of voter $v$.
     \item Boolean functions in conjunctive normal form denoted by $\mathit{BOOL}$. 
-    \item Monotone boolean function in conjunctive normal form denoted by $\mathit{MON}$-$\mathit{BOOL}$.
+    \item Monotone boolean function in disjunctive normal form denoted by $\mathit{MON}$-$\mathit{BOOL}$.
 \end{itemize}
 
 \subsection{Unravellings}
@@ -201,11 +296,11 @@ For example, consider majority rule denote as $\mathit{Maj}$. For a variable $a$
 We refer to these cases as \emph{necessary winners} as in Konczak's and Lang's work \cite{konczak2005voting}.
 We formalise this in the following definition where we use $\Delta$ to denote placeholder values.
 
-\begin{definition}[Necessary winner extensions]
+\begin{definition}[Necessary winners]
     Let $F \colon D^n \longrightarrow D $ be a function.
-    We define $F' \colon \left\{D \cup \left\{\Delta\right\}\right\}^n \longrightarrow D \cup \left\{\Delta\right\}$ function $F$'s \emph{necessary winner extension}. 
+    We define the \emph{necessary winner extension} $F' \colon \left\{D \cup \left\{\Delta\right\}\right\}^n \longrightarrow D \cup \left\{\Delta\right\}$ of function $F$. 
     We set for all $\vec{d} \in D^n$, $F'(\vec{d}) = F(\vec{d})$.
-    Now for $\vec{d} \in \left\{D \cup \left\{\Delta\right\}\right\}^n$, let $i_1, i_2, \ldots, i_m$ be the indices such that $d_{i_j} = \Delta$.
+    For $\vec{d} \in \left\{D \cup \left\{\Delta\right\}\right\}^n$, let $i_1, i_2, \ldots, i_m$ be the indices such that $d_{i_j} = \Delta$.
     Let $\vec{d}[x_1, \ldots, x_m]$ denote the vector $\vec{d}$ where $x_j$ replaces the value at index $i_j$. Then, if for some $y \in D$ and for all $\vec{x} \in D^m$, $F(\vec{d}[\vec{x}]) = y$ then $F'(\vec{d}) = y$.
     Otherwise $F'(\vec{d}) = \Delta$.
 \end{definition}
@@ -226,7 +321,7 @@ Consistent certificates are certificates where the vote of each agent is determi
 
 
 Now, we are only interested in consistent certificates as these are the ones that respect the agents' votes. We will denote the set of consistent certificates of a profile $\mathbf{B}$ as $C(\mathbf{B})$.
-It is good that there is only one outcome matched to each consistent certificate regardless of the ordering $\sigma$. The following proposition is proven by Colley et al. \cite{grandi}.
+It is good that there is only one outcome matched to each consistent certificate regardless of the ordering $\sigma$. The following proposition is proven by \cite{grandi}.
 
 \begin{proposition}
     If a consistent certificate $\mathbf{c}$ can be given by two orderings $\sigma$ and $\sigma'$ of the agents, then the orderings yield the same outcome $X_\mathbf{c} \in D^n$.
@@ -254,7 +349,7 @@ Formally:
     \]
 \end{definition}
 
-The above unravelling procedures have already been introduced and studied by Colley et al. \cite{grandi}. 
+The above unravelling procedures have already been introduced and studied by  \cite{grandi}. 
 A natural extension of \textsc{MinMax}, not studied is that of \textsc{MinMaxSum} that selects from the \textsc{MinMax} certificates the ones with minimum sum. 
 Formally:
 
@@ -291,7 +386,7 @@ In order to study the computational properties of the unravelling procedures we 
 \end{definition}
 
 
-Now, \textsc{BoundedMinSum} and \textsc{BoundedMinMax} have been studied by Colley et al \cite{grandi}.
+Now, \textsc{BoundedMinSum} and \textsc{BoundedMinMax} have been studied by \citeauthor{grandi}.
 They proved that \textsc{BoundedMinSum}$_\mathit{LIQUID}$ and \textsc{BoundedMinMax}$_\mathit{LIQUID}$ are poly-time computable and that \textsc{BoundedMinSum}$_\mathit{MON\text{-}BOOL}$ and \textsc{BoundedMinMax}$_\mathit{BOOL}$ are NP-complete.
 We improve on these hardness results and conclude some inapproximability results.
 
@@ -322,16 +417,16 @@ These gadgets will have the property that they incur no additional cost if $t_h$
 \begin{figure}
     \centering
     \subfloat[\underline{zero} voter]{
-\begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=2cm]
+\begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=1.75cm]
 
 \node[circle,draw] (z){\underline{zero}} [grow = up]
-    child{node [circle,draw]{0}
+    child{node [circ]{0}
     };
 \end{tikzpicture}
     }
     \qquad
     \subfloat[Voter $x_i$]{
-        \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=2cm]
+        \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=1.75cm]
 
             \node[circ] (x){$x_i$} [grow = up]
             
@@ -492,11 +587,12 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
 
 Now we shift our focus on \textsc{BoundedMinMax}.
 We first note that there is an additional easiness lemma for \BMM.
+The point of this lemma is that \BMM does not introduce any additional hardness beyond the hardness needed for computing the necessary winner of a function.
 
 \begin{proposition}
     Let $\mathcal{F}$ be any computable family of functions and $\vec{B}$ a smart profile where each ballot has size at most 2.
-    Suppose for each function $f \in \mathcal{F}$, $f'$ can be computed instantly.
-    Then, there is an algorithm that decides $\BMM_\mathcal{F}$ which runs in $\mathcal{O}(n^2)$ steps. 
+    Suppose for each function $f \in \mathcal{F}$, the necessary winner $f'$ can be computed in time $T$.
+    Then, there is an algorithm that decides $\BMM_\mathcal{F}$ which runs in $\mathcal{O}(n^2\cdot T)$ steps. 
 \end{proposition}
 
 \begin{proof}
@@ -571,7 +667,7 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
         \centering
 
     \subfloat[\centering Case $\overline{x_i} \lor x_j \lor x_k$]{{
-    \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=2cm]
+    \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=1.75cm]
     
     \node[circ] (xi){$x_i$};
     \node[circ, right of=xi] (a){$a$};
@@ -585,7 +681,7 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
     \node[circ, right of=xk] (c){$c$};
     \node[circ, right of=c] (c'){$c'$};
     
-    \node[circ, below of=elli3, yshift=-5mm](t){$t_h$};
+    \node[circ, below of=elli3](t){$t_h$};
     \node[circ, right of=t](t'){$t_h'$};
 
     \node[draw, dashed, rounded rectangle, fit={(xi)(a)}] (elli1) {};
@@ -621,7 +717,7 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
     \label{fig:MinMax:1nots}
     }
     \subfloat[\centering Case $\overline{x_i} \lor \overline{x_j} \lor x_k$]{{
-        \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=2cm]
+        \begin{tikzpicture}[edge from parent/.style={draw,-latex}, align=center,node distance=1.75cm]
     
             \node[circ] (xk){$x_k$};
             \node[circ, right of=xk] (a){$a$};
@@ -734,8 +830,8 @@ Then we can define monotonicity of a function.
     Function $f\colon \{0, 1\}^n \longrightarrow \{0, 1\}$ is \emph{monotone} if for all $\vec{u}, \vec{v} \in \{0,1\}^n$, $\vec{u} \leq \vec{v}$ implies that $f(\vec{u}) \leq f(\vec{v})$.
 \end{definition}
 
-We also, need to be able to refer to functions that are not merely delegating to someone else. 
-These functions are referred to as dictator functions by O'Donnell in \cite{boolean}.
+We also, need to be able to refer to functions that are not equivalent to direct delegation. 
+These functions are referred to as dictator functions by \cite{boolean} and are equivalent to projection functions.
 
 \begin{definition}[Dictator functions]
     Function $f \colon \{0, 1\}^n \longrightarrow \{0, 1\}$ is a dictator function if there is some index $1 \leq i \leq n$ such that for every $\vec{x} \in \{0, 1\}^n$, $f(\vec{x}) = x_i$.
@@ -749,7 +845,7 @@ These functions are referred to as dictator functions by O'Donnell in \cite{bool
 
 \begin{proof}
     By \cite{boolean} exercise 4.3, any monotone function $f$ can be written as a boolean formula in disjunctive normal form \emph{without negations}.
-    Let $f(\vec{x}) = \bigvee_{i = 1}^k t_i$, with $t_i = x_{j_1} \land x_{j_r}$.
+    Let $f(\vec{x}) = \bigvee_{i = 1}^k t_i$, with $t_i = x_{j_1} \land \ldots \land x_{j_r}$.
     Without loss of generality we can assume that for all $i$ and $j$, $t_i \nrightarrow t_j$.
     Then, $k \geq 1$ as $f$ is not constant.
     
@@ -769,45 +865,127 @@ These functions are referred to as dictator functions by O'Donnell in \cite{bool
 Now, we need a final ingredient to add to our conditions for reasonable functions to discuss function classes.
 We think that it is reasonable that agents are offered functions of similar expressibility regardless of voting in favour of 0 or 1.
 For instance, if qualified majorities in favour of 0 are allowed then we would expect in most scenarios that qualified majorities in favour of 1 to be allowed.
-This concept can be formalised by considering the ``negation'' of each function.
+This concept can be formalised by considering the dual of each function as stated in \cite{boolean}.
 
-\begin{definition}[Function negation]
-    Let $f \colon \{0, 1\}^n \longrightarrow \{0, 1\}$. Then function $\bar{f} \colon \{0, 1\}^n \longrightarrow \{0, 1\}$ defined as $\overline{f}(\vec{x}) = \overline{f(\overline{\vec{x}})}$.
+\begin{definition}[Duality]
+    Let $f \colon \{0, 1\}^n \longrightarrow \{0, 1\}$. Then $f$'s dual function $f^\dagger \colon \{0, 1\}^n \longrightarrow \{0, 1\}$ defined as $f^\dagger(\vec{x}) = \overline{f(\overline{\vec{x}})}$.
 \end{definition}
 
-In particular $\overline{\lor} = \land$, $\overline{\Maj} = \Maj$ and for $\Maj_k^0$ the qualified majority of $k$ in favour of $0$, $\overline{\Maj_k^0} = \Maj_k^1$.
+In particular $\lor^\dagger = \land,\Maj^\dagger= \Maj$ and for $\Maj_k^0$ the qualified majority of $k$ in favour of $0$, $(\Maj_k^0)^\dagger = \Maj_k^1$.
 
-Then we can conclude the following key theorem.
+So, we would expect that in most settings the choices of voters to be closed under taking duals.
+Nevertheless, the following key theorem works even if there is only one sufficiently ``complex'' but monotone function $f$ and the dual $f^\dagger$.
 
 \begin{theorem}
-    Let $\mathcal{F}$ any function class such that $\mathcal{F}$ contains $\LIQUID$. Suppose $f, \overline{f} \in \mathcal{F}$ with $f$ non-constant, not dictatorial and monotone.
-    Then $\BMS_\mathcal{F}$ and $\BMMS_\mathcal{F}$ are NP-hard even if the maximum ballot size is 2, and $\BMM_{\mathcal{F}}$ is NP-hard even if the maximum ballot size is 3.
+    Let $\mathcal{F}$ any function class such that $\mathcal{F}$ contains $\LIQUID$. Suppose $f, f^\dagger \in \mathcal{F}$ with $f$ non-constant, not dictatorial and monotone.
+    Then $\BMS_\mathcal{F}$ and $\BMMS_\mathcal{F}$ are NP-hard even if the maximum ballot size is 2. $\BMM_{\mathcal{F}}$ is NP-hard even if the maximum ballot size is 3.
 \end{theorem}
 
 \begin{proof}
     By Lemma \ref{lem:boolean} there are designated indexes $i, j$ and constants $c_k$ for $k \neq i, j$ such that $f$ is equivalent to $x_i \lor x_j$ or to $x_i \land x_j$.
-    Hence, for constants $\overline{c_k}$, $\overline{f}$ is equivalent to $x_i \lor x_j$ if $f$ is equivalent to $x_i \land x_j$ or vice versa.
-    Hence, by constructing suitably many constant voters \underline{zero} and \underline{one} with $B_{\text{\underline{zero}}} = (0)$ and $B_{\text{\underline{one}}} = (1)$, $f$ and $\overline{f}$ can be used to simulate $\lor$ and $\land$.
+    Hence, for constants $\overline{c_k}$, $f^\dagger$ is equivalent to $x_i \lor x_j$ if $f$ is equivalent to $x_i \land x_j$ or vice versa.
+    Hence, by constructing suitably many constant voters \underline{zero} and \underline{one} with $B_{\text{\underline{zero}}} = (0)$ and $B_{\text{\underline{one}}} = (1)$, $f$ and $f^\dagger$ can be used to simulate $\lor$ and $\land$.
     Hence our propositions of hardness hold here as well.
 \end{proof}
 
-\subsection{For function classes equal to LIQUID}
+\subsection{Results for $\LIQUID$}
+
+Now that we've shown hardness results for function classes stronger than $\LIQUID$ we focus on what we can do with $\LIQUID$.
+
+For every smart ballot $\vec{B}$ with delegating functions from $\LIQUID$ we can construct a directed graph that encodes this information $\varphi(\vec{B})$. In $\varphi(\vec{B})$ every arboresence is a valid certificate of the election induced by $\vec{B}$. This construction is essentially in \citet{grandi} and we formalise it below.
+
+An arboresence $A$ in a directed graph $G = (V, E)$ rooted in $r$ is a subgraph for which for each $u \in V$  there exists a unique path from $r$ to $u$.
+For an election with voters $N$ and smart ballot $\vec{B}$, we construct $\varphi(\vec{B}) = (V, E)$ as follows.
+For $V = N \cup \{0, 1, r\}$ where $0, 1$ and  $r$ are fresh nodes. For each voter $v \in N$ with smart ballot $B_v = (a_1 > \ldots > a_k)$ for $ 1 \leq i \leq k$ we construct edges $(a_i, v)$.
+In addition we construct edges $(r, 0), (r, 1)$.
+Then we can claim that:
 
 \begin{proposition}
-    Suppose that $r$ is monotone and $D = \{0, 1\}$. Then for any outcome $d \in D$ there is an algorithm that determines if there is a \textsc{MinMax} certificate such that the election resolves in favour of $d$.
+    For every smart profile $\vec{B}$ there is a natural bijection between the consistent certificates of $\vec{B}$ and the arboresences of $\varphi(\vec{B})$ rooted in $r$. This is given by having voter $v$ delegate to their parent in the arboresence.
 \end{proposition}
+
+\begin{proof}
+    Let $A$ an arboresence of $\varphi(\vec{B})$ rooted in $r$.
+    Let voter $v$ delegate to their parent $\mathrm{par}(v)$.
+    Then every agent is delegating to a unique agent by the properties of the arboresence.
+    Additionally, there are no cycles and every chain of delegations reaches $0$ or $1$ as they are the only vertices that are children of the root, so every voter is a assigned a vote.
+
+    In the other direction let $\vec{c}$ a consistent certificate. 
+    Let $d \colon N \longrightarrow N \cup\{0, 1\}$ the delegation function induced by $\vec{c}$.
+    Then, $(d(u), u)$ forms are arboresence.
+    That is because for every voter $u$ there is a unique path to a constant symbol.
+\end{proof}
+
+This construction allows us to argue graph-theoretically about $\LIQUID$ elections.
+
+Consider the problem of finding a \textsc{MinMax} certificate on instances with $n$ voters and at most $l$ preference levels.
+The paper by \citet{grandi} provides a $\mathcal{O}(n^2l^2)$ algorithm for finding a \textsc{MinMax} certificate. With two tweaks we construct an algorithm that runs in $\mathcal{O}(nl \log l)$.
+
+\begin{proposition}
+    Consider an instance with voters $N = \{1, \ldots, n\}$ and smart ballot $\vec{B}$. 
+    Let maximum preference used by any voter is $l$.
+    Then there is a $\mathcal{O}(nl \log l)$ algorithm that returns a \textsc{MinMax} certificate.
+\end{proposition}
+
+\begin{proof}
+    Suppose we want to check if there exists a consistent certificate using the agents' first $m$ preferences. Then we can consider the smart ballot given by the first $m$ preferences $\vec{B}_m$.
+    Then it suffices to check if there exists an arboresence of $\varphi(\vec{B}_m)$.
+    To do so, we can run Depth First Search from $r$ in $\mathcal{O}(nm)$ steps. As $m \leq l$, it is $\mathcal{O}(nl)$.
+    If there is an arboresence it will be returned as the DFS tree of the traversal. If not, some node is unreachable from $r$ and thus $\vec{B}_m$ has no consistent certificate.
+
+    Now, to find the smallest $m$ for which the above is satisfied we only need to binary search suitable $m$ in $\{1, \ldots, l\}$.
+    This gives a total complexity of $\mathcal{O}(nl \log l)$.
+
+\end{proof}
+
+The above algorithm works for cases where voters are offered more than two alternatives.
+To retain the complexity of $\mathcal{O}(nl \log l)$ it suffices to assume that $d \leq n$.
+
+
+\begin{proposition}
+    Consider an instance of a monotone aggregation rule $r$ that translates the votes of the agents to the final vote of the group. 
+    Then for $d \in \{0, 1\}$ there is a $\mathcal{O}(nl \log l)$ algorithm that determines if there is a \textsc{MinMax} certificate such that the election resolves in favour of $d$ and if it exists it returns the certificate.
+\end{proposition}
+
+\begin{proof}
+
+    For ease of notation we assume without loss of generality that $d = 0$.
+    We first determine by the previous algorithm the smallest $m$ for which there exists a \textsc{MinMax} certificate using at most $m$ preferences.
+    Then we construct the graph $\varphi(\vec{B}_m)$.
+    Then, instead of initiating a DFS search from the root we initiate it from node $0$.
+    This returns the directly connected component of $0$ denoted $S$.
+    Let $\vec{x}$ with $x_i = 1$ if and only if $i \in S$.
+    Any voter outside of $S$  cannot be made to vote for $0$, so that $S$ is maximal. As $r$ is monotonic, if and only if  there is a possible way of resolving the election to $0$ $r(\vec{x})$ will be equal to 0.
+
+    If $r(\vec{x}) = 1$ then we return that every valid \textsc{MinMax} outcome votes for 1.
+    Otherwise we run DFS from $1$ on the subgraph not visited by our previous DFS.
+    From this we recover a valid certificate from the rest of the agents.
+    We only need to return this certificate to conclude the algorithm.
+    The complexity is inherited by the algorithm to determine $m$ and it is $\mathcal{O}(nl \log l)$.
+\end{proof}
+
+The above result implies that there need to be clear and predetermined rules on tie-breaking of results.
+That is because it is computationally cheap to adversarially break ties to rig the election in someone's favour.
+
+We have not been able to develop an algorithm or a proof of hardness for a similar result in \textsc{MinMaxSum}.
+But, we have been able to reduce it to a graph theoretic problem in the case of qualified majorities.
+A qualified majority is a rule where outcome $1$ is selected if and only if at least $k$ voters vote for $1$.
+
+The equivalent graph theoretic question is, for graph $\varphi(\vec{B})$ is there a minimum weight arboresence with the size of subtree of $1$ greater than $k$? We leave whether this is polynomial time computable or NP-hard as an open question.
+
 \newpage
 \section{Axiomatisation}
 
 We introduce the axiom of cast participation. This axiom states that voters preferring outcome $d$ benefit from voting directly for $d$. 
-This axiom is introduced by Kotsialou and Riley in \cite{kotsialou} for binary issues and by Colley et al. in \cite{grandi} for binary issues with abstentions. 
+This axiom is introduced by \cite{kotsialou} for binary issues and \cite{grandi} for binary issues with abstentions. 
 We use the definition for binary issues with abstentions i.e. $D = \{0, 1, *\}$.
-We denote that agent $a$ prefers outcome $d$ to $e$ as $d >_a e$. As in Colley et al. we infer that if agent $a$ votes directly for outcome $d \in \{0, 1\}$ then agent $a$ prefers $d$ over any other outcome. 
+We denote that agent $a$ prefers outcome $d$ to $e$ as $d >_a e$. As in \citeauthor{grandi} we infer that if agent $a$ votes directly for outcome $d \in \{0, 1\}$ then agent $a$ prefers $d$ over any other outcome. 
 Formally if $B_a = (d)$ then $ d >_a 1-d$ and $d >_a *$.
-Additionally, we consider that if agent $a$ votes directly for $d$ then $* >_a 1-d$.
-Now, an issue we face is that irresolute unravelling procedures might return multiple outcomes. 
-For example, \textsc{MinSum} can return outcomes for $0$ and for $1$.
-So, we need to assign preferences over sets of outcomes rather than just for single outcomes.
+Additionally, we consider that if agent $a$ votes directly for $d$ then $* >_a 1-d$. 
+Originally, \citeauthor{kotsialou} focus on resolute unravelling procedures. \citeauthor{grandi} do so as well and only examine the axioms for their resolute heuristics.
+We will extend these to the irresolute unravelling procedures we have studied.
+So, we need to extend the original definition. 
+We need to assign preferences over sets of outcomes rather than just for single outcomes.
 For the case $D = \{0, 1, *\}$ we posit that reasonable extensions of the order $1-d <_a * <_a d$ would include the partial order:
 
 \[
@@ -834,10 +1012,10 @@ We now prove a series of negative results for cast participation.
 
 
 
-\begin{lemma} Suppose that the voting rule $r$ is not monotone. Additionally the counterexample to monotonicity is not caused by flipping a $*$ to a $0$ or $1$. 
-That is there exists $\vec{u} = (u_1, \ldots, u_{i-1}, 0, u_{i+1}, \ldots, u_n)$ and $\vec{u}' = (u_1, \ldots, u_{i-1}, e, u_{i+1}, \ldots, u_n)$ with $0 \neq e$ but $r(\vec{u}) > r(\vec{u}')$. 
+\begin{proposition} Suppose that the voting rule $r$ is not monotone. Additionally the counterexample to monotonicity is not caused by flipping a $*$ to a $0$ or $1$. 
+That is, there exists $\vec{u} = (u_1, \ldots, u_{i-1}, 0, u_{i+1}, \ldots, u_n)$ and $\vec{u}' = (u_1, \ldots, u_{i-1}, e, u_{i+1}, \ldots, u_n)$ with $0 \neq e$ but $r(\vec{u}) > r(\vec{u}')$. 
 Then cast participation does not hold.
-\end{lemma}
+\end{proposition}
 
 \begin{proof}
     Consider the smart profile where for each agent $a$, $B_a = (u_a)$. 
@@ -850,10 +1028,10 @@ We consider that reasonable unravelling procedures will not needlessly violate t
 We formally say that $\mathcal{U}$ respects first preferences if whenever $\vec{c} = (1, 1, \ldots, 1)$ is a consistent certificate, $\mathcal{U}$ returns an outcome with certificate $\vec{c}$. 
 Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect first preferences as well as any Pareto optimal unravelling procedure.
 
-\begin{lemma}
+\begin{proposition}
     Suppose $r$ is a monotone rule, $\mathcal{U}$ respects first preferences. Suppose additionally, that for some $n$ and $k > 0$ there exists a ``deciding'' subset of voters $S$ with $\abs{S} \leq n - k$ such that if every voter in $S$ votes for $d$, $r$ votes for $d$.
     Then, cast-participation does not hold.
-\end{lemma}
+\end{proposition}
 
 \begin{proof}
     Let $S$ as defined above and $f: \{0, 1, *\}^k \longrightarrow \{0,1, *\}$.
@@ -865,9 +1043,9 @@ Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect 
     Now if agent $v_i$ were to switch their vote from $0$ to $u_i'$ everyone in $S$ would vote for $f(\vec{u}')$ and so $r$ would resolve to $f(\vec{u}')$. This breaks cast participation for voter $v_i$ as they prefer outcome 0 but are better not voting for 0.
 \end{proof}
 
-\begin{lemma}
+\begin{proposition}
     Let $r$ be a rule such that for $n \geq 5$ voters if $n-2$ voters vote for $d$ then $r$ assigns $d$. Then there are examples that unravelling with \textsc{MinMax} violates cast-participation for any $n$. This result holds even if we only allow agents to vote using LIQUID.
-\end{lemma}
+\end{proposition}
 
 \begin{proof}
     Let $N = \{v, v', a, u_1, \ldots, u_{n-3}\}$ and $r$ as described. Then, let $B_v = (0), B_{v'} = (v > 0), B_a = (1), B_{u_i} = (a > 0)$. Then \textsc{MinMax} would simply assign each individual to first preferences and the majority votes for 1. So the outcome set is $\{1\}$.
@@ -877,14 +1055,15 @@ Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect 
     Therefore, the set of outcomes is $\{0, 1\}$ which is better than $\{1\}$ for agent $a$.
 \end{proof}
 
-Do note that the above counterexample works even when consider issues with binary outcomes.
-Additionally, the above proof would not work in the case of \textsc{MinMaxSum}, as \textsc{MinMaxSum} would only return the certificate $(2, 1, \ldots, 1)$ 
-We can further prove that \textsc{MinSum} does not satisfy cast-participation. 
+Do note that the above counterexample works even when consider issues with binary outcomes without abstentions.
+Additionally, the above proof would not work in the case of \textsc{MinMaxSum}, as \textsc{MinMaxSum} would only return the certificate $(2, 1, \ldots, 1)$.
+
+We can further prove that \textsc{MinSum} does not satisfy cast-participation in general. 
 In the case where abstentions are allowed we denote $\mathit{Maj}(0, *) = 0, \mathit{Maj}(1, *) = 1$ and $\mathit{Maj}(0, 1) = *$.
 
-\begin{lemma}
+\begin{proposition}
     Let $r$ be such that if a strict majority votes for outcome $d$ then $r$ supports outcome $d$. Then if voters are allowed to delegate to even majorities, cast-participation doesn't hold for \textsc{MinSum}. 
-\end{lemma}
+\end{proposition}
 
 \begin{proof}
     Let $N = \{a, b, c, d, e\}$. Let $B_a = (1), B_b = (0), B_c = (\mathit{Maj}(a, b) > 1), B_d = B_e = (c > 1)$. So that agent $a$ prefers outcome $1$. Then we can resolve this smart profile by assigning everyone to first preferences. Then $r$ resolves to $*$. So the set of outcomes is $\{*\}$.
@@ -893,6 +1072,34 @@ In the case where abstentions are allowed we denote $\mathit{Maj}(0, *) = 0, \ma
 \end{proof}
 
 Note, that in the above case $\mathit{Maj}$ is a monotone rule. So, it is not the case that monotone rules guarantee cast participation for \textsc{MinSum}.
+
+Now, let for an arboresence $T$, $T_0, T_1, T_*$ denote the subtrees of $0, 1, *$.
+
+\begin{lemma}
+    For a smart ballot $\vec{B}$ let $ G = \varphi(\vec{B})$. Suppose we construct $G'$ by adding to $\varphi(\vec{B})$ an edge $(d, v)$ with cost 1 for some $d \in D$ and $v \in N$. Then for each arboresence $A$ of $\varphi(\vec{B})$ there exists an arboresence $A'$ of $T'$ with $A_d \subseteq A'_d$ and for the other two symbols $x$ and $y$, $A'_x \subseteq A_x$ and $A'_y \subseteq A_y$.
+\end{lemma}
+
+\begin{proof}
+    Let $A$ a minimum cost arboresence of $G$.
+    We build $A'$ by removing edge $(\mathrm{par}(v), v)$ and adding edge $(d, v)$. 
+    As $1$ is the minimum cost of any edge this weakly decreases the cost of $A$.
+    The subtree $A \setminus A_v$ is a minimum cost arboresence of $G \setminus A_v$. 
+    If that were not the case let $T$ an arboresence with cost strictly less than $A \setminus A_v$. 
+    Then, $A_v \cup T \cup (\mathrm{par}(v), v)$ would be a strictly better arboresence than $A$ contradicting minimality of $A$ in $G$.
+    If $v \notin A_d$ then $A'$ is a minimum cost arboresence.
+
+\end{proof}
+
+\begin{proposition}
+    Suppose that $r$ is a monotone rule and voters are restricted to casting $\LIQUID$ ballots. Then \textsc{MinSum} satisfies cast-participation.
+\end{proposition}
+
+\begin{proof}
+    By the above lemma voting directly for a preferred alternative $d$ increases the votes for $d$ while decreases the votes for the other outcomes.
+    As $r$ is monotone this implies that the outcomes in favour of $d$ cannot decrease.
+
+\end{proof}
+
 
 \newpage
 \bibliographystyle{plainnat}
