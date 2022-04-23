@@ -11,7 +11,8 @@
 \usepackage{forest}
 \usepackage{subfig}
 \usepackage{natbib}
-\usetikzlibrary{shapes.geometric,positioning, arrows, trees, positioning, fit, calc}
+\usetikzlibrary{shapes.geometric,positioning, arrows,trees, positioning, fit, calc}
+\tikzset{circ/.style={circle,draw, solid, inner sep=0pt,minimum size=10mm}}
 \usepackage{amsthm}
 \usepackage{cleveref}
 
@@ -256,9 +257,51 @@ This is formalised by the following definition:
 \end{definition}
 
 
-We collect the $n$ smart ballots into a smart profile $\mathbf{B}$.
+We collect the $n$ smart ballots into a smart profile $\mathbf{B}$. We illustrate the above in the following key example:
 
-Key example:
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+        \tikzset{node distance=2cm and 1.75cm}
+    
+        \node[circ] (a){$a$};
+        
+        \node[circ, right= of a](b) {$b$};
+        \node[circ, below= of b](c) {$c$};
+        
+        \node[circ, right= of b](d) {$d$};
+        
+        \node[circ, right= of c](e) {$e$};
+        \node[circ, below= of e](f) {$f$};
+        \node[circ, below= of f](g) {$g$};
+
+        \node[circ, right= of e](zero) {0};
+        \node[circ, below = of zero](one){1};
+
+        \node[draw,  dashed, rounded rectangle, rotate fit = 90, fit={(b)(c)}](elli_bc) {};
+
+        \node[draw, dashed, rounded rectangle, rotate fit = 90, fit={(f)(g)}](elli_fg) {};
+        \node[draw, dashed, rounded rectangle, rotate fit = 90, fit={(f)(g)(e)(elli_fg)}](elli_fge) {};
+
+        \draw[->](a) to (elli_bc.north);
+        \draw[->, dashed](a) to [bend left] (b);
+        
+        \draw[->] (b) to [bend left] (d);
+        \draw[->, dashed] (b) to [bend left] (c);
+
+        \draw[->] (c) to (elli_fge);
+        \draw[->, dashed] (c) to [bend left] (a);
+
+        \draw[->] (d.north) to [bend right] (a.north);
+
+        \draw[->] (e) to (elli_fg);
+        \draw[->, dashed] (e) to [bend left] (d);
+
+        \draw[->] (f) to [bend left] (e);
+        
+    \end{tikzpicture}
+    
+\end{figure}
 
 
 
@@ -269,6 +312,7 @@ Throughout this work it will be meaningful to restrict the functions agents can 
     \item Boolean functions in conjunctive normal form denoted by $\mathit{BOOL}$. 
     \item Monotone boolean function in disjunctive normal form denoted by $\mathit{MON}$-$\mathit{BOOL}$.
 \end{itemize}
+
 
 \subsection{Unravellings}
 
@@ -404,8 +448,6 @@ Now, let $\lor$ be the binary logical OR and $\land$ be the binary logical AND. 
     Let $\varphi = \bigwedge_{i = 1}^k t_i $ a \textsc{3-SAT} instance on boolean variables $x_1, \ldots, x_n$ with $t_i = l_a \lor l_b \lor l_c $ where $l_a, l_b, l_c$ correspond to literals of variables $x_a, x_b, x_c$ or their negations.
     
     We first define constant voter \underline{zero}, that always votes for 0, so that $B_{\text{\underline{zero}}} = (0)$.
-
-\tikzset{circ/.style={circle,draw, solid, inner sep=0pt,minimum size=10mm}}
 
 
 For each variable $x_i$ we construct a voter $x_i$ with voting profile $B_{x_i} = (  \text{\underline{zero}} > 1) $. These are drawn in Figure \ref{fig:votes}. We denote the first preferences as solid lines and second preferences as dashed lines.
