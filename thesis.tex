@@ -257,18 +257,33 @@ This is formalised by the following definition:
 \end{definition}
 
 
-We collect the $n$ smart ballots into a smart profile $\mathbf{B}$. We illustrate the above in the following key example:
+We collect the $n$ smart ballots into a smart profile $\mathbf{B}$. 
+
+For illustration consider the following non-trivial example.
+Consider voters $N = \{a, b, c, d, e, f, g\}$, with smart ballots:
+
+\begin{align*}
+    &B_a =(b \lor c > b > 0) \\
+    &B_b = \left(\overline{d} > c > 1 \right) \\
+    &B_c = \left(\Maj(e, f, g) > a > 1 \right) \\
+    &B_d = (a > c > 1) \\
+    &B_e = (d > f \lor g > 1) \\
+    &B_f = (c > 0) \\
+    &B_g = (1)
+\end{align*}
+
+This is illustrated in Figure \ref{fig:example}, where full lines indicate first preferences and dashed lines indicate second preferences and loosely dashed lines third preferences. To avoid clutter we have removed the third preferences of $a, b, c$.
 
 \begin{figure}[h]
     \centering
     \begin{tikzpicture}
-        \tikzset{node distance=2cm and 1.75cm}
+        \tikzset{node distance=1.25cm and 1.75cm}
     
         \node[circ] (a){$a$};
         
         \node[circ, right= of a](b) {$b$};
         \node[circ, below= of b](c) {$c$};
-        
+
         \node[circ, right= of b](d) {$d$};
         
         \node[circ, right= of c](e) {$e$};
@@ -278,31 +293,45 @@ We collect the $n$ smart ballots into a smart profile $\mathbf{B}$. We illustrat
         \node[circ, right= of e](zero) {0};
         \node[circ, below = of zero](one){1};
 
+ %       \node[circ, below = of c](one'){1};
+%        \node[circ, left= of one'](zero'){0};
+
         \node[draw,  dashed, rounded rectangle, rotate fit = 90, fit={(b)(c)}](elli_bc) {};
 
         \node[draw, dashed, rounded rectangle, rotate fit = 90, fit={(f)(g)}](elli_fg) {};
         \node[draw, dashed, rounded rectangle, rotate fit = 90, fit={(f)(g)(e)(elli_fg)}](elli_fge) {};
 
-        \draw[->](a) to (elli_bc.north);
+        \draw[->](a) to node[midway,above] {$\lor$} (elli_bc.north);
         \draw[->, dashed](a) to [bend left] (b);
-        
-        \draw[->] (b) to [bend left] (d);
-        \draw[->, dashed] (b) to [bend left] (c);
+%        \draw[->, loosely dashed] (a) to (zero');
 
-        \draw[->] (c) to (elli_fge);
+        \draw[->] (b) to [bend left] node[midway,above] {$\neg$}(d);
+        \draw[->, dashed] (b) to [bend left] (c);
+ %       \draw[->, loosely dashed] (b) to [bend right] (one');
+
+
+        \draw[->] (c) to node[midway,above, xshift = 2mm] {$\Maj$}(elli_fge);
         \draw[->, dashed] (c) to [bend left] (a);
+  %      \draw[->, loosely dashed] (c) to (zero');
 
         \draw[->] (d.north) to [bend right] (a.north);
+        \draw[->, dashed] (d) to (c);
+        \draw[->, loosely dashed] (d) to (one);
 
-        \draw[->] (e) to (elli_fg);
-        \draw[->, dashed] (e) to [bend left] (d);
+        \draw[->, dashed] (e) to node[midway,right] {$\land$}(elli_fg);
+        \draw[->] (e) to [bend right] (d);
+        \draw[->, loosely dashed] (e) to (zero);
 
-        \draw[->] (f) to [bend left] (e);
+        \draw[->] (f) to [bend left] (c);
+        \draw[->, dashed] (f) to (zero);
+
+        \draw[->] (g) to (one);
+
         
     \end{tikzpicture}
-    
+    \caption{An example of a smart profile}
+    \label{fig:example}
 \end{figure}
-
 
 
 Throughout this work it will be meaningful to restrict the functions agents can delegate from. The most notable classes of functions we will consider are: 
@@ -337,7 +366,7 @@ To do so we introduce the notion of a certificate:
 
 Something that will be of high importance is that functions of interest can be calculated on partial input.  
 For example, consider majority rule denote as $\mathit{Maj}$. For a variable $a$, $\mathit{Maj}(1, 1, a)$ will always resolve to 1 regardless of agent $a$'s vote. 
-We refer to these cases as \emph{necessary winners} as in Konczak's and Lang's work \cite{konczak2005voting}.
+We refer to these cases as \emph{necessary winners} as in \citet{konczak2005voting}.
 We formalise this in the following definition where we use $\Delta$ to denote placeholder values.
 
 \begin{definition}[Necessary winners]
@@ -405,6 +434,23 @@ Formally:
     where $\mathit{minC}(\vec{B})$ is the set of consistent certificates that minimise the maximum $c_i$. 
 \end{definition}
 
+We can apply these to our illustrative example in Figure \ref{fig:example}. We first observe that $(1, \ldots, 1)$ is not a consistent certificate. Because for an ordering $\sigma$ using only the first preferences, $\sigma(a) > \sigma(b)$ or $\sigma(a) > \sigma(c)$ as $a$ delegates to $b \lor c$. But, $\sigma(b) > \sigma(d) > \sigma(a)$. So it must be that $\sigma(a) > \sigma(c)$. But, $\sigma(c) > \sigma(f)$ or $\sigma(c) > \sigma(e)$ as $c$ delegates to the majority $\Maj(e, f, g)$. 
+But $f$ delegates to $c$ so $\sigma(c) > \sigma(e)$, but again $\sigma(e) > \sigma(d)$ leading to a contradiction.
+
+So, if there is a certificate using only the first two preferences then it is a \textsc{MinMax} certificate. 
+Such a certificate is the one given by the ordering $g< f< e< c< b< a< d$.
+Where $g = 1, f = 0, e = f \land g = 0, c = Maj(e, f, g) = 0, b = c = 0, a = b \lor c = 0, d = a = 0$. This gives a certificate $\vec{c} = (1, 2, 1, 1, 2, 2, 1)$.
+In fact, one can be convinced that this is a \textsc{MinMaxSum} certificate by considering all other choices of choosing the second preferences of voters $i$ and $j$.
+
+On the other hand a \textsc{MinSum} certificate is given by $\vec{c} = (1, 1, 3, 1, 1, 1, 1)$.
+Here, $c$ votes directly for $1$. Then, $a = b \lor c = 1$, $d = a = 1$, $b = \overline{d} = 0$. Further $f = c = 1$, $e = d = 1$ and $g$ votes directly for $1$.
+To verify that this is indeed a \textsc{MinSum} certificate we need to check that there is no consistent certificate $(1, \ldots, 1, 2, 1, \ldots, 1)$.
+Although usually tedious, in this case the only suitable candidate would be to use the second preference of $f$ to vote for $0$ directly. But then $\Maj(e, f, g)$ cannot be resolved as $e$ is undecided. But $d, a, b$ are also undecided. So this is not a consistent certificate.
+Hence, $\vec{c}$ is a consistent certificate.
+Note that $\vec{c}$ is not the only \textsc{MinSum} certificate. We can select the third preference of $d$ and the first preference of other agents.
+Then, we get an ordering $g < d < b < e < c < f < a$.
+This is given by $d$ and $g$ voting directly for $1$.
+Then, $b = \overline{d} = 0$, $e = d = 1$. So, $c = \Maj(e, f, g) = 1$, by necessary winners despite not having decided $f$. Then $f = c = 1$ and $a = b \lor c = 1$.
 
 \newpage
 
