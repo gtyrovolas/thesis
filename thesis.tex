@@ -258,6 +258,10 @@ This is formalised by the following definition:
 
 We collect the $n$ smart ballots into a smart profile $\mathbf{B}$.
 
+Key example:
+
+
+
 Throughout this work it will be meaningful to restrict the functions agents can delegate from. The most notable classes of functions we will consider are: 
 
 \begin{itemize}
@@ -888,6 +892,32 @@ Nevertheless, the following key theorem works even if there is only one sufficie
 
 Now that we've shown hardness results for function classes stronger than $\LIQUID$ we focus on what we can do with $\LIQUID$.
 
+For every smart ballot $\vec{B}$ with delegating functions from $\LIQUID$ we can construct a directed graph that encodes this information $\varphi(\vec{B})$. In $\varphi(\vec{B})$ every arboresence is a valid certificate of the election induced by $\vec{B}$. This construction is essentially in \citet{grandi} and we formalise it below.
+
+An arboresence $A$ in a directed graph $G = (V, E)$ rooted in $r$ is a subgraph for which for each $u \in V$  there exists a unique path from $r$ to $u$.
+For an election with voters $N$ and smart ballot $\vec{B}$, we construct $\varphi(\vec{B}) = (V, E)$ as follows.
+For $V = N \cup \{0, 1, r\}$ where $0, 1$ and  $r$ are fresh nodes. For each voter $v \in N$ with smart ballot $B_v = (a_1 > \ldots > a_k)$ for $ 1 \leq i \leq k$ we construct edges $(a_i, v)$.
+In addition we construct edges $(r, 0), (r, 1)$.
+Then we can claim that:
+
+\begin{proposition}
+    For every smart profile $\vec{B}$ there is a natural bijection between the consistent certificates of $\vec{B}$ and the arboresences of $\varphi(\vec{B})$ rooted in $r$. This is given by having voter $v$ delegate to their parent in the arboresence.
+\end{proposition}
+
+\begin{proof}
+    Let $A$ an arboresence of $\varphi(\vec{B})$ rooted in $r$.
+    Let voter $v$ delegate to their parent $\mathrm{par}(v)$.
+    Then every agent is delegating to a unique agent by the properties of the arboresence.
+    Additionally, there are no cycles and every chain of delegations reaches $0$ or $1$ as they are the only vertices that are children of the root, so every voter is a assigned a vote.
+
+    In the other direction let $\vec{c}$ a consistent certificate. 
+    Let $d \colon N \longrightarrow N \cup\{0, 1\}$ the delegation function induced by $\vec{c}$.
+    Then, $(d(u), u)$ forms are arboresence.
+    That is because for every voter $u$ there is a unique path to a constant symbol.
+\end{proof}
+
+This construction allows us to argue graph-theoretically about $\LIQUID$ elections.
+
 Consider the problem of finding a \textsc{MinMax} certificate on instances with $n$ voters and at most $l$ preference levels.
 The paper by \citet{grandi} provides a $\mathcal{O}(n^2l^2)$ algorithm for finding a \textsc{MinMax} certificate. With two tweaks we construct an algorithm that runs in $\mathcal{O}(nl \log l)$.
 
@@ -898,21 +928,14 @@ The paper by \citet{grandi} provides a $\mathcal{O}(n^2l^2)$ algorithm for findi
 \end{proposition}
 
 \begin{proof}
-    To check if there is a consistent certificate using the first $m$ preferences we can use the following construction.
-    Construct a graph $G = (N \cup \{0, 1, r\}, E)$ with $0, 1, r$ fresh vertices.
-    For each voter $v$ with ballot $B_v = (a_1 > \ldots > a_k)$, for each $i \leq m$ add an edge $(a_i, v)$.
-    Additionally add edges $(r, 0)$, $(r, 1)$.
-    
-    If there is a path from $r$ to every node then we can recover a certificate.
-    Simply run DFS on $r$ and consider the resulting DFS arboresence $A$.
-    As this is an arboresence every node has a unique parent. Hence, by construction every agent can delegate to their parents.
-    As there is a directed path $(r, d, v_1, \ldots, v_t, u)$ from $r$ to every $u$, reversing the path shows us that $u$ will eventually vote for an alternative $d$.
+    Suppose we want to check if there exists a consistent certificate using the agents' first $m$ preferences. Then we can consider the smart ballot given by the first $m$ preferences $\vec{B}_m$.
+    Then it suffices to check if there exists an arboresence of $\varphi(\vec{B}_m)$.
+    To do so, we can run Depth First Search from $r$ in $\mathcal{O}(nm)$ steps. As $m \leq l$, it is $\mathcal{O}(nl)$.
+    If there is an arboresence it will be returned as the DFS tree of the traversal. If not, some node is unreachable from $r$ and thus $\vec{B}_m$ has no consistent certificate.
 
-    If there is no path from $r$ to a voter $v$ then there is no way to delegate such that $v$ votes for a constant. Hence, $m$ is too small to result in a consistent certificate.
+    Now, to find the smallest $m$ for which the above is satisfied we only need to binary search suitable $m$ in $\{1, \ldots, l\}$.
+    This gives a total complexity of $\mathcal{O}(nl \log l)$.
 
-    Now that we have proven the correctness of the algorithm the complexity is that of building the graph and of running DFS. This gives a total complexity $\mathcal{O}(nm)$, as $m \leq l$ we can simplify to $\mathcal{O}(nl)$.
-
-    Now that we have established the above algorithm, we can binary search the smallest value of $m$  for which the above process returns a valid certificate. Doing so would raise the total complexity to $\mathcal{O}(nl \log l)$.
 \end{proof}
 
 The above algorithm works for cases where voters are offered more than two alternatives.
@@ -920,23 +943,23 @@ To retain the complexity of $\mathcal{O}(nl \log l)$ it suffices to assume that 
 
 
 \begin{proposition}
-    Consider an instance of a monotone aggregation rule $r$ that translates the votes of the agents to the final vote of the group . 
-    Then for $d \in \{0, 1\}$ there is a $\mathcal{O}(nl \log l)$ algorithm that determines if there is a \textsc{MinMax} certificate such that the election resolves in favour of $d$ and if it exists it returns it.
+    Consider an instance of a monotone aggregation rule $r$ that translates the votes of the agents to the final vote of the group. 
+    Then for $d \in \{0, 1\}$ there is a $\mathcal{O}(nl \log l)$ algorithm that determines if there is a \textsc{MinMax} certificate such that the election resolves in favour of $d$ and if it exists it returns the certificate.
 \end{proposition}
 
 \begin{proof}
 
     For ease of notation we assume without loss of generality that $d = 0$.
     We first determine by the previous algorithm the smallest $m$ for which there exists a \textsc{MinMax} certificate using at most $m$ preferences.
-    Then we construct a graph as above for the first $m$ preferences.
+    Then we construct the graph $\varphi(\vec{B}_m)$.
     Then, instead of initiating a DFS search from the root we initiate it from node $0$.
-    This returns the directly connected component of $0$ and as above this can be to valid delegations.
-    Let this set of voters be $S$ and $\vec{x}$ with $x_i = 1$ if and only if $i \in S$.
+    This returns the directly connected component of $0$ denoted $S$.
+    Let $\vec{x}$ with $x_i = 1$ if and only if $i \in S$.
     Any voter outside of $S$  cannot be made to vote for $0$, so that $S$ is maximal. As $r$ is monotonic, if and only if  there is a possible way of resolving the election to $0$ $r(\vec{x})$ will be equal to 0.
 
     If $r(\vec{x}) = 1$ then we return that every valid \textsc{MinMax} outcome votes for 1.
     Otherwise we run DFS from $1$ on the subgraph not visited by our previous DFS.
-    From this we recover a valid certificate from the rest of the agent.
+    From this we recover a valid certificate from the rest of the agents.
     We only need to return this certificate to conclude the algorithm.
     The complexity is inherited by the algorithm to determine $m$ and it is $\mathcal{O}(nl \log l)$.
 \end{proof}
@@ -948,9 +971,7 @@ We have not been able to develop an algorithm or a proof of hardness for a simil
 But, we have been able to reduce it to a graph theoretic problem in the case of qualified majorities.
 A qualified majority is a rule where outcome $1$ is selected if and only if at least $k$ voters vote for $1$.
 
-To do so, we repeat the construction for \textsc{MinMax}. 
-Instead of iteratively building the graph for the first $m$ levels we build the complete graph from the beginning.
-Hence, suppose  we are looking for a certificate in favour of 1.The equivalent graph theoretic question is, is there a minimum weight arboresence with the size of subtree of $1$ greater than $k$? We leave whether this is polynomial time computable or NP-hard as an open question.
+The equivalent graph theoretic question is, for graph $\varphi(\vec{B})$ is there a minimum weight arboresence with the size of subtree of $1$ greater than $k$? We leave whether this is polynomial time computable or NP-hard as an open question.
 
 \newpage
 \section{Axiomatisation}
@@ -1052,15 +1073,30 @@ In the case where abstentions are allowed we denote $\mathit{Maj}(0, *) = 0, \ma
 
 Note, that in the above case $\mathit{Maj}$ is a monotone rule. So, it is not the case that monotone rules guarantee cast participation for \textsc{MinSum}.
 
-The final result which is a positive result which is a separation result is the following:
+Now, let for an arboresence $T$, $T_0, T_1, T_*$ denote the subtrees of $0, 1, *$.
+
+\begin{lemma}
+    For a smart ballot $\vec{B}$ let $ G = \varphi(\vec{B})$. Suppose we construct $G'$ by adding to $\varphi(\vec{B})$ an edge $(d, v)$ with cost 1 for some $d \in D$ and $v \in N$. Then for each arboresence $A$ of $\varphi(\vec{B})$ there exists an arboresence $A'$ of $T'$ with $A_d \subseteq A'_d$ and for the other two symbols $x$ and $y$, $A'_x \subseteq A_x$ and $A'_y \subseteq A_y$.
+\end{lemma}
+
+\begin{proof}
+    Let $A$ a minimum cost arboresence of $G$.
+    We build $A'$ by removing edge $(\mathrm{par}(v), v)$ and adding edge $(d, v)$. 
+    As $1$ is the minimum cost of any edge this weakly decreases the cost of $A$.
+    The subtree $A \setminus A_v$ is a minimum cost arboresence of $G \setminus A_v$. 
+    If that were not the case let $T$ an arboresence with cost strictly less than $A \setminus A_v$. 
+    Then, $A_v \cup T \cup (\mathrm{par}(v), v)$ would be a strictly better arboresence than $A$ contradicting minimality of $A$ in $G$.
+    If $v \notin A_d$ then $A'$ is a minimum cost arboresence.
+
+\end{proof}
 
 \begin{proposition}
     Suppose that $r$ is a monotone rule and voters are restricted to casting $\LIQUID$ ballots. Then \textsc{MinSum} satisfies cast-participation.
 \end{proposition}
 
 \begin{proof}
-    Suppose that without loss of generality agent $a$ votes for $0$ directly.
-    We claim that if $a$ were to change their vote, $a$ would only affect the votes of those already voting for $a$. As $r$ is monotone that would imply that $a$ can only turn voters away from $0$ by voting ``tactically''.
+    By the above lemma voting directly for a preferred alternative $d$ increases the votes for $d$ while decreases the votes for the other outcomes.
+    As $r$ is monotone this implies that the outcomes in favour of $d$ cannot decrease.
 
 \end{proof}
 
