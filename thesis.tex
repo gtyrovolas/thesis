@@ -1073,32 +1073,9 @@ In the case where abstentions are allowed we denote $\mathit{Maj}(0, *) = 0, \ma
 
 Note, that in the above case $\mathit{Maj}$ is a monotone rule. So, it is not the case that monotone rules guarantee cast participation for \textsc{MinSum}.
 
-Now, let for an arboresence $T$, $T_0, T_1, T_*$ denote the subtrees of $0, 1, *$.
 
-\begin{lemma}
-    For a smart ballot $\vec{B}$ let $ G = \varphi(\vec{B})$. Suppose we construct $G'$ by adding to $\varphi(\vec{B})$ an edge $(d, v)$ with cost 1 for some $d \in D$ and $v \in N$. Then for each arboresence $A$ of $\varphi(\vec{B})$ there exists an arboresence $A'$ of $T'$ with $A_d \subseteq A'_d$ and for the other two symbols $x$ and $y$, $A'_x \subseteq A_x$ and $A'_y \subseteq A_y$.
-\end{lemma}
-
-\begin{proof}
-    Let $A$ a minimum cost arboresence of $G$.
-    We build $A'$ by removing edge $(\mathrm{par}(v), v)$ and adding edge $(d, v)$. 
-    As $1$ is the minimum cost of any edge this weakly decreases the cost of $A$.
-    The subtree $A \setminus A_v$ is a minimum cost arboresence of $G \setminus A_v$. 
-    If that were not the case let $T$ an arboresence with cost strictly less than $A \setminus A_v$. 
-    Then, $A_v \cup T \cup (\mathrm{par}(v), v)$ would be a strictly better arboresence than $A$ contradicting minimality of $A$ in $G$.
-    If $v \notin A_d$ then $A'$ is a minimum cost arboresence.
-
-\end{proof}
-
-\begin{proposition}
+\textbf{Conjecture:}
     Suppose that $r$ is a monotone rule and voters are restricted to casting $\LIQUID$ ballots. Then \textsc{MinSum} satisfies cast-participation.
-\end{proposition}
-
-\begin{proof}
-    By the above lemma voting directly for a preferred alternative $d$ increases the votes for $d$ while decreases the votes for the other outcomes.
-    As $r$ is monotone this implies that the outcomes in favour of $d$ cannot decrease.
-
-\end{proof}
 
 
 \newpage
