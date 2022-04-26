@@ -214,6 +214,49 @@ They then prove that there are delegation games without pure strategy NE.
 Nevertheless, if the underlying social network is complete, pure strategy NE do exist.
 
 \subsection{Preference Aggregation Properties}
+The final approach focuses on the case where there is more than one way to combine individual votes to create a group decision. 
+As a canonical example, think of a case where Alice delegates to Bob, Bob delegates to Charlie and Charlie delegates to Alice.
+
+The first work considering this is by \citet{kotsialou}.
+Their model allows every agent to have an antisymmetric and transitive ordering over preferences and alternatives.
+The authors explicitly state that the order need not be complete.
+They encode this preference relation in a directed weighted graph with nodes being the voters and edges the delegations.
+If voter $u$ thinks voter $v$ is the $i$\textsuperscript{th} preferred delegator then there exists an edge $(u, v)$ with weight $i$.
+Here, we note a small and easily remediable inconsistency. 
+To be able to have a well-defined notion of $v$ being the $i$\textsuperscript{th} the first $i$ voters need to be totally orderable.
+An example where this could be a problem is the partial order $\succ$ over $\{a, b, c, d\}$ given by $a \succ d$ and $b \succ c \succ d$.
+The rest of the paper seems to assume that for every agent $u$ their preference relation is a total order for some $k_u$ agents and the rest of the agents are tied at the end and are not approved of.
+
+Now, that the graph is set up there are different ways to resolve delegations called delegation mechanisms. Further, once every voter has voted, there are different aggregation rules such as the majority rule, a qualified majority rule or a weighted majority rule.
+The key concepts extended in this paper are those of \emph{cast participation} and \emph{guru participation} and they are defined for a \emph{pair} of delegation mechanism and aggregation rules.
+Cast participation is the property that every voter $i$ with a preference over the alternatives weakly improves the outcome by voting directly compared to abstaining.
+Guru participation is the property that voter $g$ weakly benefits by having more voters delegate to $g$.
+The property of cast-participation has been introduced in the past but this is the first introduction of such a notion in Liquid Democracy. Further, guru participation is a very reasonable extension.
+
+The paper then goes on to fix the aggregation rule to be the simple majority rule for binary issues. It then examines two different delegation mechanisms, depth-first search and breadth-first search.
+Suppose voter $i$ has stated that they want to delegate to some agent. Let us represent a delegation chain as $(c_1, c_2, \ldots, c_k)$ meaning that agent $i$ delegates to their $c_1$\textsuperscript{th} preference and the $j$\textsuperscript{th} agent in the chain delegates to their $c_j$\textsuperscript{th} preference.
+Then, DFS would have voter $i$ delegate to a final voter given by the smallest lexicographical chain that doesn't include a cycle. For instance if agent $i$ has preferences $a > b$ and agent $a$ has preferences $i > c$, then DFS would have voter $i$ delegating to $c$ with chain $(1, 2)$.
+The reasonable objection by \citeauthor{kotsialou} is that the second preference of agent $i$ is probably a better choice for $i$ than the second preference of voter $a$.
+So, they propose BFS to return the lexicographically smallest chain \emph{from the chains with the smallest lengths}.
+They then prove that if there are cycles in the graph DFS may not satisfy guru participation whereas if there are no cycles guru participation is satisfied. In contrast, guru participation is always satisfied for breadth first search.
+
+A different approach and model is given by \citet{grandi}. This is the paper which we will be extending so a formal treatment of their model is given in the next section.
+The authors allow agents to rank their preferences in a total order.
+But, instead of allowing agents only to delegate to individual agents they allow agents to delegate to functions of agents. A simple example being to delegate to the majority of agents.
+These two complications of the simple model means that cycles can be introduced in much more complicated ways.
+
+To resolve these cycles two optimal ``unravelling'' procedures are introduced. \textsc{MinSum} is a utilitarian method that minimises the sum of preference levels used and \textsc{MinMax} is an egalitarian method that minimises the maximum of the preference levels used.
+Both of these procedures are irresolute and may return more than one outcome as valid if ties exist.
+They also introduce four heuristic unravelling procedures, two of which are deterministic and two of which are randomised.
+They then prove that \textsc{MinSum} is NP-complete if agents are allowed to use monotone boolean functions  and \textsc{MinMax} is NP-complete for arbitrary boolean formulas.
+They then give polynomial time algorithms to unravel instances where agents can only delegate directly to other agents.
+The complexity of deciding instances where voters can delegate to majorities is implicitly left as an open problem which we resolve.
+Further, they analyse the complexity of the heuristics they introduce.
+
+\citeauthor{grandi}, also analyse their heuristics with respect to the axioms introduced by \citeauthor{kotsialou} in the case where voters are allowed to vote for binary issues or abstain. 
+As the axioms were introduced for resolute procedures they do not examine the axioms for \textsc{MinSum} and \textsc{MinMax}, which we do in Section~\ref{section:axioms}.
+They prove that their deterministic heuristics satisfy cast participation for any monotone aggregation rule when voters can only delegate directly to other voters.
+They then prove that their heuristics do not satisfy guru participation when agents are allowed to delegate to pluralities.
 
 
 \newpage
@@ -909,7 +952,7 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
 Throughout this process we have proven results for $\lor$ and $\land$.
 We can use these results to prove that hardness results extend to all ``reasonable" and sufficiently complex function classes.
 We make this precise below.
-First, we consider ``reasonable'' functions are monotone. 
+First, we consider that ``reasonable'' functions are monotone. 
 We define $0 < 1$ and extend this to a partial order in $\{0,1\}^n$ as $\vec{u} \leq \vec{v}$ if for all $i$, $u_i \leq v_i$.
 Then we can define monotonicity of a function.
 
@@ -976,13 +1019,16 @@ Nevertheless, the following key theorem works even if there is only one sufficie
     Hence our propositions of hardness hold here as well.
 \end{proof}
 
+As an immediate corollary, if agents are allowed to delegate to some odd majority then \textsc{MinSum} and \textsc{MinMax} are NP-hard.
+
+
+
 \subsection{Results for $\LIQUID$}
 
-Now that we've shown hardness results for function classes stronger than $\LIQUID$ we focus on what we can do with $\LIQUID$.
+Now that we've shown hardness results for function classes larger than $\LIQUID$ we focus on what we can do with $\LIQUID$.
 
-For every smart ballot $\vec{B}$ with delegating functions from $\LIQUID$ we can construct a directed graph that encodes this information $\varphi(\vec{B})$. In $\varphi(\vec{B})$ every arboresence is a valid certificate of the election induced by $\vec{B}$. This construction is essentially in \citet{grandi} and we formalise it below.
+For every smart ballot $\vec{B}$ with delegating functions from $\LIQUID$ we can construct a directed graph that encodes this information $\varphi(\vec{B})$. In $\varphi(\vec{B})$ every arboresence is a valid certificate of the election induced by $\vec{B}$. As a reminder, an arboresence $A$ in a directed graph $G = (V, E)$ rooted in $r$ is a subgraph for which for each $u \in V \setminus \{r\}$  there exists a unique path from $r$ to $u$. This construction is essentially in \citet{grandi} and we formalise it below.
 
-An arboresence $A$ in a directed graph $G = (V, E)$ rooted in $r$ is a subgraph for which for each $u \in V$  there exists a unique path from $r$ to $u$.
 For an election with voters $N$ and smart ballot $\vec{B}$, we construct $\varphi(\vec{B}) = (V, E)$ as follows.
 For $V = N \cup \{0, 1, r\}$ where $0, 1$ and  $r$ are fresh nodes. For each voter $v \in N$ with smart ballot $B_v = (a_1 > \ldots > a_k)$ for $ 1 \leq i \leq k$ we construct edges $(a_i, v)$.
 In addition we construct edges $(r, 0), (r, 1)$.
@@ -1002,8 +1048,7 @@ Then we can claim that:
     Let $d \colon N \longrightarrow N \cup\{0, 1\}$ the delegation function induced by $\vec{c}$.
     Then, $(d(u), u)$ forms are arboresence.
     That is because for every voter $u$ there is a unique path to a constant symbol.
-\end{proof}
-
+\end{proof} 
 This construction allows us to argue graph-theoretically about $\LIQUID$ elections.
 
 Consider the problem of finding a \textsc{MinMax} certificate on instances with $n$ voters and at most $l$ preference levels.
@@ -1063,9 +1108,10 @@ The equivalent graph theoretic question is, for graph $\varphi(\vec{B})$ is ther
 
 \newpage
 \section{Axiomatisation}
+\label{section:axioms}
 
 We introduce the axiom of cast participation. This axiom states that voters preferring outcome $d$ benefit from voting directly for $d$. 
-This axiom is introduced by \cite{kotsialou} for binary issues and \cite{grandi} for binary issues with abstentions. 
+As mentioned in the introduction, this axiom is introduced by \cite{kotsialou} and \cite{grandi} have applied it for binary issues with abstentions. 
 We use the definition for binary issues with abstentions i.e. $D = \{0, 1, *\}$.
 We denote that agent $a$ prefers outcome $d$ to $e$ as $d >_a e$. As in \citeauthor{grandi} we infer that if agent $a$ votes directly for outcome $d \in \{0, 1\}$ then agent $a$ prefers $d$ over any other outcome. 
 Formally if $B_a = (d)$ then $ d >_a 1-d$ and $d >_a *$.
