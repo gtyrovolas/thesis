@@ -90,12 +90,12 @@ Representative democracy on the other hand, holds elections every so often. Winn
 Additionally, there is a prescribed limit on the total number of elected representatives and every voter can pick from a limited number of representatives.
 
 Delegative democracy is introduced as a balance of the two by challenging the premise that the number of representatives needs to be kept small.
-In this model, voters to wish to do so, can vote directly on issues.
+In this model, voters that wish to do so, can vote directly on issues.
 Passive voters can delegate to the representatives called delegates.
 Delegates are not chosen through time-specific elections but need to canvas voters continually.
 When delegates vote they vote with the combined power of all voters that delegate for them.
 They can vote on issues directly or they can delegate to other more specialised delegates.
-A key-idea is that delegates need not win competitive elections and that delegates have their votes made public for the sake of accountability. 
+A key idea is that delegates need not win competitive elections and that delegates have their votes made public for the sake of accountability. 
 Ford then introduces notions to replace the parliamentary committees in a setting of liquid democracy.
 Then, Ford introduces strengthenings of liquid democracy.
 Of interest is the ability to split votes, where agents can delegate fractions of their votes to different delegates. 
@@ -106,16 +106,15 @@ This is one of the key extensions of Liquid Democracy we consider in our work.
 An important strand of work in Liquid Democracy is to have Liquid Democracy find a ground truth. 
 A key contribution is by \citet{kahng2021liquid}. 
 The model considers binary issues $\{0, 1\}$ with $0$ being the incorrect outcome and $1$ being the correct outcome. Every voter $i$ has a competence level $0 \leq p_i \leq 1$, which is the probability that a direct vote of voter $i$ is a correct vote.
-Further, voters are only able to pick delegators from a predefined social network. This can be thought of as a directed graph. 
-The authors claim that this captures the spirit of liquid democracy 
+Further, voters are only able to pick delegators from a predefined social network. This can be thought of as a directed graph.
 These delegates are called the neighbours of $i$.
 Further, agents are only allowed to delegate to agents that are more competent than them by some global constant $\alpha >0$.
 So, voter $i$ may delegate to their neighbour $j$ if and only if $p_i + \alpha \leq p_j$. 
 We say that $i$ approves of $j$.
-This rules out the problem of cyclical delegations a priori as $\alpha > 0$.
+This rules out the problem of cyclical delegations a priori, as $\alpha > 0$.
 
 Delegation mechanisms in this context are functions which input an instance of the model and output, for each voter $i$, a delegation probability distribution over the agents $i$ approves of.
-After, the delegation mechanism decides the delegation distribution for each voter the majority rule is applied, with ties broken arbitrarily.
+Then the majority rule is applied on the outcome of a delegation mechanism. Ties are broken arbitrarily.
 The probability that the group votes for the correct outcome for a particular instance of the model $G$ and a delegation mechanism $M$ is $P^M(G)$.
 A particular delegation mechanism is that of direct voting denoted as $D$.
 An important distinction, the authors make are between \emph{local} and non-local delegation mechanisms. \emph{Local} delegation mechanisms are delegation mechanisms where the resulting distribution for agent $i$ depends only on the set of agents $i$ approves of, the set of neighbours of $i$ and an arbitrary ranking $\pi_i$.
@@ -129,26 +128,26 @@ Mechanism $M$ satisfies the \emph{positive gain} property if for some constant $
 After this lengthy setup, we arrive at the key result of the paper. No local delegation satisfies both \emph{positive gain} and \emph{do no harm}.
 As this is an impossibility result, the requirement that agents are only able to delegate to more informed voters seems to strengthen this result rather than weaken it.
 Something mitigating the impossibility result is that the do no harm property focuses on worst case instances rather than average instances.
-It is still undecided if there exist local delegation mechanisms that do no harm \emph{on average}.
+It is still undecided if there exist local delegation mechanisms with positive gain that do no harm \emph{on average}.
 The paper's secondary result is that if we bound voters competence away from 0 and 1, a simple non-local delegation mechanism exists.
 The mechanism iteratively constructs delegations by having voter $i$ delegate their vote to the most competent approved voter of $i$ that has at most $\sqrt[3]{\log n}$ already delegating to them.
 
-\citeauthor{caragiannis2019contribution} further considered this model after the preprint of \citet{kahng2021liquid} was published in 2018.
+\citet{caragiannis2019contribution} further considered this model after the preprint of \citet{kahng2021liquid} was published in 2018.
 The authors first disagree with the premise that $\alpha$-delgations capture the essence of disagreeing opinions.
-They claim that a voter $i$ with competency level of $0.1$ would never delegate to voter $j$ with a competency level of $0.6$ as voter $i$ would consider $j$ to be horribly misinformed.
+They claim that a voter $i$ with competence level of $0.1$ would never delegate to voter $j$ with a competence level of $0.6$ as voter $i$ would consider $j$ to be horribly misinformed.
 Instead in their paper, for $\alpha \geq 0$, if $p_i \geq \frac{1}{2}$, agent $i$ would be able to delegate only to agents with $p_j > p_i + \alpha$, and symmetrically if $p_i \leq \frac{1}{2}$.
-A small objection to this modelling is that the model implicitly gives meta-information to agents with competency less than $\frac{1}{2} - \varepsilon$ or greater than $\frac{1}{2} + \varepsilon$. Nevertheless, the paper only proves hardness results and so this meta-information strenghtens the results.
+A small objection to this modelling is that the model implicitly gives meta-information to agents with competence less than $\frac{1}{2} - \varepsilon$ or greater than $\frac{1}{2} + \varepsilon$. Nevertheless, the paper only proves hardness results and so this meta-information strenghtens the results.
 
 A more important objection to $\alpha$-delegations is that there are cases where voting for someone less competent can be beneficial.
 A simple example is that for $2k + 1$ voters, let $p_1 = \ldots = p_k = 0$, $p_{k+1} = \ldots = p_{2k} = 1 - \varepsilon$ and $p_{2k+1} = 1 - 2\varepsilon$.
 Agents $k+1, \ldots, 2k$ form a star with agent $2k+1$ in the middle.
 Then, if agents are restricted to delegating to more competent agents, all voters need to independently vote for $1$ for the majority to vote for 1.
 The probability of this occurring is bounded by $(1 - \varepsilon)^k$ which tends to 0 as $k$ goes to infinity.
-On the contrary if agents delegate to the central node the probability of correct vote is $1 - 2\varepsilon$.
+On the contrary, if agents delegate to the central node the probability of correct vote is $1 - 2\varepsilon$.
 
 The paper then proves the following two hardness results.
 For any local delegation mechanism $M$ and any $\delta > 0$ there are instances where direct voting or complete dictatorship outperforms $M$ by $\frac{1}{2} - \delta - \alpha$.
-Their construction does not use transitive delegations and so apply to simpler models of Liquid Democracy like Proxy Voting.
+Their construction does not use transitive delegations and so applies to simpler models of Liquid Democracy like Proxy Voting.
 The more striking hardness result is that even if we consider \emph{non-local} delegation mechanisms the optimal delegation is hard to approximate.
 The authors then introduce the \textsc{OptimalDelegationProblem} or \textsc{ODP}.
 \textsc{ODP} is the optimisation problem of finding the optimal success rate for a given instance of a Liquid Democracy setting.
@@ -203,9 +202,9 @@ Now, for the delegative setting, \citeauthor{zhang2021power} only consider liqui
 In the resulting graph they consider that a coalition can only use the voting power that is accrued within the coalition. 
 For instance in a delegation chain $a \to b \to c$, the coalition $\{a, c\}$ has a voting power of 1.
 Given these details. If $b$ were to join $\{a, c\}$ the voting power of the coalition would be 3.
-The authors then axiomatically characterise the index. These axioms include that a dummy voter has no power, a dictator has power of 1, agents which swing the same coalitions have equal power and some reasonable composition properties.
+The authors then axiomatically characterise the index. These axioms include that a dummy voter has no power, a dictator has power of 1, agents which swing the same coalitions have equal power and some other reasonable composition properties.
 Further, this power index gives more power to agents voting directly for their final delegator than voting indirectly.
-This comes in contrast with liquid democracy's transitive delegations.
+This comes in contrast with the spirit of liquid democracy's transitive delegations.
 
 After the power index is introduced they revisit the game theoretic model by \citet{bloembergen2019rational}.
 They change the reward of voter $v$ from being the accuracy of the final delegator to being the accuracy of the final delegator \emph{multiplied} by the power index of $v$.
@@ -223,7 +222,7 @@ The authors explicitly state that the order need not be complete.
 They encode this preference relation in a directed weighted graph with nodes being the voters and edges the delegations.
 If voter $u$ thinks voter $v$ is the $i$\textsuperscript{th} preferred delegator then there exists an edge $(u, v)$ with weight $i$.
 Here, we note a small and easily remediable inconsistency. 
-To be able to have a well-defined notion of $v$ being the $i$\textsuperscript{th} the first $i$ voters need to be totally orderable.
+To be able to have a well-defined notion of $v$ being the $i$\textsuperscript{th} preferred delegator, the first $i$ voters need to be totally orderable.
 An example where this could be a problem is the partial order $\succ$ over $\{a, b, c, d\}$ given by $a \succ d$ and $b \succ c \succ d$.
 The rest of the paper seems to assume that for every agent $u$ their preference relation is a total order for some $k_u$ agents and the rest of the agents are tied at the end and are not approved of.
 
@@ -231,7 +230,7 @@ Now, that the graph is set up there are different ways to resolve delegations ca
 The key concepts extended in this paper are those of \emph{cast participation} and \emph{guru participation} and they are defined for a \emph{pair} of delegation mechanism and aggregation rules.
 Cast participation is the property that every voter $i$ with a preference over the alternatives weakly improves the outcome by voting directly compared to abstaining.
 Guru participation is the property that voter $g$ weakly benefits by having more voters delegate to $g$.
-The property of cast-participation has been introduced in the past but this is the first introduction of such a notion in Liquid Democracy. Further, guru participation is a very reasonable extension.
+The property of cast participation has been introduced in the past but this is the first introduction of such a notion in Liquid Democracy. Further, guru participation is a very reasonable extension.
 
 The paper then goes on to fix the aggregation rule to be the simple majority rule for binary issues. It then examines two different delegation mechanisms, depth-first search and breadth-first search.
 Suppose voter $i$ has stated that they want to delegate to some agent. Let us represent a delegation chain as $(c_1, c_2, \ldots, c_k)$ meaning that agent $i$ delegates to their $c_1$\textsuperscript{th} preference and the $j$\textsuperscript{th} agent in the chain delegates to their $c_j$\textsuperscript{th} preference.
@@ -262,6 +261,8 @@ They then prove that their heuristics do not satisfy guru participation when age
 \newpage
 
 \section{Preliminaries}
+
+We now formally present the model of \citet{grandi} which we will consider for the rest of the paper.
 
 \subsection{Ballots}
 
@@ -381,7 +382,7 @@ Throughout this work it will be meaningful to restrict the functions agents can 
 
 \begin{itemize}
     \item Direct delegations to voter $v$ denoted by $\mathit{LIQUID} = \{\mathit{id}_v \mid v \in N\}$, where $\mathit{id}_v$ is the identity function applied to the vote of voter $v$.
-    \item Boolean functions in conjunctive normal form denoted by $\mathit{BOOL}$. 
+    \item Boolean functions in disjunctive normal form denoted by $\mathit{BOOL}$. 
     \item Monotone boolean function in disjunctive normal form denoted by $\mathit{MON}$-$\mathit{BOOL}$.
 \end{itemize}
 
@@ -466,7 +467,7 @@ Formally:
 \end{definition}
 
 The above unravelling procedures have already been introduced and studied by  \cite{grandi}. 
-A natural extension of \textsc{MinMax}, not studied is that of \textsc{MinMaxSum} that selects from the \textsc{MinMax} certificates the ones with minimum sum. 
+A natural extension of \textsc{MinMax}, is that of \textsc{MinMaxSum} that selects from the \textsc{MinMax} certificates the ones with minimum sum. 
 Formally:
 
 \begin{definition}[MinMaxSum]
@@ -519,12 +520,11 @@ In order to study the computational properties of the unravelling procedures we 
 \end{definition}
 
 
-Now, \textsc{BoundedMinSum} and \textsc{BoundedMinMax} have been studied by \citeauthor{grandi}.
-They proved that \textsc{BoundedMinSum}$_\mathit{LIQUID}$ and \textsc{BoundedMinMax}$_\mathit{LIQUID}$ are poly-time computable and that \textsc{BoundedMinSum}$_\mathit{MON\text{-}BOOL}$ and \textsc{BoundedMinMax}$_\mathit{BOOL}$ are NP-complete.
+\citeauthor{grandi} have proven that \textsc{BoundedMinSum}$_\mathit{LIQUID}$ and \textsc{BoundedMinMax}$_\mathit{LIQUID}$ are poly-time computable and that \textsc{BoundedMinSum}$_\mathit{MON\text{-}BOOL}$ and \textsc{BoundedMinMax}$_\mathit{BOOL}$ are NP-complete.
 We improve on these hardness results and conclude some inapproximability results.
 
 Before delving any further we can consider the trivially easy cases. 
-For any function class $\mathcal{F}$, \textsc{BoundedMinSum}$_\mathcal{F}$ and \textsc{BoundedMinMax}$_\mathcal{F}$ are trivially solvable if the maximum size of the ballot is 1.
+For any function class $\mathcal{F}$, \textsc{BoundedMinSum}$_\mathcal{F}$ and \textsc{BoundedMinMax}$_\mathcal{F}$ are trivially solvable if the maximum size of the ballot is 1. That is because every agent is required to vote for a constant.
 
 Now, let $\lor$ be the binary logical OR and $\land$ be the binary logical AND. Then:
 
@@ -718,7 +718,7 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
 
 Now we shift our focus on \textsc{BoundedMinMax}.
 We first note that there is an additional easiness lemma for \BMM.
-The point of this lemma is that \BMM does not introduce any additional hardness beyond the hardness needed for computing the necessary winner of a function.
+The point of this lemma is that \BMM\ does not introduce any additional hardness beyond the hardness needed for computing the necessary winner of a function.
 
 \begin{proposition}
     Let $\mathcal{F}$ be any computable family of functions and $\vec{B}$ a smart profile where each ballot has size at most 2.
@@ -965,7 +965,7 @@ We also, need to be able to refer to functions that are not equivalent to direct
 These functions are referred to as dictator functions by \cite{boolean} and are equivalent to projection functions.
 
 \begin{definition}[Dictator functions]
-    Function $f \colon \{0, 1\}^n \longrightarrow \{0, 1\}$ is a dictator function if there is some index $1 \leq i \leq n$ such that for every $\vec{x} \in \{0, 1\}^n$, $f(\vec{x}) = x_i$.
+    Function $f \colon \{0, 1\}^n \longrightarrow \{0, 1\}$ is a \emph{dictator function} if there is some index $1 \leq i \leq n$ such that for every $\vec{x} \in \{0, 1\}^n$, $f(\vec{x}) = x_i$.
 \end{definition}
 
 \begin{lemma}
@@ -1020,8 +1020,7 @@ Nevertheless, the following key theorem works even if there is only one sufficie
 \end{proof}
 
 As an immediate corollary, if agents are allowed to delegate to some odd majority then \textsc{MinSum} and \textsc{MinMax} are NP-hard.
-
-
+This resolves the question left open in \citet{grandi}.
 
 \subsection{Results for $\LIQUID$}
 
@@ -1073,6 +1072,7 @@ The paper by \citet{grandi} provides a $\mathcal{O}(n^2l^2)$ algorithm for findi
 
 The above algorithm works for cases where voters are offered more than two alternatives.
 To retain the complexity of $\mathcal{O}(nl \log l)$ it suffices to assume that $d \leq n$.
+We also, show that it is easy to modify the above algorithm to check if there is a valid \textsc{MinMax} certificate voting for $0$ or $1$ in polynomial time.
 
 
 \begin{proposition}
@@ -1126,10 +1126,10 @@ For the case $D = \{0, 1, *\}$ we posit that reasonable extensions of the order 
     \{1-d\} < \{1-d, *\} < \{*\} \sim \{1-d, d\} \sim \{1-d, *, d\} < \{*, d \}< \{d\}.
 \]
 Here $S_1 \sim S_2$ denotes that $S_1$ is not comparable to $S_2$.
-Then we can formalise cast-participation for irresolute procedures:
+Then we can formalise cast participation for irresolute procedures:
 
-\begin{definition}[Cast-Participation for irresolute procedures]
-    A resolute voting rule $r$ and a irresolute unravelling procedure $\mathcal{U}$ satisfy cast-participation if for all valid smart profiles $\mathbf{B}$ and agents $a \in N$ such that $B_a \in D \setminus \{*\}$ we have that for all $B_a' \neq B_a$:
+\begin{definition}[cast participation for irresolute procedures]
+    A resolute voting rule $r$ and a irresolute unravelling procedure $\mathcal{U}$ satisfy cast participation if for all valid smart profiles $\mathbf{B}$ and agents $a \in N$ such that $B_a \in D \setminus \{*\}$ we have that for all $B_a' \neq B_a$:
     \[
         r(\mathcal{U}(\mathbf{B})) \geq_a r(\mathcal{U}(\mathbf{B}_{-a}, B_a')).
     \]
@@ -1155,16 +1155,16 @@ Then cast participation does not hold.
     Consider the smart profile where for each agent $a$, $B_a = (u_a)$. 
     In particular $0 >_i * >_i 1$. We are allowed to deduce this because $i$ does not vote for an abstention.
     But, by setting a smart ballot of $B_i = (e)$ we obtain $r(\vec{u}') < r(\vec{u}')$. So voter $i$ prefers to vote directly for $e$ than $d$ despite preferring outcome $d$.
-    This violates cast-participation.
+    This violates cast participation.
 \end{proof}
 
-We consider that reasonable unravelling procedures will not needlessly violate their agents' first preferences. 
+We consider that most reasonable unravelling procedures will not needlessly violate their agents' first preferences. 
 We formally say that $\mathcal{U}$ respects first preferences if whenever $\vec{c} = (1, 1, \ldots, 1)$ is a consistent certificate, $\mathcal{U}$ returns an outcome with certificate $\vec{c}$. 
-Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect first preferences as well as any Pareto optimal unravelling procedure.
+Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect first preferences as well as any Pareto optimal unravelling procedure. A notable exception is the BFS algorithm proposed by \citeauthor{kotsialou} as shorter delegation chains are preferred over longer delegation chains.
 
 \begin{proposition}
     Suppose $r$ is a monotone rule, $\mathcal{U}$ respects first preferences. Suppose additionally, that for some $n$ and $k > 0$ there exists a ``deciding'' subset of voters $S$ with $\abs{S} \leq n - k$ such that if every voter in $S$ votes for $d$, $r$ votes for $d$.
-    Then, cast-participation does not hold.
+    Then, cast participation does not hold.
 \end{proposition}
 
 \begin{proof}
@@ -1178,7 +1178,7 @@ Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect 
 \end{proof}
 
 \begin{proposition}
-    Let $r$ be a rule such that for $n \geq 5$ voters if $n-2$ voters vote for $d$ then $r$ assigns $d$. Then there are examples that unravelling with \textsc{MinMax} violates cast-participation for any $n$. This result holds even if we only allow agents to vote using LIQUID.
+    Let $r$ be a rule such that for $n \geq 5$ voters if $n-2$ voters vote for $d$ then $r$ assigns $d$. Then there are examples that unravelling with \textsc{MinMax} violates cast participation for any $n$. This result holds even if we only allow agents to vote using LIQUID.
 \end{proposition}
 
 \begin{proof}
@@ -1192,24 +1192,23 @@ Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect 
 Do note that the above counterexample works even when consider issues with binary outcomes without abstentions.
 Additionally, the above proof would not work in the case of \textsc{MinMaxSum}, as \textsc{MinMaxSum} would only return the certificate $(2, 1, \ldots, 1)$.
 
-We can further prove that \textsc{MinSum} does not satisfy cast-participation in general. 
-In the case where abstentions are allowed we denote $\mathit{Maj}(0, *) = 0, \mathit{Maj}(1, *) = 1$ and $\mathit{Maj}(0, 1) = *$.
+We can further prove that \textsc{MinSum} does not satisfy cast participation in general.
 
 \begin{proposition}
-    Let $r$ be such that if a strict majority votes for outcome $d$ then $r$ supports outcome $d$. Then if voters are allowed to delegate to even majorities, cast-participation doesn't hold for \textsc{MinSum}. 
+    Let $r$ be such that if a strict majority votes for outcome $d$ then $r$ supports outcome $d$. Then even if we consider only binary issues, cast participation doesn't hold for \textsc{MinSum}. 
 \end{proposition}
 
 \begin{proof}
-    Let $N = \{a, b, c, d, e\}$. Let $B_a = (1), B_b = (0), B_c = (\mathit{Maj}(a, b) > 1), B_d = B_e = (c > 1)$. So that agent $a$ prefers outcome $1$. Then we can resolve this smart profile by assigning everyone to first preferences. Then $r$ resolves to $*$. So the set of outcomes is $\{*\}$.
-    
-    Now if $B_a' = (c > d > 1)$ then the unique result of \textsc{MinSum} is $c$ votes for $1$. Further, $a, d, e$ delegate to $c$ using first preferences and vote for $1$ as well. This results in a strict majority for $1$. So the set of outcomes is $\{1\}$ which is preferred to $\{*\}$.
+    Let $N = \{a, b, c, d, e, f, \text{\underline{zero}}\}$. Let $B_\text{\underline{zero}} = (0), B_a = (1), B_b = (\text{\underline{zero}} > 1), B_c = (a \lor b > d > 1), B_d = (a \lor b > c > 1), B_e = (b > 1)$ and $B_f = (b > 1)$. Then, the unique \textsc{MinSum} outcome is everyone voting for their first preferences with $a \lor b$ resolving to $1$ and $a, c, d$ voting for 1 and $\text{\underline{zero}}, b, e, f$ voting for 0. This gives an outcome set of $\{0\}$.
+
+    Now, if $a$ were to switch their vote to $(c > d > 1)$, then the \textsc{MinSum} outcome set would be $\{1\}$. Because if $b$ votes for $1$ directly, every other first preference can be resolved.
+    Hence, $a$ should not vote directly for 1 even though it is their preferred outcome. This violates cast participation.
 \end{proof}
 
-Note, that in the above case $\mathit{Maj}$ is a monotone rule. So, it is not the case that monotone rules guarantee cast participation for \textsc{MinSum}.
-
+Note, that in the above case $\lor$ is a monotone rule. So, it is not the case that monotone rules guarantee cast participation for \textsc{MinSum} even for binary issues.
 
 \textbf{Conjecture:}
-    Suppose that $r$ is a monotone rule and voters are restricted to casting $\LIQUID$ ballots. Then \textsc{MinSum} satisfies cast-participation.
+    Suppose that $r$ is a monotone rule and voters are restricted to casting $\LIQUID$ ballots. Then \textsc{MinSum} satisfies cast participation.
 
 
 \newpage
