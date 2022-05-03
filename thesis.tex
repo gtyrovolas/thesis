@@ -77,11 +77,13 @@
 
 \newpage
 
-\section{Context}
+\section{Introduction}
 
 Liquid democracy, also referred to as delegative democracy, is a decision-making mechanism that allows greater choice to voters than representative democracy.
-Firstly, every voter is allowed to vote directly on an issue. Voters can delegate their vote to other voters.
-Importantly delegations are \emph{transitive}. So we allow Alice to delegate to Bob and Bob to delegate to Charlie. In this case Charlie votes with the combined power of all three.
+Firstly, every voter is allowed to vote directly on an issue. 
+Voters can delegate their vote to other voters.
+Importantly delegations are \emph{transitive}. 
+So we allow Alice to delegate to Bob and Bob to delegate to Charlie. In this case Charlie votes with the combined power of all three.
 
 One of the first published proposals of this model is a non-technical work by \cite{ford2002delegative}. 
 Ford claims that large-scale direct democracy is infeasible and likely undesirable.
@@ -256,6 +258,24 @@ Further, they analyse the complexity of the heuristics they introduce.
 As the axioms were introduced for resolute procedures they do not examine the axioms for \textsc{MinSum} and \textsc{MinMax}, which we do in Section~\ref{section:axioms}.
 They prove that their deterministic heuristics satisfy cast participation for any monotone aggregation rule when voters can only delegate directly to other voters.
 They then prove that their heuristics do not satisfy guru participation when agents are allowed to delegate to pluralities.
+
+\subsection{Our Contribution}
+
+We extend the work of \citeauthor{grandi} in two directions. 
+In Section~\ref{section:Complexity}, we use novel gadgets to prove that, if agents can delegate using the functions for binary logical OR and binary logical AND, then unravelling delegations optimally is NP-hard.
+Our reductions give tight bounds on NP-hardness.
+If we were allow users to delegate to strictly less functions, the resulting instances would be trivial.
+We also use the binary version of the logical functions rather than $n$-ary versions.
+We then take a detour through boolean functions to generalise our hardness result for many reasonable classes of functions. 
+As a corollary, we resolve an open question left in the original paper about the complexity of delegating to majorities.
+We then move on and give positive complexity results for direct delegation.
+With two simple tweaks, the original \textsc{MinMax} algorithm is improved from $\mathcal{O}(n^2l^2)$ to $\mathcal{O}(nl \log l)$.
+We also provide an algorithm to check if a \textsc{MinMax} outcome exists in favour of a particular alternative.
+
+In Section~\refeq{section:axioms}, we extend the definition of \citet{kotsialou} to irresolute procedures.
+We provide negative results for many reasonable unravelling procedures if any non-monotone functions are included.
+Additionally, we show that the optimal unravelling procedures of \textsc{MinMax} and \textsc{MinSum}, do not satisfy cast participation in restricted settings.
+We finish the work by leaving an open question we were not able to resolve that seems particularly plausible.
 
 
 \newpage
@@ -501,6 +521,7 @@ Then, $b = \overline{d} = 0$, $e = d = 1$. So, $c = \Maj(e, f, g) = 1$, by neces
 
 
 \section{Complexity Results}
+\label{section:Complexity}
 
 \subsection{Hardness Results}
 
@@ -1178,6 +1199,7 @@ Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect 
 \end{proof}
 
 \begin{proposition}
+    \label{prop:cast-max}
     Let $r$ be a rule such that for $n \geq 5$ voters if $n-2$ voters vote for $d$ then $r$ assigns $d$. Then there are examples that unravelling with \textsc{MinMax} violates cast participation for any $n$. This result holds even if we only allow agents to vote using LIQUID.
 \end{proposition}
 
@@ -1194,7 +1216,7 @@ Additionally, the above proof would not work in the case of \textsc{MinMaxSum}, 
 
 We can further prove that \textsc{MinSum} does not satisfy cast participation in general.
 
-\begin{proposition}
+\begin{proposition} \label{prop:cast-sum}
     Let $r$ be such that if a strict majority votes for outcome $d$ then $r$ supports outcome $d$. Then even if we consider only binary issues, cast participation doesn't hold for \textsc{MinSum}. 
 \end{proposition}
 
@@ -1209,6 +1231,51 @@ Note, that in the above case $\lor$ is a monotone rule. So, it is not the case t
 
 \textbf{Conjecture:}
     Suppose that $r$ is a monotone rule and voters are restricted to casting $\LIQUID$ ballots. Then \textsc{MinSum} satisfies cast participation.
+
+\newpage
+\section{Conclusion}
+
+In summary, we have extended the work of \citet{grandi} in two directions. On the complexity theoretic level, we have produced a new hardness criterion using novel gadgets. Additionally, we have improved on the algorithms to find \textsc{MinMax} outcomes and given an algorithm that returns if a \textsc{MinMax} outcome for a particular alternative exists.
+On the axiomatisation direction we have extended the definition \citeauthor{grandi} give and proved several negative results.
+
+There are three ideas that could guide future work. First, the two open questions we leave at the end of Sections \ref{section:Complexity} and \ref{section:axioms} can be resolved. In particular, I am slightly surprised the question at the end of Section \ref{section:Complexity} has not been resolved yet, as it is a particularly general result concerning arborescences.
+Another direction is to extend the model and allow users to personally associate costs with their preferences resulting to a version of cardinal voting.
+The cardinal voting model seems like a meaningful generalisation of the preferential voting model we have here.
+Finally, our hardness result implies that for many reasonable functions optimal unravellings can be NP-hard.
+But there is a case relevant to the real world that is not covered by the hardness result.
+One implementation of liquid democracy requires agents to choose before the election if they want to be delegated to.
+Thus splitting the electorate between voters who cannot be delegated to and delegates who can be delegated to. 
+Suppose we allow voters to delegate to a single boolean functions of delegates. But, delegates can only delegate directly to other delegates, then NP-hardness does not arise.
+That is because the only cycles that need to be resolved happen in $\LIQUID$ which can be optimally unravelled in polynomial time.
+This gives voters a lot of expressive power while maintaining polynomial time unravellings. A question that seems interesting in this setting is when it would be better for someone to join the delegates or the voters in different instances.
+
+In these final paragraphs, I include my personal reflections.
+This project has allowed me to explore a topic I had heard of before in a very detailed way.
+Initially, I was quite ambitious and tried to come up with a game-theoretic model that rewarded amassing power.
+This is a reflection of real-life politics, as successful political parties get funding and members of parliament are paid a salary from the government.
+As far as I have seen, such a model has not appeared in the literature yet.
+The resulting model was complex and unwieldy and had no pure strategy Nash Equilibria.
+Hence, we moved on to another idea were voters want to coordinate on how to delegate to delegates in order to maximise the probability of voting for the ground truth.
+This path also did not yield substantial results although I did come up with some nice simulations and graphs.
+
+The direction of my work changed when my supervisor suggested to read the paper by \citet{grandi} which she thought left open questions I could answer.
+I did so, and it turned out she was correct.
+The paper had a wide gap between what was proven to be easy, the simplest class of functions, and hard, arbitrary boolean functions.
+A class of functions that was noted throughout the work but not assigned a complexity class was that of delegating to majorities.
+I grappled with this over the Christmas vacation and realised that it was indeed NP-hard.
+The next task I had in mind was to check a less expressive function class that is binary OR and binary AND.
+As shown in the main hardness reduction these too turned out to be NP-hard.
+I was very excited to present these to my supervisor as these superseded my previous result.
+
+Our work would include all the complexity results but importantly, we also considered the axiomatic results in \citet{grandi}.
+The axiomatic results were only for resolute procedures and so there was space to extend them to irresolute ones.
+I picked the most unassuming definition I could and then started proving negative results for non-monotone functions.
+I was under the impression that \textsc{MinMax} and definitely \textsc{MinSum} would satisfy cast participation for monotone functions.
+I turned out to be wrong even for a restricted class of monotone functions. 
+In fact, I arrived at the example of Proposition~\ref{prop:cast-sum} by trying to prove its negation.
+Overall, I have deeply enjoyed the repeated successes and failures of research. 
+I am quite happy with the final result which would not be possible without the guidance of my supervisor. 
+
 
 \newpage
 \bibliographystyle{plainnat}
