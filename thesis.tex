@@ -11,10 +11,14 @@
 \usepackage{forest}
 \usepackage{subfig}
 \usepackage{natbib}
+\usepackage{etoolbox}
+\usepackage[hidelinks]{hyperref}
 \usetikzlibrary{shapes.geometric,positioning, arrows,trees, positioning, fit, calc}
 \tikzset{circ/.style={circle,draw, solid, inner sep=0pt,minimum size=10mm}}
 \usepackage{amsthm}
 \usepackage{cleveref}
+
+
 
 \title{An Analysis of Smart Voting in Liquid Democracy}
 \author{Giannis Tyrovolas}
@@ -134,6 +138,8 @@ It is still undecided if there exist local delegation mechanisms with positive g
 The paper's secondary result is that if we bound voters competence away from 0 and 1, a simple non-local delegation mechanism exists.
 The mechanism iteratively constructs delegations by having voter $i$ delegate their vote to the most competent approved voter of $i$ that has at most $\sqrt[3]{\log n}$ already delegating to them.
 
+
+
 \citet{caragiannis2019contribution} further considered this model after the preprint of \citet{kahng2021liquid} was published in 2018.
 The authors first disagree with the premise that $\alpha$-delegations capture the essence of disagreeing opinions.
 They claim that a voter $i$ with competence level of $0.1$ would never delegate to voter $j$ with a competence level of $0.6$ as voter $i$ would consider $j$ to be horribly misinformed.
@@ -167,6 +173,27 @@ All of their heuristics consistently outperform direct democracy.
 A particular modelling assumption of interest is that the average competence of agents is $0.48$, which dooms direct democracy's outcome to tend to 0 as the number of voters grows.
 Nevertheless, their experimental data suggest that their heuristics improve as more agents are added.
 
+Several of the negative results that arise in the aforementioned papers are due to individual voters gaining too much power.
+This is a phenomenon observed in practice in some implementations of liquid democracy\footnote{\href{https://www.spiegel.de/international/germany/liquid-democracy-web-platform-makes-professor-most-powerful-pirate-a-818683.html}{Article in Der Spiegel}}. 
+So, \citet{golz2021fluid} continue their work from \citet{kahng2021liquid} by examining how to minimise the maximum power of individual voters.
+The problem they tackle is: let $G$ a graph with nodes the agents, where agents $u, v$ are connected by an edge if and only if $u$ approves of $v$. Let $V$ a set of voters that vote directly. Then, what is the minimum of the maximum voting power a voter in $V$ amasses?
+If you remove the agents that have no path to any voter in $V$, the problem is equivalent to minimising congestion for confluent flow with unit demands and infinite edge capacity.
+To see why, observe that when $u$ delegates to $v$, $u$ transfers the votes of $u$ plus 1 to $v$ giving us flow conservation with unit demands. 
+As every agent can only delegate to a single other agent, this makes the flow confluent.
+Agents can transfer an unbounded amount of power giving infinite capacity.
+Congestion is precisely a metric of the maximum flow going in to a vertex. 
+So, the authors transform results for confluent flow giving a polynomial time approximation algorithm with ratio $1 + \ln{\abs{V}}$ and proving hardness for approximating to a factor of $\frac{1}{2} \log_2{\abs{V}}$.
+
+\citeauthor{golz2021fluid} then consider a more generalised version of liquid democracy where agents can split their votes equally among $k$ delegates.
+To probabilistically analyse this model, they introduce a preferential attachment model that generalises the one by \citet{barabasi1999emergence}, but analyse special cases of the model.
+For this model, they prove that for $k = 1$, the maximum voting power is $\Omega(n^\beta)$ with high probability. Here, $\beta > 0$ is a constant determined by a model parameter.
+The impressive result is that, if $k = 2$, then the maximum voting power is bounded above by $\log_2{\ln n} + \Theta(1)$ with high probability.
+
+The authors run simulations that confirm the benefits of delegating to two agents for several instances of their model.
+It is also computationally feasible to coordinate the agents to resolve cases with multiple delegations in a way that is close to optimal, possibly ``even at a national scale.''
+Additionally, the benefits of increasing $k$ diminish as $k$ grows larger than $3$ in the Barab{\'a}si-Albert model.
+Further, their empirical results justify that the special cases of the model they consider in their analysis are the more realistic ones.
+
 \subsection{A Game-Theoretic Approach}
 
 The first game-theoretic approach to liquid democracy is by \citet{bloembergen2019rational}.
@@ -191,7 +218,7 @@ After setting up the framework they prove two results.
 Firstly, for deterministic type profiles there exist pure strategy Nash Equilibria (NE).
 The assumption that the profiles are deterministic is important as the proof separates all agents with type $0$ and all agents of type $1$ and deals with them independently.
 In particular Nash Equilibria exist if agents all have the same type, as in the setting where they discover a correct ground truth.
-Secondly, for non-deterministic but independent types, if voting is effortless, i.e. $e_i = 0$, there exist pure strategy Nash Equilibria.
+Secondly, for non-deterministic but independent types, if voting is effortless, i.e., $e_i = 0$, there exist pure strategy Nash Equilibria.
 This is established by proving that best responses to any state of the game do not decrease the utility of any agent.
 They then provide an example of a NE providing group accuracy of almost a coin toss whereas it would be easy to get an accuracy of 1. 
 
@@ -542,7 +569,7 @@ In order to study the computational properties of the unravelling procedures we 
 
 
 \citeauthor{grandi} have proven that \textsc{BoundedMinSum}$_\mathit{LIQUID}$ and \textsc{BoundedMinMax}$_\mathit{LIQUID}$ are poly-time computable and that \textsc{BoundedMinSum}$_\mathit{MON\text{-}BOOL}$ and \textsc{BoundedMinMax}$_\mathit{BOOL}$ are NP-complete.
-We improve on these hardness results and conclude some inapproximability results.
+We improve on these hardness results by introducing novel gadgets and conclude some inapproximability results.
 
 Before delving any further, we can consider the trivially easy cases. 
 For any function class $\mathcal{F}$, \textsc{BoundedMinSum}$_\mathcal{F}$ and \textsc{BoundedMinMax}$_\mathcal{F}$ are trivially solvable if the maximum size of the ballot is 1. That is because every agent is required to vote for a constant.
@@ -723,7 +750,7 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
 \end{corollary}
 
 \begin{proof}
-    Every instance of \textsc{BoundedMinSum} is an instance of \textsc{BoundedMinMaxSum}. For target maximum sum $S$ and smart profile $\vec{B}$ a \textsc{MinMax} query, we can consider a \textsc{MinMaxSum} query with target maximum $M$, target sum $S$ and smart profile $\vec{B}$. Simply set $M$ to be the maximum of the size of smart ballots, i.e. $M = \max_{a \in N} k_a$. Then the max requirement of \textsc{MinMaxSum} is trivially satisfied and so we have reduced \textsc{BoundedMinMax} to \textsc{BoundedMinMaxSum}.
+    Every instance of \textsc{BoundedMinSum} is an instance of \textsc{BoundedMinMaxSum}. For target maximum sum $S$ and smart profile $\vec{B}$ a \textsc{MinMax} query, we can consider a \textsc{MinMaxSum} query with target maximum $M$, target sum $S$ and smart profile $\vec{B}$. Simply set $M$ to be the maximum of the size of smart ballots, i.e., $M = \max_{a \in N} k_a$. Then the max requirement of \textsc{MinMaxSum} is trivially satisfied and so we have reduced \textsc{BoundedMinMax} to \textsc{BoundedMinMaxSum}.
 \end{proof}
 
 
@@ -845,7 +872,7 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
     \draw [->] (a) to [bend right] (a');
     \draw [->] (a') to [bend right] (a);
     \draw[->, dashed] (a) .. controls (-3, 4) and (-2, -7) .. (t);
-    \draw[->, dashed] (a') .. controls (6, 3) and (6, -7) .. (t');
+    \draw[->, dashed] (a') .. controls (5, -2) and (5, -5) .. (t');
 
 
     \draw[->] (b) to [bend right] (b');
@@ -895,7 +922,7 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
             \draw [->] (a) to [bend right] (a');
             \draw [->] (a') to [bend right] (a);
             \draw[->, dashed] (a) .. controls (-3, 4) and (-2, -7) .. (t);
-            \draw[->, dashed] (a') .. controls (6, 3) and (6, -7) .. (t');
+            \draw[->, dashed] (a') .. controls (5, -2) and (5, -5) .. (t');
         
         
             \draw[->] (b) to [bend right] (b');
@@ -1133,7 +1160,7 @@ The equivalent graph theoretic question is, for graph $\varphi(\vec{B})$ is ther
 
 We introduce the axiom of cast participation. This axiom states that voters preferring outcome $d$ benefit from voting directly for $d$. 
 As mentioned in the introduction, this axiom is introduced by \cite{kotsialou} and \cite{grandi} have applied it for binary issues with abstentions. 
-We use the definition for binary issues with abstentions i.e. $D = \{0, 1, *\}$.
+We use the definition for binary issues with abstentions i.e., $D = \{0, 1, *\}$.
 We denote that agent $a$ prefers outcome $d$ to $e$ as $d >_a e$. As in \citeauthor{grandi} we infer that if agent $a$ votes directly for outcome $d \in \{0, 1\}$ then agent $a$ prefers $d$ over any other outcome. 
 Formally if $B_a = (d)$ then $ d >_a 1-d$ and $d >_a *$.
 Additionally, we consider that if agent $a$ votes directly for $d$ then $* >_a 1-d$. 
