@@ -8,3 +8,5 @@ drafts*
 *.bbl
 *.blg
 *.synctex*
+*.out
+
