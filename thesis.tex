@@ -18,10 +18,11 @@
 \usepackage{amsthm}
 \usepackage{cleveref}
 
-
+\usepackage{setspace}
+\doublespacing
 
 \title{An Analysis of Smart Voting in Liquid Democracy}
-\author{Giannis Tyrovolas}
+\author{Student: 1033308}
 \date{\today}
 \newtheorem{theorem}{Theorem}
 \newtheorem{prop}[theorem]{Proposition}
@@ -63,19 +64,37 @@
         \vfill
         
         \LARGE
-        Giannis Tyrovolas \\
+        Student: 1033308 \\
         \Large
         Supervisor: Edith Elkind\\
         
         \vspace*{1.5cm}
         
         4\textsuperscript{th} Year Project Report\\
-        Honour School of Mathematics and Computer Science (Part C) \\
+        \vspace*{2pt}
+        Honour School of Mathematics and Computer Science (Part C)\\
         \vspace*{.5cm}
-        Trinity Term 2022
+        Trinity Term 2022 \\
+        Words: 9917
     \end{center}
 
 \end{titlepage}
+
+\renewcommand{\abstractname}{Acknowledgements}
+\begin{abstract}
+    I begin by acknowledging the guidance of my supervisor Edith Elkind. Without her exceptional knowledge of recent academic developments, insightful comments and the time she dedicated to reviewing my manuscript this work would not be possible.
+For this, I am extremely grateful.
+
+Further, I am very appreciative to the hours my tutors have spent to sharpen my mind in the last four years. I'm grateful to them for helping me blossom to the student I am today.
+
+I want to thank my good friends for taking the time to look through my work and for bouncing off ideas about a solution that never came to be.
+I wish I could thank my tutors and friends by name, but guidance from the academic office forbids me to do so.
+
+Finally, I want to thank my family for the support throughout my life and especially this last year.
+
+\end{abstract}
+
+\newpage
 
 \tableofcontents
 
@@ -253,7 +272,7 @@ If voter $u$ thinks voter $v$ is the $i$\textsuperscript{th} preferred delegator
 Here, we note a small and easily remediable inconsistency. 
 To be able to have a well-defined notion of $v$ being the $i$\textsuperscript{th} preferred delegator, the first $i$ voters need to be totally orderable.
 An example where this could be a problem is the partial order $\succ$ over $\{a, b, c, d\}$ given by $a \succ d$ and $b \succ c \succ d$.
-The rest of the paper seems to assume that for every agent $u$ their preference relation is a total order for some $k_u$ agents and the rest of the agents are tied at the end and are not approved of.
+The rest of the paper seems to assume that for every agent $u$ their preference relation is a total order for some $k_u$ agents and the rest of the agents are tied at the end and are not approved of\footnote{This inconsistency and our given remedy has been acknowledged by Dr. Kotsialou in correspondence with her.}.
 
 Now, that the graph is set up there are different ways to resolve delegations called delegation mechanisms. Further, once every voter has voted, there are different aggregation rules such as the majority rule, a qualified majority rule or a weighted majority rule.
 The key concepts extended in this paper are those of \emph{cast participation} and \emph{guru participation} and they are defined for a \emph{pair} of delegation mechanism and aggregation rules.
