@@ -1028,7 +1028,7 @@ Then we can define monotonicity of a function.
     Function $f\colon \{0, 1\}^n \longrightarrow \{0, 1\}$ is \emph{monotone} if for all $\vec{u}, \vec{v} \in \{0,1\}^n$, $\vec{u} \leq \vec{v}$ implies that $f(\vec{u}) \leq f(\vec{v})$.
 \end{definition}
 
-We also, need to be able to refer to functions that are not equivalent to direct delegation. 
+We also need to use functions that are not equivalent to direct delegation. 
 These functions are referred to as dictator functions by \cite{boolean} and are equivalent to projection functions.
 
 \begin{definition}[Dictator functions]
@@ -1037,7 +1037,7 @@ These functions are referred to as dictator functions by \cite{boolean} and are 
 
 \begin{lemma}
     \label{lem:boolean}
-    Let $f \colon \{0,1\}^n \longrightarrow \{0,1\}$ for $k \geq 2$, be a function that is monotone, non-constant and not a dictator function.
+    For $n \geq 2$, let $f \colon \{0,1\}^n \longrightarrow \{0,1\}$ be a function that is monotone, non-constant and not a dictator function.
     Then there exist indices $i, j$ with $i < j$ and constants $c_k$ for $1 \leq k \leq n$ and $k \neq i$ and $k \neq j$ such that $f(c_1, \ldots, c_{i-1}, x_i, c_{i+1}, \ldots, c_{j-1}, x_j, c_{j+1}, \ldots, c_n) = x_i \lor x_j$ or $x_i \land x_j$.
 \end{lemma}
 
@@ -1054,8 +1054,8 @@ These functions are referred to as dictator functions by \cite{boolean} and are 
     
     If $t_1 = x_j$, then as $f$ is not a dictator, $k > 1$.
     As $t_1 \nrightarrow t_2$, $t_2$ does not contain $x_j$.
-    Hence, for $t_2 = x_i \land \varphi$ for some $\varphi$, we can set all variables of $\phi$ to 1 and all variables not appearing in $t_1$ or $t_2$ to 0.
-    Then, for any $t_r$ for $r > 2$, $t_r = 0$. That is because $t_r$ cannot contain $x_j$ and the variables $t_r$ of $t_r$ cannot be a subset of the variables of $t_2$.
+    Hence, for $t_2 = x_i \land \varphi$ for some $\varphi$, we can set all variables of $\varphi$ to 1 and all variables not appearing in $t_1$ or $t_2$ to 0.
+    Then, for any $t_r$ for $r > 2$, $t_r = 0$. That is because $t_r$ cannot contain $x_j$ and the variables of $t_r$ cannot be a subset of the variables of $t_2$.
     So, $t_r$ contains variables not in $t_1$ and not in $t_2$ which are set to $0$. So $t_r$ is set to 0.
     Hence, $f$ is made equivalent to $x_i \lor x_j$.
 \end{proof}
@@ -1069,7 +1069,7 @@ This concept can be formalised by considering the dual of each function as state
     Let $f \colon \{0, 1\}^n \longrightarrow \{0, 1\}$. Then $f$'s dual function $f^\dagger \colon \{0, 1\}^n \longrightarrow \{0, 1\}$ defined as $f^\dagger(\vec{x}) = \overline{f(\overline{\vec{x}})}$.
 \end{definition}
 
-In particular $\lor^\dagger = \land,\Maj^\dagger= \Maj$ and for $\Maj_k^0$ the qualified majority of $k$ in favour of $0$, $(\Maj_k^0)^\dagger = \Maj_k^1$.
+In particular $\lor^\dagger = \land$, $\Maj^\dagger= \Maj$ and for $\Maj_k^0$ the qualified majority of $k$ in favour of $0$, $(\Maj_k^0)^\dagger = \Maj_k^1$.
 
 So, we would expect that in most settings the choices of voters to be closed under taking duals.
 Nevertheless, the following key theorem works even if there is only one sufficiently ``complex'' but monotone function $f$ and the dual $f^\dagger$.
@@ -1122,7 +1122,7 @@ The paper by \citet{grandi} provides a $\mathcal{O}(n^2l^2)$ algorithm for findi
 
 \begin{proposition}
     Consider an instance with voters $N = \{1, \ldots, n\}$ and smart ballot $\vec{B}$. 
-    Let maximum preference used by any voter is $l$.
+    Let the maximum preference used by any voter be $l$.
     Then there is a $\mathcal{O}(nl \log l)$ algorithm that returns a \textsc{MinMax} certificate.
 \end{proposition}
 
@@ -1138,7 +1138,7 @@ The paper by \citet{grandi} provides a $\mathcal{O}(n^2l^2)$ algorithm for findi
 \end{proof}
 
 The above algorithm works for cases where voters are offered more than two alternatives.
-To retain the complexity of $\mathcal{O}(nl \log l)$ it suffices to assume that $d \leq n$.
+To retain the complexity of $\mathcal{O}(nl \log l)$ it suffices to assume that $\abs{D} \leq n$.
 We also, show that it is easy to modify the above algorithm to check if there is a valid \textsc{MinMax} certificate voting for $0$ or $1$ in polynomial time.
 
 
@@ -1154,8 +1154,8 @@ We also, show that it is easy to modify the above algorithm to check if there is
     Then we construct the graph $\varphi(\vec{B}_m)$.
     Then, instead of initiating a DFS search from the root we initiate it from node $0$.
     This returns the directly connected component of $0$ denoted $S$.
-    Let $\vec{x}$ with $x_i = 1$ if and only if $i \in S$.
-    Any voter outside of $S$  cannot be made to vote for $0$, so that $S$ is maximal. As $r$ is monotonic, if and only if  there is a possible way of resolving the election to $0$ $r(\vec{x})$ will be equal to 0.
+    Let $\vec{x}$ with $x_i = 0$ if and only if $i \in S$.
+    Any voter outside of $S$  cannot be made to vote for $0$, so that $S$ is maximal. As $r$ is monotone, $r(\vec{x}) = 0$ if and only if  there is a possible way of resolving the election to $0$.
 
     If $r(\vec{x}) = 1$ then we return that every valid \textsc{MinMax} outcome votes for 1.
     Otherwise, we run DFS from $1$ on the subgraph not visited by our previous DFS.
@@ -1167,11 +1167,13 @@ We also, show that it is easy to modify the above algorithm to check if there is
 The above result implies that there need to be clear and predetermined rules on tie-breaking of results.
 That is because it is computationally cheap to adversarially break ties to rig the election in someone's favour.
 
-We have not been able to develop an algorithm or a proof of hardness for a similar result in \textsc{MinMaxSum}.
+We have not been able to develop an algorithm or a proof of hardness for a similar result in \textsc{MinSum}.
 But, we have been able to reduce it to a graph theoretic problem in the case of qualified majorities.
 A qualified majority is a rule where outcome $1$ is selected if and only if at least $k$ voters vote for $1$.
 
-The equivalent graph theoretic question is, for graph $\varphi(\vec{B})$ is there a minimum weight arborescence with the size of subtree of $1$ greater than $k$? We leave whether this is polynomial time computable or NP-hard as an open question.
+Now suppose that our graph $\varphi(\vec{B})$ is weighted, so for $B_v = (a_1 < \ldots < a_k)$, edge $(a_i, v)$ has weight $i$. 
+Then, the equivalent graph theoretic question is, for graph $\varphi(\vec{B})$ is there a minimum weight arborescence with the size of subtree of $1$ greater than $k$? 
+We leave whether this is polynomial time computable or NP-hard as an open question.
 
 \newpage
 \section{Axiomatisation}
@@ -1195,8 +1197,8 @@ For the case $D = \{0, 1, *\}$ we posit that reasonable extensions of the order 
 Here $S_1 \sim S_2$ denotes that $S_1$ is not comparable to $S_2$.
 Then we can formalise cast participation for irresolute procedures:
 
-\begin{definition}[cast participation for irresolute procedures]
-    A resolute voting rule $r$ and a irresolute unravelling procedure $\mathcal{U}$ satisfy cast participation if for all valid smart profiles $\mathbf{B}$ and agents $a \in N$ such that $B_a \in D \setminus \{*\}$ we have that for all $B_a' \neq B_a$:
+\begin{definition}[Cast participation for irresolute procedures]
+    A resolute voting rule $r$ and a irresolute unravelling procedure $\mathcal{U}$ satisfy \emph{cast participation} if for all valid smart profiles $\mathbf{B}$ and agents $a \in N$ such that $B_a \in D \setminus \{*\}$ we have that for all $B_a' \neq B_a$:
     \[
         r(\mathcal{U}(\mathbf{B})) \geq_a r(\mathcal{U}(\mathbf{B}_{-a}, B_a')).
     \]
@@ -1221,7 +1223,7 @@ Then cast participation does not hold.
 \begin{proof}
     Consider the smart profile where for each agent $a$, $B_a = (u_a)$. 
     In particular $0 >_i * >_i 1$. We are allowed to deduce this because $i$ does not vote for an abstention.
-    But, by setting a smart ballot of $B_i = (e)$ we obtain $r(\vec{u}') < r(\vec{u}')$. So voter $i$ prefers to vote directly for $e$ than $d$ despite preferring outcome $d$.
+    But, by setting a smart ballot of $B_i = (e)$ we obtain $r(\vec{u}')$ and $ r(\vec{u}') > r(\vec{u})$. So voter $i$ prefers to vote directly for $e$ than $0$ despite preferring outcome $0$.
     This violates cast participation.
 \end{proof}
 
@@ -1230,7 +1232,7 @@ We formally say that $\mathcal{U}$ respects first preferences if whenever $\vec{
 Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect first preferences as well as any Pareto optimal unravelling procedure. A notable exception is the BFS algorithm proposed by \citeauthor{kotsialou} as shorter delegation chains are preferred over longer delegation chains.
 
 \begin{proposition}
-    Suppose $r$ is a monotone rule, $\mathcal{U}$ respects first preferences. Suppose additionally, that for some $n$ and $k > 0$ there exists a ``deciding'' subset of voters $S$ with $\abs{S} \leq n - k$ such that if every voter in $S$ votes for $d$, $r$ votes for $d$.
+    Suppose $r$ is a monotone rule and $\mathcal{U}$ respects first preferences. Suppose additionally, that for some $n$ and $k > 0$ there exists a ``deciding'' subset of voters $S$ with $\abs{S} \leq n - k$ such that if every voter in $S$ votes for $d$, $r$ votes for $d$.
     Then, cast participation does not hold.
 \end{proposition}
 
