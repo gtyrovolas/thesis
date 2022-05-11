@@ -118,7 +118,7 @@ Delegative democracy is introduced as a balance of the two by challenging the pr
 In this model, voters that wish to do so, can vote directly on issues.
 Passive voters can delegate to the representatives called delegates.
 Delegates are not chosen through time-specific elections but need to canvas voters continually.
-When delegates vote they vote with the combined power of all voters that delegate for them.
+When delegates vote, they vote with the combined power of all voters that delegate for them.
 They can vote on issues directly, or they can delegate to other more specialised delegates.
 A key idea is that delegates need not win competitive elections and that delegates have their votes made public for the sake of accountability. 
 Ford then introduces notions to replace the parliamentary committees in a setting of liquid democracy.
@@ -142,7 +142,7 @@ Delegation mechanisms in this context are functions which input an instance of t
 Then the majority rule is applied on the outcome of a delegation mechanism. Ties are broken arbitrarily.
 The probability that the group votes for the correct outcome for a particular instance of the model $G$ and a delegation mechanism $M$ is $P^M(G)$.
 A particular delegation mechanism is that of direct voting denoted as $D$.
-An important distinction, the authors make are between \emph{local} and non-local delegation mechanisms. \emph{Local} delegation mechanisms are delegation mechanisms where the resulting distribution for agent $i$ depends only on the set of agents $i$ approves of, the set of neighbours of $i$ and an arbitrary ranking $\pi_i$.
+An important distinction the authors make is between \emph{local} and non-local delegation mechanisms. \emph{Local} delegation mechanisms are delegation mechanisms where the resulting distribution for agent $i$ depends only on the set of agents $i$ approves of, the set of neighbours of $i$ and an arbitrary ranking $\pi_i$.
 For example, every voter voting directly or voting for a random approved delegate is a local mechanism. Voting for the most competent approved delegate or voting for a delegate with a specific identifier are non-local mechanisms.
 
 In this setting, \citeauthor{kahng2021liquid} compare liquid democracy to direct voting. They set out two desirable properties.
@@ -178,7 +178,7 @@ Their construction does not use transitive delegations and so applies to simpler
 The more striking hardness result is that even if we consider \emph{non-local} delegation mechanisms the optimal delegation is hard to approximate.
 The authors then introduce the \textsc{OptimalDelegationProblem} or \textsc{ODP}.
 \textsc{ODP} is the optimisation problem of finding the optimal success rate for a given instance of a Liquid Democracy setting.
-By a reduction from a special version of \textsc{3-SAT} approximating \textsc{ODP} within an additive term of $\frac{1}{16}$ is NP-hard.
+By a reduction from a special version of \textsc{3-SAT}, approximating \textsc{ODP} within an additive term of $\frac{1}{16}$ is NP-hard.
 
 \citet{becker2021can} published a collection of results about \textsc{ODP}. 
 They firstly do away with $\alpha$-delegations and do not consider any restrictions on who agents can delegate to.
@@ -278,16 +278,16 @@ Now, that the graph is set up there are different ways to resolve delegations ca
 The key concepts extended in this paper are those of \emph{cast participation} and \emph{guru participation} and they are defined for a \emph{pair} of delegation mechanism and aggregation rules.
 Cast participation is the property that every voter $i$ with a preference over the alternatives weakly improves the outcome by voting directly compared to abstaining.
 Guru participation is the property that voter $g$ weakly benefits by having more voters delegate to $g$.
-The property of cast participation has been introduced in the past \citet{moulin1988condorcet}, but this is the first introduction of such a notion in Liquid Democracy. Further, guru participation is a very reasonable extension.
+The property of cast participation has been introduced in the past \citep{moulin1988condorcet}, but this is the first introduction of such a notion in Liquid Democracy. Further, guru participation is a very reasonable extension.
 
 The paper then goes on to fix the aggregation rule to be the simple majority rule for binary issues. It then examines two different delegation mechanisms, depth-first search and breadth-first search.
 Suppose voter $i$ has stated that they want to delegate to some agent. Let us represent a delegation chain as $(c_1, c_2, \ldots, c_k)$ meaning that agent $i$ delegates to their $c_1$\textsuperscript{th} preference and the $j$\textsuperscript{th} agent in the chain delegates to their $c_j$\textsuperscript{th} preference.
-Then, DFS would have voter $i$ delegate to a final voter given by the smallest lexicographical chain that doesn't include a cycle. For instance if agent $i$ has preferences $a > b$ and agent $a$ has preferences $i > c$, then DFS would have voter $i$ delegating to $c$ with chain $(1, 2)$.
+Then, DFS would have voter $i$ delegate to a final voter given by the smallest lexicographical chain that doesn't include a cycle. For instance, if agent $i$ has preferences $a > b$ and agent $a$ has preferences $i > c$, then DFS would have voter $i$ delegating to $c$ with chain $(1, 2)$.
 The reasonable objection by \citeauthor{kotsialou} is that the second preference of agent $i$ is probably a better choice for $i$ than the second preference of voter $a$.
 So, they propose BFS to return the lexicographically smallest chain \emph{from the chains with the smallest lengths}.
 They then prove that if there are cycles in the graph DFS may not satisfy guru participation whereas if there are no cycles guru participation is satisfied. In contrast, guru participation is always satisfied for breadth first search.
 
-A different approach and model is given by \citet{grandi}. This is the paper which we will be extending so a formal treatment of their model is given in the next section.
+A different approach and model is given by \citet{grandi}. This is the paper which we will be extending, so a formal treatment of their model is given in the next section.
 The authors of the paper allow individual agents to delegate to functions of other agents. A simple example would be to delegate to the majority of some trusted agents.
 Agents submit a ballot where these functions are totally ordered in terms of preference.
 These two complications of the simple model means that cycles can be introduced in much more complicated ways.
@@ -375,7 +375,7 @@ Consider voters $N = \{a, b, c, d, e, f, g\}$, with smart ballots:
 \begin{align*}
     &B_a =(b \lor c > b > 0) \\
     &B_b = \left(\overline{d} > c > 1 \right) \\
-    &B_c = \left(\Maj(e, f, g) > a > 1 \right) \\
+    &B_c = \left(\Maj(e, f, g) > a > 0 \right) \\
     &B_d = (a > c > 1) \\
     &B_e = (d > f \lor g > 1) \\
     &B_f = (c > 0) \\
@@ -466,7 +466,7 @@ Different choices on how to ``unravel'' cycles will produce different outcomes.
 For the majority of this work we will focus on the mathematical and computational properties of different unravelling procedures.
 
 
-Now as each outcome is calculated it is important for agents to know which preference level was used to compute their vote. 
+When the outcome is calculated, it is important for agents to know which preference level was used to compute their vote. 
 To do so we introduce the notion of a certificate:
 
 \begin{definition}[Certificate]
@@ -492,7 +492,7 @@ To actually use our agents' preferences we need to introduce the concept of a co
 Consistent certificates are certificates where the vote of each agent is determined by the votes of other agents using the functions in their smart ballots. Formally:
 
 \begin{definition}[Consistent certificate]
-    For a profile $\mathbf{B}$, a certificate $\mathbf{c}$ is \emph{consistent} if there is an ordering $\mathbf{\sigma} \colon N \longrightarrow \{1,\ldots, n\}$ of agents starting from vector $\vec{X}^0 = \{\Delta\}^n$ with placeholder values $\Delta$ for all agents, iteratively constructs an outcome vector of direct votes $\vec{X} \in D^n$ as follows for $\sigma(a) = z \in [1,n]$. For ease of notation we abbreviate agent $a$'s $c_a$th function, $F_a^{c_a}$ to $F$.
+    For a profile $\mathbf{B}$, a certificate $\mathbf{c}$ is \emph{consistent} if there is an ordering $\mathbf{\sigma} \colon N \longrightarrow \{1,\ldots, n\}$ of agents starting from vector $\vec{X}^0 = (\Delta, \ldots, \Delta)$ with placeholder values $\Delta$ for all agents, iteratively constructs an outcome vector of direct votes $\vec{X} \in D^n$ as follows for $\sigma(a) = z \in [1,n]$. For ease of notation we abbreviate agent $a$'s $c_a$th function, $F_a^{c_a}$ to $F$.
     \[
         X^z_a = F'(\vec{X}^{z-1} \restriction_{S^{c_a}_a} ).
     \]
@@ -507,10 +507,10 @@ Now, we are only interested in consistent certificates as these are the ones tha
 It is good that there is only one outcome matched to each consistent certificate regardless of the ordering $\sigma$. The following proposition is proven by \cite{grandi}.
 
 \begin{proposition}
-    If a consistent certificate $\mathbf{c}$ can be given by two orderings $\sigma$ and $\sigma'$ of the agents, then the orderings yield the same outcome $X_\mathbf{c} \in D^n$.
+    If a consistent certificate $\mathbf{c}$ can be given by two orderings $\sigma$ and $\sigma'$ of the agents, then the orderings yield the same outcome $\vec{X}_\mathbf{c} \in D^n$.
 \end{proposition}
 
-Consequently, when we refer to consistent certificates are enough to determine every agent's vote. 
+Consequently, consistent certificates are enough to determine every agent's vote. 
 Now that we have settled the framework it's time to consider some ``good'' certificates. 
 There is a very natural ``cost'' in this scenario and that is using a lot of the later preferences of each agent. 
 So, we can set two very natural ways of minimising this cost. 
@@ -548,9 +548,9 @@ We can apply these to our illustrative example in Figure \ref{fig:example}. We f
 But $f$ delegates to $c$ so $\sigma(c) > \sigma(e)$, but again $\sigma(e) > \sigma(d)$ leading to a contradiction.
 
 So, if there is a certificate using only the first two preferences then it is a \textsc{MinMax} certificate. 
-Such a certificate is the one given by the ordering $g< f< e< c< b< a< d$.
-Where $g = 1, f = 0, e = f \land g = 0, c = Maj(e, f, g) = 0, b = c = 0, a = b \lor c = 0, d = a = 0$. This gives a certificate $\vec{c} = (1, 2, 1, 1, 2, 2, 1)$.
-In fact, one can be convinced that this is a \textsc{MinMaxSum} certificate by considering all other choices of choosing the second preferences of voters $i$ and $j$.
+Such a certificate is the one given by the resolving voters in the order $g < f < e < c < b < a < d$.
+Where $g = 1$, $f = 0$, $e = f \land g = 0$, $c = Maj(e, f, g) = 0$, $b = c = 0$, $a = b \lor c = 0$, $d = a = 0$. This gives a certificate $\vec{c} = (1, 2, 1, 1, 2, 2, 1)$.
+In fact, one can be convinced that this is a \textsc{MinMaxSum} certificate by considering all other certificates where every voter votes for their first preference except for two voters which vote for their second preference.
 
 On the other hand a \textsc{MinSum} certificate is given by $\vec{c} = (1, 1, 3, 1, 1, 1, 1)$.
 Here, $c$ votes directly for $1$. Then, $a = b \lor c = 1$, $d = a = 1$, $b = \overline{d} = 0$. Further $f = c = 1$, $e = d = 1$ and $g$ votes directly for $1$.
