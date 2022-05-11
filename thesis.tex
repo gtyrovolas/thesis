@@ -174,7 +174,7 @@ On the contrary, if agents delegate to the central node the probability of corre
 
 The paper then proves the following two hardness results.
 For any local delegation mechanism $M$ and any $\delta > 0$ there are instances where direct voting or complete dictatorship outperforms $M$ by $\frac{1}{2} - \delta - \alpha$.
-Their construction does not use transitive delegations and so applies to simpler models of Liquid Democracy like Proxy Voting \citet{green2015direct}.
+Their construction does not use transitive delegations and so applies to simpler models of Liquid Democracy like Proxy Voting \citep{green2015direct}.
 The more striking hardness result is that even if we consider \emph{non-local} delegation mechanisms the optimal delegation is hard to approximate.
 The authors then introduce the \textsc{OptimalDelegationProblem} or \textsc{ODP}.
 \textsc{ODP} is the optimisation problem of finding the optimal success rate for a given instance of a Liquid Democracy setting.
@@ -310,9 +310,9 @@ They then prove that their heuristics do not satisfy guru participation when age
 We extend the work of \citeauthor{grandi} in two directions. 
 In Section~\ref{section:Complexity}, we use novel gadgets to prove that, if agents can delegate using the binary logical OR and binary logical AND, then unravelling delegations optimally is NP-hard.
 Our reductions give tight bounds on NP-hardness.
-If we were allow users to delegate to strictly less functions, the resulting instances would be trivial.
+If we were to allow users to delegate to strictly fewer functions, the resulting instances would be trivial.
 We also use the binary version of the logical functions rather than $n$-ary versions.
-Additionally, optimal unravellings cannot be approximated in by a constant factor approximation.
+Additionally, optimal unravellings do not admit a constant factor approximation.
 We then take a detour through boolean functions to generalise our hardness result for many reasonable classes of functions. 
 As a corollary, we resolve an open question left in the original paper about the complexity of delegating to majorities.
 We then move on and give positive complexity results for direct delegation.
@@ -1303,7 +1303,7 @@ Initially, I was quite ambitious and tried to come up with a game-theoretic mode
 This is a reflection of real-life politics, as successful political parties get funding and members of parliament are paid a salary from the government.
 As far as I have seen, such a model has not appeared in the literature yet.
 The resulting model was complex and unwieldy and had no pure strategy Nash Equilibria.
-Hence, we moved on to another idea were voters want to coordinate on how to delegate to delegates in order to maximise the probability of voting for the ground truth.
+Hence, we moved on to another idea where voters want to coordinate on how to delegate to delegates in order to maximise the probability of voting for the ground truth.
 This path also did not yield substantial results. Nevertheless, I did come up with some nice simulations and graphs.
 
 The direction of my work changed when my supervisor suggested I read the paper by \citet{grandi} which she thought left open questions I could answer.
