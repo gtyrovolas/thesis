@@ -75,7 +75,7 @@
         Honour School of Mathematics and Computer Science (Part C)\\
         \vspace*{.5cm}
         Trinity Term 2022 \\
-        Words: 9917
+        Words: 9947
     \end{center}
 
 \end{titlepage}
@@ -106,7 +106,7 @@ Liquid democracy, also referred to as delegative democracy, is a decision-making
 Firstly, every voter is allowed to vote directly on an issue. 
 Voters can delegate their vote to other voters.
 Importantly delegations are \emph{transitive}. 
-So we allow Alice to delegate to Bob and Bob to delegate to Charlie. In this case Charlie votes with the combined power of all three.
+So, we allow Alice to delegate to Bob and Bob to delegate to Charlie. In this case Charlie votes with the combined power of all three.
 
 One of the first published proposals of this model is a non-technical work by \cite{ford2002delegative}. 
 Ford claims that large-scale direct democracy is infeasible and likely undesirable.
@@ -229,7 +229,7 @@ If voter $v$ votes directly, $v$'s payoff is the accuracy minus their effort to 
 The authors model $q_i - e_i \geq 0.5$ as otherwise the voter could flip a coin for zero effort.
 Note that the authors have made the decision to have users benefit from maximising the accuracy of the delegated vote.
 Individual payoffs are \emph{independent of the final outcome}.
-For instance this model does not account for agents being lazy and essentially abstaining while other voters make a decision that benefits them.
+For instance, this model does not account for agents being lazy and essentially abstaining while other voters make a decision that benefits them.
 Or it does not account for cases where individual agents maximise their accuracy by delegating to a dictator, but the group accuracy is lower than if agents voted independently.
 The focus is strictly on agents conveying their type truthfully to the model.
 
@@ -248,13 +248,13 @@ These are the coalitions which would fail without $v$ but succeed with $v$.
 
 Now, for the delegative setting, \citeauthor{zhang2021power} only consider liquid democracy \emph{after} each agent has cast their votes.
 In the resulting graph they consider that a coalition can only use the voting power that is accrued within the coalition. 
-For instance in a delegation chain $a \to b \to c$, the coalition $\{a, c\}$ has a voting power of 1.
+For instance, in a delegation chain $a \to b \to c$, the coalition $\{a, c\}$ has a voting power of 1.
 Given these details. If $b$ were to join $\{a, c\}$ the voting power of the coalition would be 3.
 The authors then axiomatically characterise the index. These axioms include that a dummy voter has no power, a dictator has power of 1, agents which swing the same coalitions have equal power and some other reasonable composition properties.
 Further, this power index gives more power to agents voting directly for their final delegator than voting indirectly.
 This comes in contrast with the spirit of liquid democracy's transitive delegations.
 
-After the power index is introduced they revisit the game theoretic model by \citet{bloembergen2019rational}.
+After the power index is introduced, they revisit the game theoretic model by \citet{bloembergen2019rational}.
 They change the reward of voter $v$ from being the accuracy of the final delegator to being the accuracy of the final delegator \emph{multiplied} by the power index of $v$.
 They also abstract away the concept of direct voting requiring effort.
 The authors then prove that there are delegation games without pure strategy NE.
@@ -492,7 +492,7 @@ To actually use our agents' preferences we need to introduce the concept of a co
 Consistent certificates are certificates where the vote of each agent is determined by the votes of other agents using the functions in their smart ballots. Formally:
 
 \begin{definition}[Consistent certificate]
-    For a profile $\mathbf{B}$, a certificate $\mathbf{c}$ is \emph{consistent} if there is an ordering $\mathbf{\sigma} \colon N \longrightarrow \{1,\ldots, n\}$ of agents starting from vector $\vec{X}^0 = (\Delta, \ldots, \Delta)$ with placeholder values $\Delta$ for all agents, iteratively constructs an outcome vector of direct votes $\vec{X} \in D^n$ as follows for $\sigma(a) = z \in [1,n]$. For ease of notation we abbreviate agent $a$'s $c_a$th function, $F_a^{c_a}$ to $F$.
+    For a profile $\mathbf{B}$, a certificate $\mathbf{c}$ is \emph{consistent} if there is an ordering $\mathbf{\sigma} \colon N \longrightarrow \{1,\ldots, n\}$ of agents starting from vector $\vec{X}^0 = (\Delta, \ldots, \Delta)$ with placeholder values $\Delta$ for all agents, iteratively constructs an outcome vector of direct votes $\vec{X} \in D^n$ as follows for $\sigma(a) = z \in [1,n]$. For ease of notation, we abbreviate agent $a$'s $c_a$th function, $F_a^{c_a}$ to $F$.
     \[
         X^z_a = F'(\vec{X}^{z-1} \restriction_{S^{c_a}_a} ).
     \]
@@ -761,7 +761,7 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
     
     Now suppose we construct $n + 1$ such gadgets for each term. Then if every term is satisfied by some assignment of the variables $x_1, x_2, \ldots, x_n$ then the total cost incurred will be at most $n$. That is because the fresh voters incur no additional cost but each voter $x_i$ can incur a cost of at most 1.
     If a term is not satisfied then at least $n+1$ gadgets will incur a cost of at least $1$ so that the cost is at least $n+1$. 
-    Hence we have reduced the satisfiability of any \textsc{3-SAT} instance $\varphi$ to querying if there is a certificate $\vec{c}$ for the above election with $\sum_{i} c_i \leq n$. Thus \textsc{BoundedMinSum}$_\mathcal{F}$ is NP-hard.
+    Hence, we have reduced the satisfiability of any \textsc{3-SAT} instance $\varphi$ to querying if there is a certificate $\vec{c}$ for the above election with $\sum_{i} c_i \leq n$. Thus, \textsc{BoundedMinSum}$_\mathcal{F}$ is NP-hard.
 \end{proof}
 
 \begin{corollary}[Hardness of \textsc{BoundedMinMaxSum}]
@@ -1153,7 +1153,7 @@ We also, show that it is easy to modify the above algorithm to check if there is
 
 \begin{proof}
 
-    For ease of notation we assume without loss of generality that $d = 0$.
+    For ease of notation, we assume without loss of generality that $d = 0$.
     We first determine by the previous algorithm the smallest $m$ for which there exists a \textsc{MinMax} certificate using at most $m$ preferences.
     Then we construct the graph $\varphi(\vec{B}_m)$.
     Then, instead of initiating a DFS search from the root we initiate it from node $0$.
