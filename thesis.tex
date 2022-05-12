@@ -375,9 +375,9 @@ Consider voters $N = \{a, b, c, d, e, f, g\}$, with smart ballots:
 \begin{align*}
     &B_a =(b \lor c > b > 0) \\
     &B_b = \left(\overline{d} > c > 1 \right) \\
-    &B_c = \left(\Maj(e, f, g) > a > 0 \right) \\
+    &B_c = \left(\Maj(e, f, g) > a > 1 \right) \\
     &B_d = (a > c > 1) \\
-    &B_e = (d > f \lor g > 1) \\
+    &B_e = (d > f \lor g > 0) \\
     &B_f = (c > 0) \\
     &B_g = (1)
 \end{align*}
@@ -646,7 +646,7 @@ These gadgets will have the property that they incur no additional cost if $t_h$
     &B_c = (x_j \lor b > 0) \\
     &B_{t_h} = (x_k \lor c > 0).
 \end{align*}
-Now, we analyse when first preferences of the additional voters can be resolved without producing cycles. If $x_i = 1$ then $x_i \lor a = 1$ and $b$ resolves to vote $1$ using the first preference. 
+Now, we analyse when the first preferences of the additional voters can be resolved without producing cycles. If $x_i = 1$ then $x_i \lor a = 1$ and $b$ resolves to vote $1$ using the first preference. 
 Hence, $b \lor x_j = 1$ and $c$ resolves to $1$ using first preference. 
 Similarly, $t_h$ resolves to $1$ and then $a$ resolves to $1$ using only first preferences. 
 Similarly, if $x_j = 1$ or $x_k = 1$, agents $c$ and $t_h$ respectively will resolve to $1$ and so all fresh agents will resolve their votes using only first preferences.
@@ -725,7 +725,7 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
     \label{fig:MinSum}
     \end{figure}
     
-    Now, we analyse when first preferences of the additional voters can be resolved without producing cycles. 
+    Now, we analyse when the first preferences of the additional voters can be resolved without producing cycles. 
     If $x_k = 1$ then $t_h$ can resolve to $1$ and so will $a$. 
     As $x_i$ and $a$ are set to a value, $b$ can resolve its first preference. 
     As $x_j$ and $b$ are set, $c$ can resolve its first delegation as well. 
@@ -742,13 +742,13 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
     The proof is symmetrical for this case. We need to switch some ANDs to ORs and vice versa but other than that it is identical. 
     For completeness, we show the resulting gadget in Figure \ref{fig:MinSum:2nots}. 
     This is the result of a smart profile of:
-
     \begin{align*}
         &B_a = (t_h > 0) \\
         &B_b = (x_k \lor a > 0) \\
         &B_c = (x_j \land b > 0) \\
         &B_{t_h} = (x_i \land c > 0)
     \end{align*}
+
 
     \textbf{Case} $\overline{x_i} \lor \overline{x_j} \lor \overline{x_k}$:
     The proof is symmetrical to the case of $x_i \lor x_j \lor x_k$. We only need to switch $\lor$ to $\land$. This is achieved by the following smart ballot:
@@ -759,7 +759,7 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
         &B_{t_h} = (x_k \land c > 0).
     \end{align*}
     
-    Now suppose that for each term we construct $n + 1$ such gadgets for each term. Then if every term is satisfied by some assignment of the variables $x_1, x_2, \ldots, x_n$ then the total cost incurred will be at most $n$. That is because the fresh voters incur no additional cost but each voter $x_i$ can incur a cost of at most 1.
+    Now suppose we construct $n + 1$ such gadgets for each term. Then if every term is satisfied by some assignment of the variables $x_1, x_2, \ldots, x_n$ then the total cost incurred will be at most $n$. That is because the fresh voters incur no additional cost but each voter $x_i$ can incur a cost of at most 1.
     If a term is not satisfied then at least $n+1$ gadgets will incur a cost of at least $1$ so that the cost is at least $n+1$. 
     Hence we have reduced the satisfiability of any \textsc{3-SAT} instance $\varphi$ to querying if there is a certificate $\vec{c}$ for the above election with $\sum_{i} c_i \leq n$. Thus \textsc{BoundedMinSum}$_\mathcal{F}$ is NP-hard.
 \end{proof}
@@ -769,7 +769,7 @@ This is demonstrated by Figure \ref{fig:MinSum:1nots}.
 \end{corollary}
 
 \begin{proof}
-    Every instance of \textsc{BoundedMinSum} is an instance of \textsc{BoundedMinMaxSum}. For target maximum sum $S$ and smart profile $\vec{B}$ a \textsc{MinMax} query, we can consider a \textsc{MinMaxSum} query with target maximum $M$, target sum $S$ and smart profile $\vec{B}$. Simply set $M$ to be the maximum of the size of smart ballots, i.e., $M = \max_{a \in N} k_a$. Then the max requirement of \textsc{MinMaxSum} is trivially satisfied and so we have reduced \textsc{BoundedMinMax} to \textsc{BoundedMinMaxSum}.
+    Every instance of \textsc{BoundedMinSum} is an instance of \textsc{BoundedMinMaxSum}. For target maximum sum $S$ and smart profile $\vec{B}$ a \textsc{MinSum} query, we can consider a \textsc{MinMaxSum} query with target maximum $M$, target sum $S$ and smart profile $\vec{B}$. Simply set $M$ to be the maximum of the size of smart ballots, i.e., $M = \max_{a \in N} k_a$. Then the max requirement of \textsc{MinMaxSum} is trivially satisfied and so we have reduced \textsc{BoundedMinMax} to \textsc{BoundedMinMaxSum}.
 \end{proof}
 
 
@@ -796,7 +796,7 @@ The point of this lemma is that \BMM\ does not introduce any additional hardness
 \begin{proof}
     Let $m_i$ the size of the ballot of agent $i$, as always $\vec{c} = (m_1, \ldots, m_n)$ is a consistent certificate, as each delegate votes for a constant.
     As each $m_i \leq 2$, the only possible certificate that improves on $\vec{c}$ is $\vec{1} = (1, \ldots, 1)$.
-    To check if $\vec{1}$ is consistent, we first set all agents $a$ with $F_a^1$ constant and equal to $d$ to $d$.
+    To check if $\vec{1}$ is consistent, we first set all agents $a$ with $F_a^1$ constant and equal to $d$ to vote for $d$.
     Then, we check iteratively if any of the unset agents can vote using their first preference.
     We repeat this step until running this iteration makes no changes.
     We return that $\vec{1}$ is a consistent certificate if and only if all agents are set at this final point.
@@ -820,7 +820,7 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
 \end{proposition}
 
 \begin{proof}
-    We follow a similar construction as above. We reduce from the NP-hard problem \textsc{3-SAT}. Suppose $\varphi$ is an instance of \textsc{3-SAT} as above on $k$ terms and $n$ variables. We again introduce constant voter \underline{zero} with smart ballot $B_{\text{\underline{zero}}} = (0)$. For each variable $x_i$ we create a voter $x_i$ with smart ballot $B_{x_i} = (\text{\underline{zero}} > 1)$. For each term $t_h$ we create gadgets with the property that if $t_h$ is satisfied the gadget uses only the first two preference levels. If $t_h$ is not satisfied, the gadget uses the third preference level. We prove this for the following four cases.
+    We follow a similar construction as above. We reduce from the NP-hard problem \textsc{3-SAT}. Suppose $\varphi$ is an instance of \textsc{3-SAT} as above on $k$ terms and $n$ variables. We again introduce constant voter \underline{zero} with smart ballot $B_{\text{\underline{zero}}} = (0)$. For each variable $x_i$ we create a voter $x_i$ with smart ballot $B_{x_i} = (\text{\underline{zero}} > 1)$. For each term $t_h$, we create gadgets with the property that if $t_h$ is satisfied, the gadget uses only the first two preference levels. If $t_h$ is not satisfied, the gadget uses the third preference level. We prove this for the following four cases.
 
     \textbf{Case} $t_h = x_i \lor x_j \lor x_k$:
     For each term we construct additional voters $a, a', b, b', c, c', t_h$. With voting profiles: 
@@ -961,7 +961,9 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
             \draw [->, dashed] (t') -- (elli3) node[midway,right]{$\land$};
             
             \end{tikzpicture}
-    }}
+    }
+    \label{fig:MinMax:2nots}
+    }
     \caption{Gadgets for \textsc{MinMax}}
     \end{figure}
 
@@ -977,7 +979,8 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
     Similarly, $\sigma(b) < \sigma(c)$. Again, $ \sigma(a) < \sigma(b)$ as $x_i \land a = a$ as $x_i = 1$. But $\sigma(t_h) < \sigma(a)$. This leads to the contradiction $\sigma(t_h) < \sigma(t_h)$. 
     Hence, if $t_h$ is not satisfied one of the fresh agents will use their third preferences and if $t_h$ is satisfied all fresh agents will use only their first two preferences.
 
-    \textbf{Case} $\overline{x_i} \lor \overline{x_j} \lor x_k$: This case is symmetrical to the above. We only need to permute the agents and replace the logical ANDs with ORs and vice versa. For completeness, the smart voting profiles are:     \begin{align*}
+    \textbf{Case} $\overline{x_i} \lor \overline{x_j} \lor x_k$: This case is symmetrical to the above. We only need to permute the agents and replace the logical ANDs with ORs and vice versa. For completeness, the smart voting profiles are:     
+    \begin{align*}
         &B_a = (a' > t_h > 0) \\
         &B_{a'} = (a > t_h > 0) \\
         &B_{b} = (b' > x_k \lor a > 0) \\
@@ -985,11 +988,12 @@ Instead of using multiple gadgets to amplify the effect of cycles we create some
         &B_{c} = (c' > x_j \land b > 0) \\
         &B_{c'} = (c > x_j \land b > 0) \\
         &B_{t_h} = (t_h' > c \land x_i > 0) \\
-        &B_{t_h'} = (t_h > c \land x_i > 0)
+        &B_{t_h'} = (t_h > c \land x_i > 0).
     \end{align*}
 
-    \textbf{Case} $\overline{x_i} \lor \overline{x_j} \lor \overline{x_k}$: The proof is symmetrical to the case $x_i \lor x_j \lor x_k$. The smart ballot used reverses $\lor$ to $\land$. This is accomplished by the following smart profile:
+    These are drawn in Figure \ref{fig:MinMax:2nots}.
 
+    \textbf{Case} $\overline{x_i} \lor \overline{x_j} \lor \overline{x_k}$: The proof is symmetrical to the case $x_i \lor x_j \lor x_k$. The smart ballot used reverses $\lor$ to $\land$. This is accomplished by the following smart profile:
     \begin{align*}
         &B_a = (a' > t_h > 0) \\
         &B_{a'} = (a > t_h > 0) \\
@@ -1066,10 +1070,10 @@ For instance, if qualified majorities in favour of 0 are allowed then we would e
 This concept can be formalised by considering the dual of each function as stated in \cite{boolean}.
 
 \begin{definition}[Duality]
-    Let $f \colon \{0, 1\}^n \longrightarrow \{0, 1\}$. Then $f$'s dual function $f^\dagger \colon \{0, 1\}^n \longrightarrow \{0, 1\}$ defined as $f^\dagger(\vec{x}) = \overline{f(\overline{\vec{x}})}$.
+    Let $f \colon \{0, 1\}^n \longrightarrow \{0, 1\}$. Then $f$'s \emph{dual function} $f^\dagger \colon \{0, 1\}^n \longrightarrow \{0, 1\}$ is $f^\dagger(\vec{x}) = \overline{f(\overline{\vec{x}})}$.
 \end{definition}
 
-In particular $\lor^\dagger = \land$, $\Maj^\dagger= \Maj$ and for $\Maj_k^0$ the qualified majority of $k$ in favour of $0$, $(\Maj_k^0)^\dagger = \Maj_k^1$.
+In particular $\lor^\dagger = \land$, $\Maj^\dagger= \Maj$ and for $\Maj_k^0$, the qualified majority of $k$ in favour of $0$, $(\Maj_k^0)^\dagger = \Maj_k^1$.
 
 So, we would expect that in most settings the choices of voters to be closed under taking duals.
 Nevertheless, the following key theorem works even if there is only one sufficiently ``complex'' but monotone function $f$ and the dual $f^\dagger$.
@@ -1223,7 +1227,7 @@ Then cast participation does not hold.
 \begin{proof}
     Consider the smart profile where for each agent $a$, $B_a = (u_a)$. 
     In particular $0 >_i * >_i 1$. We are allowed to deduce this because $i$ does not vote for an abstention.
-    But, by setting a smart ballot of $B_i = (e)$ we obtain $r(\vec{u}')$ and $ r(\vec{u}') > r(\vec{u})$. So voter $i$ prefers to vote directly for $e$ than $0$ despite preferring outcome $0$.
+    But, by setting a smart ballot of $B_i = (e)$ we obtain $r(\vec{u}')$ and $ r(\vec{u}') < r(\vec{u})$. So voter $i$ prefers to vote directly for $e$ than $0$ despite preferring outcome $0$.
     This violates cast participation.
 \end{proof}
 
@@ -1256,10 +1260,10 @@ Note that $\textsc{MinMax}$, $\textsc{MinSum}$ and $\textsc{MinMaxSum}$ respect 
 
     But, if $B_v = (v' > 0)$ then a cycle is formed and so necessarily, \textsc{MinMax} will have to use some second preferences. Hence, setting $v, u_1, \ldots, u_{n-3}$ to their second preference would be a valid solution. So every voter except $a$ vote for $0$, so that $r$ resolves to $0$. 
     Note that we can still assign first preference to all voters except than $v$ so that $(2, 1, \ldots, 1)$ is a consistent certificate and would result to the majority again voting for 1. 
-    Therefore, the set of outcomes is $\{0, 1\}$ which is better than $\{1\}$ for agent $a$.
+    Therefore, the set of outcomes is $\{0, 1\}$ which is better than $\{1\}$ for agent $v$.
 \end{proof}
 
-Do note that the above counterexample works even when consider issues with binary outcomes without abstentions.
+Do note that the above counterexample works even when considering issues with binary outcomes without abstentions.
 Additionally, the above proof would not work in the case of \textsc{MinMaxSum}, as \textsc{MinMaxSum} would only return the certificate $(2, 1, \ldots, 1)$.
 
 We can further prove that \textsc{MinSum} does not satisfy cast participation in general.
@@ -1293,7 +1297,7 @@ Finally, our hardness result implies that for many reasonable functions optimal 
 But there is a case relevant to the real world that is not covered by the hardness result.
 One implementation of liquid democracy requires agents to choose before the election if they want to be delegated to.
 Thus splitting the electorate between voters who cannot be delegated to and delegates who can be delegated to. 
-Suppose we allow voters to delegate to a single boolean functions of delegates. 
+Suppose we allow voters to delegate to a single boolean function of delegates. 
 But, delegates can only delegate directly to other delegates, then NP-hardness does not arise.
 That is because the only cycles that need to be resolved happen in $\LIQUID$ which can be optimally unravelled in polynomial time.
 This gives voters a lot of expressive power while maintaining polynomial time unravellings. 
