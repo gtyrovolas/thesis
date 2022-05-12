@@ -1,0 +1,963 @@
+
+
+
+shapes.geometric,positioning, arrows,trees, positioning, fit, calc
+circ/.style=circle,draw, solid, inner sep=0pt,minimum size=10mm
+
+
+An Analysis of Smart Voting in Liquid Democracy
+Student: 1033308
+
+theoremTheorem
+prop[theorem]Proposition
+*remarkRemark
+
+
+
+
+definition
+definition[theorem]Definition
+example[theorem]Example
+corollary[theorem]Corollary
+lemma[theorem]Lemma
+proposition[theorem]Proposition
+*ideaIdea
+
+definitionDefinitionDefinitions
+figureFigureFigures
+
+
+
+
+    
+                The Limits of Smart Voting in Liquid Democracy
+
+                
+                        
+                Student: 1033308 
+
+                Supervisor: Edith Elkind
+
+        
+        
+        
+        4th Year Project Report
+
+        
+        Honour School of Mathematics and Computer Science (Part C)
+
+        
+        Trinity Term 2022 
+
+        Words: 9917
+    
+
+
+    I begin by acknowledging the guidance of my supervisor Edith Elkind. Without her exceptional knowledge of recent academic developments, insightful comments and the time she dedicated to reviewing my manuscript this work would not be possible.
+For this, I am extremely grateful.
+
+Further, I am very appreciative to the hours my tutors have spent to sharpen my mind in the last four years. I'm grateful to them for helping me blossom to the student I am today.
+
+I want to thank my good friends for taking the time to look through my work and for bouncing off ideas about a solution that never came to be.
+I wish I could thank my tutors and friends by name, but guidance from the academic office forbids me to do so.
+
+Finally, I want to thank my family for the support throughout my life and especially this last year.
+
+
+
+
+
+Introduction
+
+Liquid democracy, also referred to as delegative democracy, is a decision-making mechanism that allows greater choice to voters than representative democracy.
+Firstly, every voter is allowed to vote directly on an issue. 
+Voters can delegate their vote to other voters.
+Importantly delegations are transitive. 
+So we allow Alice to delegate to Bob and Bob to delegate to Charlie. In this case Charlie votes with the combined power of all three.
+
+One of the first published proposals of this model is a non-technical work by. 
+Ford claims that large-scale direct democracy is infeasible and likely undesirable.
+It is infeasible because of the frequency of policy decisions and likely undesirable because the "effective wisdom of the collective can easily turn out to be much worse than its average."
+Representative democracy on the other hand, holds elections every so often. Winners get to represent their constituency while losers gain no representative power.
+Additionally, there is a prescribed limit on the total number of elected representatives and every voter can pick from a limited number of representatives.
+
+Delegative democracy is introduced as a balance of the two by challenging the premise that the number of representatives needs to be kept small.
+In this model, voters that wish to do so, can vote directly on issues.
+Passive voters can delegate to the representatives called delegates.
+Delegates are not chosen through time-specific elections but need to canvas voters continually.
+When delegates vote, they vote with the combined power of all voters that delegate for them.
+They can vote on issues directly, or they can delegate to other more specialised delegates.
+A key idea is that delegates need not win competitive elections and that delegates have their votes made public for the sake of accountability. 
+Ford then introduces notions to replace the parliamentary committees in a setting of liquid democracy.
+Then, Ford introduces strengthenings of liquid democracy.
+Of interest is the ability to split votes, where agents can delegate fractions of their votes to different delegates. 
+Even more interesting is that Ford introduces the ability of agents to submit "multiple delegation choices in order of preference." This is done partly to deal with the case of cycles, where Alice delegates to Bob but also Bob delegates to Alice.
+This is one of the key extensions of Liquid Democracy we consider in our work.
+
+Liquid Democracy and Ground Truth
+An important strand of work in Liquid Democracy is to have Liquid Democracy find a ground truth. 
+A key contribution is by. 
+The model considers binary issues  with  being the incorrect outcome and  being the correct outcome. Every voter  has a competence level , which is the probability that a direct vote of voter  is a correct vote.
+Further, voters are only able to pick delegators from a predefined social network. This can be thought of as a directed graph.
+These delegates are called the neighbours of .
+Further, agents are only allowed to delegate to agents that are more competent than them by some global constant .
+So, voter  may delegate to their neighbour  if and only if . 
+We say that  approves of .
+This rules out the problem of cyclical delegations a priori, as .
+
+Delegation mechanisms in this context are functions which input an instance of the model and output, for each voter , a delegation probability distribution over the agents  approves of.
+Then the majority rule is applied on the outcome of a delegation mechanism. Ties are broken arbitrarily.
+The probability that the group votes for the correct outcome for a particular instance of the model  and a delegation mechanism  is .
+A particular delegation mechanism is that of direct voting denoted as .
+An important distinction the authors make is between local and non-local delegation mechanisms. Local delegation mechanisms are delegation mechanisms where the resulting distribution for agent  depends only on the set of agents  approves of, the set of neighbours of  and an arbitrary ranking .
+For example, every voter voting directly or voting for a random approved delegate is a local mechanism. Voting for the most competent approved delegate or voting for a delegate with a specific identifier are non-local mechanisms.
+
+In this setting, compare liquid democracy to direct voting. They set out two desirable properties.
+Mechanism  satisfies the do no harm property if, the improvement that direct voting  has on  applied to any instance of size  vanishes as  tends to infinity.
+Formally, for every  there exists  such that for all  and graphs  of size , .
+Mechanism  satisfies the positive gain property if for some constant  and for every large enough  there exist instances with size  such that  outperforms  by .
+
+After this lengthy setup, we arrive at the key result of the paper. No local delegation satisfies both positive gain and do no harm.
+As this is an impossibility result, the requirement that agents are only able to delegate to more informed voters seems to strengthen this result rather than weaken it.
+Something mitigating the impossibility result is that the do no harm property focuses on worst case instances rather than average instances.
+It is still undecided if there exist local delegation mechanisms with positive gain that do no harm on average.
+The paper's secondary result is that if we bound voters competence away from 0 and 1, a simple non-local delegation mechanism exists.
+The mechanism iteratively constructs delegations by having voter  delegate their vote to the most competent approved voter of  that has at most  already delegating to them.
+
+
+
+caragiannis2019contribution further considered this model after the preprint of was published in 2018.
+The authors first disagree with the premise that -delegations capture the essence of disagreeing opinions.
+They claim that a voter  with competence level of  would never delegate to voter  with a competence level of  as voter  would consider  to be horribly misinformed.
+Instead, in their paper, for , if , agent  would be able to delegate only to agents with , and symmetrically if .
+A small objection to this modelling is that the model implicitly gives meta-information to agents with competence less than  or greater than . Nevertheless, the paper only proves hardness results and so this meta-information strenghtens the results.
+
+A more important objection to -delegations is that there are cases where voting for someone less competent can be beneficial.
+A simple example is that for  voters, let ,  and .
+Agents  form a star with agent  in the middle.
+Then, if agents are restricted to delegating to more competent agents, all voters need to independently vote for  for the majority to vote for 1.
+The probability of this occurring is bounded by  which tends to 0 as  goes to infinity.
+On the contrary, if agents delegate to the central node the probability of correct vote is .
+
+The paper then proves the following two hardness results.
+For any local delegation mechanism  and any  there are instances where direct voting or complete dictatorship outperforms  by .
+Their construction does not use transitive delegations and so applies to simpler models of Liquid Democracy like Proxy Voting.
+The more striking hardness result is that even if we consider non-local delegation mechanisms the optimal delegation is hard to approximate.
+The authors then introduce the OptimalDelegationProblem or ODP.
+ODP is the optimisation problem of finding the optimal success rate for a given instance of a Liquid Democracy setting.
+By a reduction from a special version of 3-SAT, approximating ODP within an additive term of  is NP-hard.
+
+becker2021can published a collection of results about ODP. 
+They firstly do away with -delegations and do not consider any restrictions on who agents can delegate to.
+Their negative result considers ODP where for every voter  the competence level  is at least  .
+If  then for any instance with  voters and for any constant  it is NP-complete to approximate ODP within .
+The bound on  is tight as for  direct voting is a -approximation.
+Their positive result is a -approximation algorithm for the case that the graph given by the neighbourhood relation is strongly connected.
+The algorithm is to have every voter delegate to the most competent voter.
+becker2021can then proceed to outline heuristics and experimentally compare them to direct democracy.
+All of their heuristics consistently outperform direct democracy.
+A particular modelling assumption of interest is that the average competence of agents is , which dooms direct democracy's outcome to tend to 0 as the number of voters grows.
+Nevertheless, their experimental data suggest that their heuristics improve as more agents are added.
+
+Several of the negative results that arise in the aforementioned papers are due to individual voters gaining too much power.
+This is a phenomenon observed in practice in some implementations of liquid democracy(https://www.spiegel.de/international/germany/liquid-democracy-web-platform-makes-professor-most-powerful-pirate-a-818683.htmlArticle in Der Spiegel). 
+So, continue their work from by examining how to minimise the maximum power of individual voters.
+The problem they tackle is: let  a graph with nodes the agents, where agents  are connected by an edge if and only if  approves of . Let  a set of voters that vote directly. Then, what is the minimum of the maximum voting power a voter in  amasses?
+If you remove the agents that have no path to any voter in , the problem is equivalent to minimising congestion for confluent flow with unit demands and infinite edge capacity.
+To see why, observe that when  delegates to ,  transfers the votes of  plus 1 to  giving us flow conservation with unit demands. 
+As every agent can only delegate to a single other agent, this makes the flow confluent.
+Agents can transfer an unbounded amount of power giving infinite capacity.
+Congestion is precisely a metric of the maximum flow going in to a vertex. 
+So, the authors transform results for confluent flow giving a polynomial time approximation algorithm with ratio  and proving hardness for approximating to a factor of .
+
+golz2021fluid then consider a more generalised version of liquid democracy where agents can split their votes equally among  delegates.
+To probabilistically analyse this model, they introduce a preferential attachment model that generalises the one by, but analyse special cases of the model.
+For this model, they prove that for , the maximum voting power is  with high probability. Here,  is a constant determined by a model parameter.
+The impressive result is that, if , then the maximum voting power is bounded above by  with high probability.
+
+The authors run simulations that confirm the benefits of delegating to two agents for several instances of their model.
+It is also computationally feasible to coordinate the agents to resolve cases with multiple delegations in a way that is close to optimal, possibly "even at a national scale."
+Additionally, the benefits of increasing  diminish as  grows larger than  in the Barabasi-Albert model.
+Further, their empirical results justify that the special cases of the model they consider in their analysis are the more realistic ones.
+
+A Game-Theoretic Approach
+
+The first game-theoretic approach to liquid democracy is by.
+In their model, as above, there is a social network and agents can only delegate to their neighbours in their social network. Here as well, agents vote on binary issues.
+bloembergen2019rational introduce a new concept of types. 
+There is no objectively correct answer, but every agent has a preferred alternative.
+Voter  does not know what their preferred type is but if  votes directly they vote with accuracy  in favour of their type.
+In their full model, types are independent random variables.
+
+To create a game the authors introduce the following utility function, with minimum payoff  and maximum payoff .
+When voter  directly or indirectly delegates their vote to voter , the payoff for agent  is the probability that  votes for 's type.
+If voter  is part of a delegation cycle, 's payoff is .
+If voter  votes directly, 's payoff is the accuracy minus their effort to manifest the accuracy .
+The authors model  as otherwise the voter could flip a coin for zero effort.
+Note that the authors have made the decision to have users benefit from maximising the accuracy of the delegated vote.
+Individual payoffs are independent of the final outcome.
+For instance this model does not account for agents being lazy and essentially abstaining while other voters make a decision that benefits them.
+Or it does not account for cases where individual agents maximise their accuracy by delegating to a dictator, but the group accuracy is lower than if agents voted independently.
+The focus is strictly on agents conveying their type truthfully to the model.
+
+After setting up the framework they prove two results. 
+Firstly, for deterministic type profiles there exist pure strategy Nash Equilibria (NE).
+The assumption that the profiles are deterministic is important as the proof separates all agents with type  and all agents of type  and deals with them independently.
+In particular Nash Equilibria exist if agents all have the same type, as in the setting where they discover a correct ground truth.
+Secondly, for non-deterministic but independent types, if voting is effortless, i.e., , there exist pure strategy Nash Equilibria.
+This is established by proving that best responses to any state of the game do not decrease the utility of any agent.
+They then provide an example of a NE providing group accuracy of almost a coin toss whereas it would be easy to get an accuracy of 1. 
+
+zhang2021power study a modified version of the above model. In doing so, they introduce a power index in liquid democracy which extends the index introduced by.
+The original Banzhaf index is in the context of weighted voting on binary issues.
+The power index of voter  is proportional to the number of outcomes  can swing.
+These are the coalitions which would fail without  but succeed with .
+
+Now, for the delegative setting, only consider liquid democracy after each agent has cast their votes.
+In the resulting graph they consider that a coalition can only use the voting power that is accrued within the coalition. 
+For instance in a delegation chain , the coalition  has a voting power of 1.
+Given these details. If  were to join  the voting power of the coalition would be 3.
+The authors then axiomatically characterise the index. These axioms include that a dummy voter has no power, a dictator has power of 1, agents which swing the same coalitions have equal power and some other reasonable composition properties.
+Further, this power index gives more power to agents voting directly for their final delegator than voting indirectly.
+This comes in contrast with the spirit of liquid democracy's transitive delegations.
+
+After the power index is introduced they revisit the game theoretic model by.
+They change the reward of voter  from being the accuracy of the final delegator to being the accuracy of the final delegator multiplied by the power index of .
+They also abstract away the concept of direct voting requiring effort.
+The authors then prove that there are delegation games without pure strategy NE.
+Nevertheless, if the underlying social network is complete, pure strategy NE do exist.
+
+Preference Aggregation Properties
+The final approach focuses on the case where there is more than one way to combine individual votes to create a group decision. 
+As a canonical example, think of a case where Alice delegates to Bob, Bob delegates to Charlie and Charlie delegates to Alice.
+
+The first work considering this is by.
+Their model allows every agent to have an antisymmetric and transitive ordering over other agents and alternatives.
+The authors explicitly state that the order need not be complete.
+They encode these preference relations in a directed weighted graph with nodes being the voters and edges the delegations.
+If voter  thinks voter  is the th preferred delegator then there exists an edge  with weight .
+Here, we note a small and easily remediable inconsistency. 
+To be able to have a well-defined notion of  being the th preferred delegator, the first  voters need to be totally orderable.
+An example where this could be a problem is the partial order  over  given by  and .
+The rest of the paper seems to assume that for every agent  their preference relation is a total order for some  agents and the rest of the agents are tied at the end and are not approved of(This inconsistency and our given remedy has been acknowledged by Dr. Kotsialou in correspondence with her.).
+
+Now, that the graph is set up there are different ways to resolve delegations called delegation mechanisms. Further, once every voter has voted, there are different aggregation rules such as the majority rule, a qualified majority rule or a weighted majority rule.
+The key concepts extended in this paper are those of cast participation and guru participation and they are defined for a pair of delegation mechanism and aggregation rules.
+Cast participation is the property that every voter  with a preference over the alternatives weakly improves the outcome by voting directly compared to abstaining.
+Guru participation is the property that voter  weakly benefits by having more voters delegate to .
+The property of cast participation has been introduced in the past, but this is the first introduction of such a notion in Liquid Democracy. Further, guru participation is a very reasonable extension.
+
+The paper then goes on to fix the aggregation rule to be the simple majority rule for binary issues. It then examines two different delegation mechanisms, depth-first search and breadth-first search.
+Suppose voter  has stated that they want to delegate to some agent. Let us represent a delegation chain as  meaning that agent  delegates to their th preference and the th agent in the chain delegates to their th preference.
+Then, DFS would have voter  delegate to a final voter given by the smallest lexicographical chain that doesn't include a cycle. For instance, if agent  has preferences  and agent  has preferences , then DFS would have voter  delegating to  with chain .
+The reasonable objection by is that the second preference of agent  is probably a better choice for  than the second preference of voter .
+So, they propose BFS to return the lexicographically smallest chain from the chains with the smallest lengths.
+They then prove that if there are cycles in the graph DFS may not satisfy guru participation whereas if there are no cycles guru participation is satisfied. In contrast, guru participation is always satisfied for breadth first search.
+
+A different approach and model is given by. This is the paper which we will be extending, so a formal treatment of their model is given in the next section.
+The authors of the paper allow individual agents to delegate to functions of other agents. A simple example would be to delegate to the majority of some trusted agents.
+Agents submit a ballot where these functions are totally ordered in terms of preference.
+These two complications of the simple model means that cycles can be introduced in much more complicated ways.
+
+To resolve these cycles two optimal "unravelling" procedures are introduced. MinSum is a utilitarian method that minimises the sum of preference levels used and MinMax is an egalitarian method that minimises the maximum of the preference levels used.
+Both of these procedures are irresolute and may return more than one outcome as valid if ties exist.
+They also introduce four heuristic unravelling procedures, two of which are deterministic and two of which are randomised.
+They then prove that MinSum is NP-complete if agents are allowed to use monotone boolean functions  and MinMax is NP-complete for arbitrary boolean formulas.
+They then give polynomial time algorithms to unravel instances where agents can only delegate directly to other agents.
+The complexity of deciding instances where voters can delegate to majorities is implicitly left as an open problem which we resolve.
+Further, they analyse the complexity of the heuristics they introduce.
+
+grandi also analyse their heuristics with respect to the axioms introduced by in the case where voters are allowed to vote for binary issues or abstain. 
+As the axioms were introduced for resolute procedures they do not examine the axioms for MinSum and MinMax, which we do in Section .
+They prove that their deterministic heuristics satisfy cast participation for any monotone aggregation rule when voters can only delegate directly to other voters.
+They then prove that their heuristics do not satisfy guru participation when agents are allowed to delegate to pluralities.
+
+Our Contribution
+
+We extend the work of in two directions. 
+In Section , we use novel gadgets to prove that, if agents can delegate using the binary logical OR and binary logical AND, then unravelling delegations optimally is NP-hard.
+Our reductions give tight bounds on NP-hardness.
+If we were to allow users to delegate to strictly fewer functions, the resulting instances would be trivial.
+We also use the binary version of the logical functions rather than -ary versions.
+Additionally, optimal unravellings do not admit a constant factor approximation.
+We then take a detour through boolean functions to generalise our hardness result for many reasonable classes of functions. 
+As a corollary, we resolve an open question left in the original paper about the complexity of delegating to majorities.
+We then move on and give positive complexity results for direct delegation.
+With two simple tweaks, the original MinMax algorithm is improved from  to .
+We also provide an algorithm to check if a MinMax outcome exists in favour of a particular alternative.
+
+In Section section:axioms, we extend the definition of to irresolute procedures.
+We provide negative results for many reasonable unravelling procedures if any non-monotone functions are included.
+Additionally, we show that the optimal unravelling procedures of MinMax and MinSum, do not satisfy cast participation in restricted settings.
+
+
+
+Preliminaries
+
+We now formally present the model of which we will consider for the rest of the paper.
+
+Ballots
+
+A single-issue election consists of a finite set of voters that vote on a single issue. 
+Each voter can choose from a  finite set of alternatives. 
+A special alternative is the abstention represented by . 
+Finally, there is an aggregation function that decides the result of the election. 
+Formally:
+
+[Single-issue election]
+    A single-issue election consists of a tuple  where  is a finite non-empty set of voters. The set  is a finite set with . The function  is a resolute aggregation function that inputs the votes of every voter and outputs the outcome of the election.
+
+Throughout this work we will focus on single issues with a binary set of outcomes. 
+That is because all of our hardness results hold for binary issues, and we can easily extend them to -ary issues. 
+Therefore, unless otherwise stated we will consider .
+
+The model we will consider generalises the above and allows each voter to submit a smart ballot. 
+A smart ballot is a preference list of smart votes. 
+Each smart vote is a function whose domain is a subset of . 
+A special requirement is that the final preference in the preference list is a direct vote on an alternative in . 
+Formally:
+
+[Smart Ballots]
+    A smart ballot of an agent  is an ordering  where . Each  for  is a subset of  and  is a resolute non-constant aggregation function. We also have that .   
+
+Further when relevant we will consider  to be the constant function with output . 
+Now, in most cases the sets  are implicit and we will drop any mention of them. 
+That is supported by the fact that we will treat two functions  as identical if they are extensionally equal. 
+Additionally, we will disallow a voter to delegate to themselves. 
+This is formalised by the following definition:
+
+[Valid Smart Ballot]
+    A valid smart ballot of an agent  is a smart ballot  such that for all   is not equivalent to . Additionally, for all , .
+
+
+We collect the  smart ballots into a smart profile . 
+
+For illustration consider the following non-trivial example.
+Consider voters , with smart ballots:
+
+*
+
+This is illustrated in Figure , where full lines indicate first preferences and dashed lines indicate second preferences and loosely dashed lines third preferences. To avoid clutter we have removed the third preferences of .
+
+
+        
+    An example of a smart profile
+    
+
+Throughout this work it will be meaningful to restrict the functions agents can delegate from. The most notable classes of functions we will consider are: 
+
+
+    Direct delegations to voter  denoted by , where  is the identity function applied to the vote of voter .
+    Boolean functions in disjunctive normal form denoted by . 
+    Monotone boolean function in disjunctive normal form denoted by -.
+
+
+Unravellings
+
+Now that we have defined each agent's preferences we need to formalise how to make sense of these preferences. To do so, we use unravelling procedures to determine each agent's vote.
+
+[Unravelling Procedure]
+    An unravelling procedure is any computable function  where  with .
+
+The reason we need to consider unravelling procedures is that smart ballots can create cycles.
+Different choices on how to "unravel" cycles will produce different outcomes.
+For the majority of this work we will focus on the mathematical and computational properties of different unravelling procedures.
+
+
+When the outcome is calculated, it is important for agents to know which preference level was used to compute their vote. 
+To do so we introduce the notion of a certificate:
+
+[Certificate]
+    A certificate  for a profile  is a vector where for each  such that , the entry  corresponds to the preference level for agent .  
+
+
+Something that will be of high importance is that functions of interest can be calculated on partial input.  
+For example, consider majority rule denote as . For a variable ,  will always resolve to 1 regardless of agent 's vote. 
+We refer to these cases as necessary winners as in.
+We formalise this in the following definition where we use  to denote placeholder values.
+
+[Necessary winners]
+    Let  be a function.
+    We define the necessary winner extension  of function . 
+    We set for all , .
+    For , let  be the indices such that .
+    Let  denote the vector  where  replaces the value at index . Then, if for some  and for all ,  then .
+    Otherwise .
+
+To actually use our agents' preferences we need to introduce the concept of a consistent certificate. 
+Consistent certificates are certificates where the vote of each agent is determined by the votes of other agents using the functions in their smart ballots. Formally:
+
+[Consistent certificate]
+    For a profile , a certificate  is consistent if there is an ordering  of agents starting from vector  with placeholder values  for all agents, iteratively constructs an outcome vector of direct votes  as follows for . For ease of notation we abbreviate agent 's th function,  to .
+    
+
+
+    Here,  represents agent 's entry in . 
+    The restriction of vector  in , written as , is a vector indexed by  where for each ,  .
+
+
+
+
+Now, we are only interested in consistent certificates as these are the ones that respect the agents' votes. We will denote the set of consistent certificates of a profile  as .
+It is good that there is only one outcome matched to each consistent certificate regardless of the ordering . The following proposition is proven by.
+
+
+    If a consistent certificate  can be given by two orderings  and  of the agents, then the orderings yield the same outcome .
+
+Consequently, consistent certificates are enough to determine every agent's vote. 
+Now that we have settled the framework it's time to consider some "good" certificates. 
+There is a very natural "cost" in this scenario and that is using a lot of the later preferences of each agent. 
+So, we can set two very natural ways of minimising this cost. 
+We can attempt to minimise the sum of the costs or in a more egalitarian spirit attempt to minimise the maximum cost. 
+Formally:
+
+[MinSum]
+    For a given profile , the MinSum unravelling procedure is defined as:
+    
+
+
+
+
+[MinMax]
+    For a given profile , the MinMax unravelling procedure is defined as:
+    
+
+
+
+The above unravelling procedures have already been introduced and studied by . 
+A natural extension of MinMax, is that of MinMaxSum that selects from the MinMax certificates the ones with minimum sum. 
+Formally:
+
+[MinMaxSum]
+    For a given profile , the MinMaxSum unravelling procedure s defined as:
+    
+
+
+    where  is the set of consistent certificates that minimise the maximum . 
+
+We can apply these to our illustrative example in Figure . We first observe that  is not a consistent certificate. Because for an ordering  using only the first preferences,  or  as  delegates to . But, . So it must be that . But,  or  as  delegates to the majority . 
+But  delegates to  so , but again  leading to a contradiction.
+
+So, if there is a certificate using only the first two preferences then it is a MinMax certificate. 
+Such a certificate is the one given by the resolving voters in the order .
+Where , , , , , , . This gives a certificate .
+In fact, one can be convinced that this is a MinMaxSum certificate by considering all other certificates where every voter votes for their first preference except for two voters which vote for their second preference.
+
+On the other hand a MinSum certificate is given by .
+Here,  votes directly for . Then, , , . Further ,  and  votes directly for .
+To verify that this is indeed a MinSum certificate we need to check that there is no consistent certificate .
+Although usually tedious, in this case the only suitable candidate would be to use the second preference of  to vote for  directly. But then  cannot be resolved as  is undecided. But  are also undecided. So this is not a consistent certificate.
+Hence,  is a consistent certificate.
+Note that  is not the only MinSum certificate. We can select the third preference of  and the first preference of other agents.
+Then, we get an ordering .
+This is given by  and  voting directly for .
+Then, , . So, , by necessary winners despite not having decided . Then  and .
+
+
+
+
+Complexity Results
+
+Hardness Results
+
+In order to study the computational properties of the unravelling procedures we set them up as decision problems.
+
+[BoundedMinSum]
+    Let BoundedMinSum be the decision problem with input a target constant  and a smart profile  which uses functions in the class . 
+    The YES instances are those with a consistent certificate   with . 
+
+[BoundedMinMax]
+    Let BoundedMinMax be the decision problem with input a target constant  and a smart profile  which uses functions in the class . The YES instances are those with a consistent certificate   with . 
+
+[BoundedMinMaxSum]
+    Let BoundedMinMaxSum be the decision problem with input target constants  and a smart profile  which uses functions in the class . The YES instances are those with a consistent certificate   with  and .
+
+
+grandi have proven that BoundedMinSum and BoundedMinMax are poly-time computable and that BoundedMinSum and BoundedMinMax are NP-complete.
+We improve on these hardness results by introducing novel gadgets and conclude some inapproximability results.
+
+Before delving any further, we can consider the trivially easy cases. 
+For any function class , BoundedMinSum and BoundedMinMax are trivially solvable if the maximum size of the ballot is 1. That is because every agent is required to vote for a constant.
+
+Now, let  be the binary logical OR and  be the binary logical AND. Then:
+
+[Hardness of BoundedMinSum]
+    Suppose . Then BoundedMinSum is NP-hard, even if the maximum size of a smart ballot is 2.    
+
+
+    We reduce from the NP-hard problem of 3-SAT.
+    Let  a 3-SAT instance on boolean variables  with  where  correspond to literals of variables  or their negations.
+    
+    We first define constant voter zero, that always votes for 0, so that .
+
+
+For each variable  we construct a voter  with voting profile . These are drawn in Figure . We denote the first preferences as solid lines and second preferences as dashed lines.
+
+
+We then construct gadgets for each term . 
+These gadgets will have the property that they incur no additional cost if  is satisfied and a cost of at least one if  is not satisfied. We prove this for the four different structures of a term .
+
+
+        [zero voter]
+
+    
+        [Voter ]
+        
+    
+    Setting up the variables voters
+    
+Case : We construct fresh voters , , , and  with smart profiles:
+
+*
+Now, we analyse when the first preferences of the additional voters can be resolved without producing cycles. If  then  and  resolves to vote  using the first preference. 
+Hence,  and  resolves to  using first preference. 
+Similarly,  resolves to  and then  resolves to  using only first preferences. 
+Similarly, if  or , agents  and  respectively will resolve to  and so all fresh agents will resolve their votes using only first preferences.
+
+Now, suppose . Suppose there is an ordering  that gives rise to a consistent certificate using only the first preferences of agents . Then,  as  needs  to be resolved. Further,  as  and so  determines the clause . Similarly,  and . This leads to the contradiction that . Therefore, no such ordering exists and if , one of the fresh voters  will need to incur a cost of at least .
+
+Case : We construct additional voters , ,  and , with smart profiles:
+
+*
+This is demonstrated by Figure .
+
+circ/.style=circle,draw, solid, inner sep=0pt,minimum size=10mm
+    
+            [Case ]
+    
+        
+        [Case ]
+        
+            
+    Gadgets for MinSum
+            
+    Now, we analyse when the first preferences of the additional voters can be resolved without producing cycles. 
+    If  then  can resolve to  and so will . 
+    As  and  are set to a value,  can resolve its first preference. 
+    As  and  are set,  can resolve its first delegation as well. 
+    Similarly, if  then  is immediately resolved to  and so  is resolved. 
+    Hence,  and then  can be resolved. 
+    Similarly, if   and so  resolves to  and all additional voters are resolved.
+    
+    Now, suppose . Then  cannot immediately resolve the logical OR as it is dependent on the vote of , similarly  is waiting for  to decide, and  is waiting for . 
+    But  is waiting for  to decide. 
+    There is no way to resolve this cycle, and so one of the additional voters we have introduced will have to vote for their second preference. 
+    This will incur an additional cost of at least 1.
+
+    Case : 
+    The proof is symmetrical for this case. We need to switch some ANDs to ORs and vice versa but other than that it is identical. 
+    For completeness, we show the resulting gadget in Figure . 
+    This is the result of a smart profile of:
+    *
+
+
+    Case :
+    The proof is symmetrical to the case of . We only need to switch  to . This is achieved by the following smart ballot:
+    *
+    
+    Now suppose we construct  such gadgets for each term. Then if every term is satisfied by some assignment of the variables  then the total cost incurred will be at most . That is because the fresh voters incur no additional cost but each voter  can incur a cost of at most 1.
+    If a term is not satisfied then at least  gadgets will incur a cost of at least  so that the cost is at least . 
+    Hence we have reduced the satisfiability of any 3-SAT instance  to querying if there is a certificate  for the above election with . Thus BoundedMinSum is NP-hard.
+
+[Hardness of BoundedMinMaxSum]
+    If  then BoundedMinMaxSum is NP-hard. 
+
+
+    Every instance of BoundedMinSum is an instance of BoundedMinMaxSum. For target maximum sum  and smart profile  a MinSum query, we can consider a MinMaxSum query with target maximum , target sum  and smart profile . Simply set  to be the maximum of the size of smart ballots, i.e., . Then the max requirement of MinMaxSum is trivially satisfied and so we have reduced BoundedMinMax to BoundedMinMaxSum.
+
+
+[Inapproximability of BoundedMinSum] A constant factor approximation of BoundedMinSum is NP-hard.    
+
+
+    We can adapt the above proof to prove that BoundedMinSum is not constant-factor approximable. 
+    Following our construction above we can incur a cost of  for when the expression  is not satisfiable by simply creating  gadgets for each term. 
+    So for a MinSum outcome :    if and only if  is satisfiable and  if and only if  is not satisfiable. 
+    So, any constant factor approximator would solve 3-SAT, thus proving hardness.
+
+Now we shift our focus on BoundedMinMax.
+We first note that there is an additional easiness lemma for .
+The point of this lemma is that  does not introduce any additional hardness beyond the hardness needed for computing the necessary winner of a function.
+
+
+    Let  be any computable family of functions and  a smart profile where each ballot has size at most 2.
+    Suppose for each function , the necessary winner  can be computed in time .
+    Then, there is an algorithm that decides  which runs in  steps. 
+
+
+    Let  the size of the ballot of agent , as always  is a consistent certificate, as each delegate votes for a constant.
+    As each , the only possible certificate that improves on  is .
+    To check if  is consistent, we first set all agents  with  constant and equal to  to vote for .
+    Then, we check iteratively if any of the unset agents can vote using their first preference.
+    We repeat this step until running this iteration makes no changes.
+    We return that  is a consistent certificate if and only if all agents are set at this final point.
+
+    We now prove correctness of the above.
+    If the algorithm returns that  is a consistent certificate then it truly is so. 
+    It can be proved by constructing  where  is the position in which  was activated by our algorithm.
+    By our definition,  then uses only the values of agents that were set before  in this ordering.
+    Now consider every case where  is a consistent certificate with a corresponding ordering .
+    Then, without loss of generality all the agents that vote for constants are placed first in positions .
+    Then, for ,  can be calculated using only agents  with , hence our algorithm will set  to vote for . Inductively, it will reconstruct an equivalent ordering to .
+
+
+Now that we have the easiness result the following hardness result will be tight.
+Our construction is similar to the one for .
+Instead of using multiple gadgets to amplify the effect of cycles we create some additional cycles by introducing primed voters .
+
+[Hardness of BoundedMinMax]
+    Suppose . Then BoundedMinMax is NP-hard, even if the maximum size of a smart ballot is 3.    
+
+
+    We follow a similar construction as above. We reduce from the NP-hard problem 3-SAT. Suppose  is an instance of 3-SAT as above on  terms and  variables. We again introduce constant voter zero with smart ballot . For each variable  we create a voter  with smart ballot . For each term , we create gadgets with the property that if  is satisfied, the gadget uses only the first two preference levels. If  is not satisfied, the gadget uses the third preference level. We prove this for the following four cases.
+
+    Case :
+    For each term we construct additional voters . With voting profiles: 
+    *
+
+    Now, we claim that if  is satisfied then this component can be resolved with at most the second preference being used. 
+    If  then we can resolve  to  using their second preferences. 
+    Hence, we can then resolve agents in order  using the agents' second preference. 
+    Similarly if  we can resolve in order  using only the agents' first two preferences. Similarly, for .
+
+    Now consider the case where . Let  be an ordering of the  agents from which a consistent certificate arises. Suppose, this only uses the agents' first two preferences.
+    As the fresh agents  are identical with the primed versions , without loss of generality every unprimed agent appears before their primed counterpart so for instance . 
+    Then,  as  cannot be resolved with . 
+    Similarly,  and  but . This leads to the contradiction . 
+    Hence, if  is not satisfied, one of the fresh agents will use their third preferences, and if  is satisfied, all fresh agents will use only their first two preferences.
+
+    Case :
+    For each term we construct additional voters . With voting profiles: 
+    *
+
+    We present this smart ballot in the much easier to parse Figure  where solid lines indicate first preferences and dashed lines indicate second preferences:
+circ/.style=circle,draw, solid, inner sep=0pt,minimum size=10mm
+    
+        
+    [Case ]
+    
+    
+        
+    [Case ]
+        
+    
+        
+    Gadgets for MinMax
+    
+    Now, we claim that if  is satisfied then this component can be resolved with at most the second preference being used. 
+    If  then we can resolve  to  using their second preferences. 
+    Hence, we can then resolve agents in order . 
+    Similarly, if  we can resolve in order  using only the agents first two preferences. 
+    Now, if  the same argument holds, as the logical AND is resolved to 0. 
+
+    Now consider the case where  and . Let  be an ordering of the  agents from which a consistent certificate arises. Suppose, this only uses the agents' first two preferences.
+    As the fresh agents  are identical with the primed versions , without loss of generality every unprimed agent appears before their primed counterpart, so for instance . 
+    Then,  as  cannot be resolved with . 
+    Similarly, . Again,  as  as . But . This leads to the contradiction . 
+    Hence, if  is not satisfied one of the fresh agents will use their third preferences and if  is satisfied all fresh agents will use only their first two preferences.
+
+    Case : This case is symmetrical to the above. We only need to permute the agents and replace the logical ANDs with ORs and vice versa. For completeness, the smart voting profiles are:     
+    *
+
+    These are drawn in Figure .
+
+    Case : The proof is symmetrical to the case . The smart ballot used reverses  to . This is accomplished by the following smart profile:
+    *
+
+    So,  is satisfiable if and only if there exists a consistent certificate  with . Hence, we have reduced 3-SAT to BoundedMinMax, proving that BoundedMinMax is NP-hard.
+
+[BoundedMinMax is not approximable]
+    If  then a non-trivial approximation of BoundedMinMax is NP-hard.
+
+
+    This result can be proven by modifying the above proof. Instead of constructing a cycle of size 2 for voters , we construct a cycle of size . So every voter  can be thought of as a voter  with . Then we construct voters  and set  and for , .
+    Now, since the maximum size of the smart ballots is  then clearly for the MinMax certificate , . 
+    But suppose that an algorithm was able to decide if there was  with . Then this algorithm would be able to determine if the original instance is satisfied. So, it would solve 3-SAT.
+
+Extensions of Hardness
+
+Throughout this process we have proven results for  and .
+We can use these results to prove that hardness results extend to all "reasonable" and sufficiently complex function classes.
+We make this precise below.
+First, we consider that "reasonable" functions are monotone. 
+We define  and extend this to a partial order in  as  if for all , .
+Then we can define monotonicity of a function.
+
+[Monotonicity]
+        Function  is monotone if for all ,  implies that .
+
+We also need to use functions that are not equivalent to direct delegation. 
+These functions are referred to as dictator functions by and are equivalent to projection functions.
+
+[Dictator functions]
+    Function  is a dictator function if there is some index  such that for every , .
+
+
+        For , let  be a function that is monotone, non-constant and not a dictator function.
+    Then there exist indices  with  and constants  for  and  and  such that  or .
+
+
+    By exercise 4.3, any monotone function  can be written as a boolean formula in disjunctive normal form without negations.
+    Let , with .
+    Without loss of generality we can assume that for all  and , .
+    Then,  as  is not constant.
+    
+    Suppose  for . 
+    Then, we can pick  as distinguished indices. Set  for  and  otherwise.
+    So that for , terms  evaluate to  and .
+    Hence,  is equivalent to .
+    
+    If , then as  is not a dictator, .
+    As ,  does not contain .
+    Hence, for  for some , we can set all variables of  to 1 and all variables not appearing in  or  to 0.
+    Then, for any  for , . That is because  cannot contain  and the variables of  cannot be a subset of the variables of .
+    So,  contains variables not in  and not in  which are set to . So  is set to 0.
+    Hence,  is made equivalent to .
+
+Now, we need a final ingredient to add to our conditions for reasonable functions to discuss function classes.
+We think that it is reasonable that agents are offered functions of similar expressibility regardless of voting in favour of 0 or 1.
+For instance, if qualified majorities in favour of 0 are allowed then we would expect in most scenarios that qualified majorities in favour of 1 to be allowed.
+This concept can be formalised by considering the dual of each function as stated in.
+
+[Duality]
+    Let . Then 's dual function  is .
+
+In particular ,  and for , the qualified majority of  in favour of , .
+
+So, we would expect that in most settings the choices of voters to be closed under taking duals.
+Nevertheless, the following key theorem works even if there is only one sufficiently "complex" but monotone function  and the dual .
+
+
+    Let  any function class such that  contains . Suppose  with  non-constant, not dictatorial and monotone.
+    Then  and  are NP-hard even if the maximum ballot size is 2.  is NP-hard even if the maximum ballot size is 3.
+
+
+    By Lemma  there are designated indexes  and constants  for  such that  is equivalent to  or to .
+    Hence, for constants ,  is equivalent to  if  is equivalent to  or vice versa.
+    Hence, by constructing suitably many constant voters zero and one with  and ,  and  can be used to simulate  and .
+    Hence, our propositions of hardness hold here as well.
+
+As an immediate corollary, if agents are allowed to delegate to some odd majority then MinSum and MinMax are NP-hard.
+This resolves the question left open in.
+
+Results for 
+
+Now that we've shown hardness results for function classes larger than  we focus on what we can do with .
+
+For every smart ballot  with delegating functions from  we can construct a directed graph that encodes this information . In  every arborescence is a valid certificate of the election induced by . As a reminder, an arborescence  in a directed graph  rooted in  is a subgraph for which for each   there exists a unique path from  to . This construction is essentially in and we formalise it below.
+
+For an election with voters  and smart ballot , we construct  as follows.
+For  where  and   are fresh nodes. For each voter  with smart ballot  for  we construct edges .
+In addition, we construct edges .
+Then we can claim that:
+
+
+    For every smart profile  there is a natural bijection between the consistent certificates of  and the arborescences of  rooted in . This is given by having voter  delegate to their parent in the arborescence.
+
+
+    Let  an arborescence of  rooted in .
+    Let voter  delegate to their parent .
+    Then every agent is delegating to a unique agent by the properties of the arborescence.
+    Additionally, there are no cycles and every chain of delegations reaches  or  as they are the only vertices that are children of the root, so every voter is a assigned a vote.
+
+    In the other direction let  a consistent certificate. 
+    Let  the delegation function induced by .
+    Then,  forms are arborescence.
+    That is because for every voter  there is a unique path to a constant symbol.
+ 
+This construction allows us to argue graph-theoretically about  elections.
+
+Consider the problem of finding a MinMax certificate on instances with  voters and at most  preference levels.
+The paper by provides a  algorithm for finding a MinMax certificate. With two tweaks we construct an algorithm that runs in .
+
+
+    Consider an instance with voters  and smart ballot . 
+    Let the maximum preference used by any voter be .
+    Then there is a  algorithm that returns a MinMax certificate.
+
+
+    Suppose we want to check if there exists a consistent certificate using the agents' first  preferences. Then we can consider the smart ballot given by the first  preferences .
+    Then it suffices to check if there exists an arborescence of .
+    To do so, we can run Depth First Search from  in  steps. As , it is .
+    If there is an arborescence it will be returned as the DFS tree of the traversal. If not, some node is unreachable from  and thus  has no consistent certificate.
+
+    Now, to find the smallest  for which the above is satisfied we only need to binary search suitable  in .
+    This gives a total complexity of .
+
+
+The above algorithm works for cases where voters are offered more than two alternatives.
+To retain the complexity of  it suffices to assume that .
+We also, show that it is easy to modify the above algorithm to check if there is a valid MinMax certificate voting for  or  in polynomial time.
+
+
+
+    Consider an instance of a monotone aggregation rule  that translates the votes of the agents to the final vote of the group. 
+    Then for  there is a  algorithm that determines if there is a MinMax certificate such that the election resolves in favour of  and if it exists it returns the certificate.
+
+
+
+    For ease of notation we assume without loss of generality that .
+    We first determine by the previous algorithm the smallest  for which there exists a MinMax certificate using at most  preferences.
+    Then we construct the graph .
+    Then, instead of initiating a DFS search from the root we initiate it from node .
+    This returns the directly connected component of  denoted .
+    Let  with  if and only if .
+    Any voter outside of   cannot be made to vote for , so that  is maximal. As  is monotone,  if and only if  there is a possible way of resolving the election to .
+
+    If  then we return that every valid MinMax outcome votes for 1.
+    Otherwise, we run DFS from  on the subgraph not visited by our previous DFS.
+    From this we recover a valid certificate from the rest of the agents.
+    We only need to return this certificate to conclude the algorithm.
+    The complexity is inherited by the algorithm to determine  and it is .
+
+The above result implies that there need to be clear and predetermined rules on tie-breaking of results.
+That is because it is computationally cheap to adversarially break ties to rig the election in someone's favour.
+
+We have not been able to develop an algorithm or a proof of hardness for a similar result in MinSum.
+But, we have been able to reduce it to a graph theoretic problem in the case of qualified majorities.
+A qualified majority is a rule where outcome  is selected if and only if at least  voters vote for .
+
+Now suppose that our graph  is weighted, so for , edge  has weight . 
+Then, the equivalent graph theoretic question is, for graph  is there a minimum weight arborescence with the size of subtree of  greater than ? 
+We leave whether this is polynomial time computable or NP-hard as an open question.
+
+Axiomatisation
+
+We introduce the axiom of cast participation. This axiom states that voters preferring outcome  benefit from voting directly for . 
+As mentioned in the introduction, this axiom is introduced by and have applied it for binary issues with abstentions. 
+We use the definition for binary issues with abstentions i.e., .
+We denote that agent  prefers outcome  to  as . As in we infer that if agent  votes directly for outcome  then agent  prefers  over any other outcome. 
+Formally if  then  and .
+Additionally, we consider that if agent  votes directly for  then . 
+Originally, focus on resolute unravelling procedures. do so as well and only examine the axioms for their resolute heuristics.
+We will extend these to the irresolute unravelling procedures we have studied.
+So, we need to extend the original definition. 
+We need to assign preferences over sets of outcomes rather than just for single outcomes.
+For the case  we posit that reasonable extensions of the order  would include the partial order:
+
+
+
+
+Here  denotes that  is not comparable to .
+Then we can formalise cast participation for irresolute procedures:
+
+[Cast participation for irresolute procedures]
+    A resolute voting rule  and a irresolute unravelling procedure  satisfy cast participation if for all valid smart profiles  and agents  such that  we have that for all :
+    
+
+
+    Here  denotes replacing  with  and  is applied to subsets of  as follows: .
+
+Cast participation can be thought of as disallowing tactical voting. Unfortunately, it is not always satisfied. 
+We first consider the cases of some non-monotone  and non-monotone delegating functions. 
+Note that we have defined monotonicity for binary issues in monotonicity. 
+We extend this to issues with abstentions by considering  to be totally ordered as .
+Then, we can define a partial order on  where  if for all , . Then monotonicity is defined identically.
+
+We now prove a series of negative results for cast participation.
+
+
+
+ Suppose that the voting rule  is not monotone. Additionally, the counterexample to monotonicity is not caused by flipping a  to a  or . 
+That is, there exists  and  with  but . 
+Then cast participation does not hold.
+
+
+    Consider the smart profile where for each agent , . 
+    In particular . We are allowed to deduce this because  does not vote for an abstention.
+    But, by setting a smart ballot of  we obtain  and . So voter  prefers to vote directly for  than  despite preferring outcome .
+    This violates cast participation.
+
+We consider that most reasonable unravelling procedures will not needlessly violate their agents' first preferences. 
+We formally say that  respects first preferences if whenever  is a consistent certificate,  returns an outcome with certificate . 
+Note that ,  and  respect first preferences as well as any Pareto optimal unravelling procedure. A notable exception is the BFS algorithm proposed by as shorter delegation chains are preferred over longer delegation chains.
+
+
+    Suppose  is a monotone rule and  respects first preferences. Suppose additionally, that for some  and  there exists a "deciding" subset of voters  with  such that if every voter in  votes for ,  votes for .
+    Then, cast participation does not hold.
+
+
+    Let  as defined above and .
+    Further, suppose there exist  with only ,  and . Then, enumerate voters  not in  and let . 
+    For all other agents  set  for some arbitrary . 
+    Then the first preferences of the voters do not introduce cycles. 
+    As  respects first preferences it picks an outcome where every agent votes for their first preference.
+    Hence,  resolves to vote for  as all voters in  vote for .
+    Now if agent  were to switch their vote from  to  everyone in  would vote for  and so  would resolve to . This breaks cast participation for voter  as they prefer outcome 0 but are better not voting for 0.
+
+
+        Let  be a rule such that for  voters if  voters vote for  then  assigns . Then there are examples that unravelling with MinMax violates cast participation for any . This result holds even if we only allow agents to vote using LIQUID.
+
+
+    Let  and  as described. Then, let . Then MinMax would simply assign each individual to first preferences and the majority votes for 1. So the outcome set is .
+
+    But, if  then a cycle is formed and so necessarily, MinMax will have to use some second preferences. Hence, setting  to their second preference would be a valid solution. So every voter except  vote for , so that  resolves to . 
+    Note that we can still assign first preference to all voters except than  so that  is a consistent certificate and would result to the majority again voting for 1. 
+    Therefore, the set of outcomes is  which is better than  for agent .
+
+Do note that the above counterexample works even when considering issues with binary outcomes without abstentions.
+Additionally, the above proof would not work in the case of MinMaxSum, as MinMaxSum would only return the certificate .
+
+We can further prove that MinSum does not satisfy cast participation in general.
+
+     Let  be such that if a strict majority votes for outcome  then  supports outcome . Then even if we consider only binary issues, cast participation doesn't hold for MinSum. 
+
+
+    Let . Let  and . Then, the unique MinSum outcome is everyone voting for their first preferences with  resolving to  and  voting for 1 and  voting for 0. This gives an outcome set of .
+
+    Now, if  were to switch their vote to , then the MinSum outcome set would be . Because if  votes for  directly, every other first preference can be resolved.
+    Hence,  should not vote directly for 1 even though it is their preferred outcome. This violates cast participation.
+
+Note, that in the above case  is a monotone rule. So, it is not the case that monotone rules guarantee cast participation for MinSum even for binary issues.
+
+Conjecture:
+    Suppose that  is a monotone rule and voters are restricted to casting  ballots. Then MinSum satisfies cast participation.
+
+Conclusion
+
+In summary, we have extended the work of in two directions. On the complexity theoretic level, we have produced a new hardness criterion using novel gadgets. Additionally, we have improved on the algorithms to find MinMax outcomes and given an algorithm that returns if a MinMax outcome for a particular alternative exists.
+On the axiomatisation direction we have extended the definition by and proved several negative results.
+
+There are three ideas that could guide future work. First, the two open questions we leave at the end of Sections  and  can be resolved. In particular, I am slightly surprised the question at the end of Section  has not been resolved yet, as it is a general result concerning arborescences.
+Another direction is to extend the model by allowing agents to assign cardinal values of how much they approve of their preferences, instead of just ordering them.
+The cardinal voting model seems like a meaningful generalisation of the preferential voting model we have here.
+Finally, our hardness result implies that for many reasonable functions optimal unravellings can be NP-hard.
+But there is a case relevant to the real world that is not covered by the hardness result.
+One implementation of liquid democracy requires agents to choose before the election if they want to be delegated to.
+Thus splitting the electorate between voters who cannot be delegated to and delegates who can be delegated to. 
+Suppose we allow voters to delegate to a single boolean function of delegates. 
+But, delegates can only delegate directly to other delegates, then NP-hardness does not arise.
+That is because the only cycles that need to be resolved happen in  which can be optimally unravelled in polynomial time.
+This gives voters a lot of expressive power while maintaining polynomial time unravellings. 
+A question that seems interesting in this setting is when it would be better for someone to join the delegates or the voters in different instances.
+
+In these final paragraphs, I include my personal reflections.
+This project has allowed me to explore a topic in detail that I was interested in before.
+Initially, I was quite ambitious and tried to come up with a game-theoretic model that rewarded amassing power.
+This is a reflection of real-life politics, as successful political parties get funding and members of parliament are paid a salary from the government.
+As far as I have seen, such a model has not appeared in the literature yet.
+The resulting model was complex and unwieldy and had no pure strategy Nash Equilibria.
+Hence, we moved on to another idea where voters want to coordinate on how to delegate to delegates in order to maximise the probability of voting for the ground truth.
+This path also did not yield substantial results. Nevertheless, I did come up with some nice simulations and graphs.
+
+The direction of my work changed when my supervisor suggested I read the paper by which she thought left open questions I could answer.
+I did so, and it turned out she was correct.
+The paper had a wide gap between what was proven to be easy, the simplest class of functions, and hard, arbitrary boolean functions.
+A class of functions that was noted throughout the work but not assigned a complexity class was that of delegating to majorities.
+I grappled with this over the Christmas vacation and realised that it was indeed NP-hard.
+The next task I had in mind was to check a less expressive function class that is binary OR and binary AND.
+As shown in the main hardness reduction, these too turned out to be NP-hard.
+I was very excited to present these to my supervisor as these superseded my previous result.
+
+Our work would include all the complexity results but importantly, we also considered the axiomatic results in.
+The axiomatic results were only for resolute procedures and so there was space to extend them to irresolute ones.
+We picked the most unassuming definition we could and then started proving negative results for non-monotone functions.
+I was under the impression that MinMax and definitely MinSum would satisfy cast participation for monotone functions.
+It turned out I was wrong even for a restricted class of monotone functions. 
+In fact, I arrived at the example of Proposition  by trying to prove its negation.
+
+Overall, I have deeply enjoyed the repeated successes and failures of research. 
+I am quite happy with the final result which would not be possible without the guidance of my supervisor. 
+
+
+plainnat
+
