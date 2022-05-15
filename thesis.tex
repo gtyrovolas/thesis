@@ -85,7 +85,7 @@
     I begin by acknowledging the guidance of my supervisor Edith Elkind. Without her exceptional knowledge of recent academic developments, insightful comments and the time she dedicated to reviewing my manuscript this work would not be possible.
 For this, I am extremely grateful.
 
-Further, I am very appreciative to the hours my tutors have spent to sharpen my mind in the last four years. I'm grateful to them for helping me blossom to the student I am today.
+Further, I am very appreciative to the hours my tutors have spent to sharpen my mind in the last four years. I am grateful to them for helping me blossom to the student I am today.
 
 I want to thank my good friends for taking the time to look through my work and for bouncing off ideas about a solution that never came to be.
 I wish I could thank my tutors and friends by name, but guidance from the academic office forbids me to do so.
@@ -282,7 +282,7 @@ The property of cast participation has been introduced in the past \citep{moulin
 
 The paper then goes on to fix the aggregation rule to be the simple majority rule for binary issues. It then examines two different delegation mechanisms, depth-first search and breadth-first search.
 Suppose voter $i$ has stated that they want to delegate to some agent. Let us represent a delegation chain as $(c_1, c_2, \ldots, c_k)$ meaning that agent $i$ delegates to their $c_1$\textsuperscript{th} preference and the $j$\textsuperscript{th} agent in the chain delegates to their $c_j$\textsuperscript{th} preference.
-Then, DFS would have voter $i$ delegate to a final voter given by the smallest lexicographical chain that doesn't include a cycle. For instance, if agent $i$ has preferences $a > b$ and agent $a$ has preferences $i > c$, then DFS would have voter $i$ delegating to $c$ with chain $(1, 2)$.
+Then, DFS would have voter $i$ delegate to a final voter given by the smallest lexicographical chain that does not include a cycle. For instance, if agent $i$ has preferences $a > b$ and agent $a$ has preferences $i > c$, then DFS would have voter $i$ delegating to $c$ with chain $(1, 2)$.
 The reasonable objection by \citeauthor{kotsialou} is that the second preference of agent $i$ is probably a better choice for $i$ than the second preference of voter $a$.
 So, they propose BFS to return the lexicographically smallest chain \emph{from the chains with the smallest lengths}.
 They then prove that if there are cycles in the graph DFS may not satisfy guru participation whereas if there are no cycles guru participation is satisfied. In contrast, guru participation is always satisfied for breadth first search.
@@ -511,7 +511,7 @@ It is good that there is only one outcome matched to each consistent certificate
 \end{proposition}
 
 Consequently, consistent certificates are enough to determine every agent's vote. 
-Now that we have settled the framework it's time to consider some ``good'' certificates. 
+Now that we have settled the framework it is time to consider some ``good'' certificates. 
 There is a very natural ``cost'' in this scenario and that is using a lot of the later preferences of each agent. 
 So, we can set two very natural ways of minimising this cost. 
 We can attempt to minimise the sum of the costs or in a more egalitarian spirit attempt to minimise the maximum cost. 
@@ -1095,7 +1095,7 @@ This resolves the question left open in \citet{grandi}.
 
 \subsection{Results for $\LIQUID$}
 
-Now that we've shown hardness results for function classes larger than $\LIQUID$ we focus on what we can do with $\LIQUID$.
+Now that we have shown hardness results for function classes larger than $\LIQUID$ we focus on what we can do with $\LIQUID$.
 
 For every smart ballot $\vec{B}$ with delegating functions from $\LIQUID$ we can construct a directed graph that encodes this information $\varphi(\vec{B})$. In $\varphi(\vec{B})$ every arborescence is a valid certificate of the election induced by $\vec{B}$. As a reminder, an arborescence $A$ in a directed graph $G = (V, E)$ rooted in $r$ is a subgraph for which for each $u \in V \setminus \{r\}$  there exists a unique path from $r$ to $u$. This construction is essentially in \citet{grandi} and we formalise it below.
 
@@ -1269,7 +1269,7 @@ Additionally, the above proof would not work in the case of \textsc{MinMaxSum}, 
 We can further prove that \textsc{MinSum} does not satisfy cast participation in general.
 
 \begin{proposition} \label{prop:cast-sum}
-    Let $r$ be such that if a strict majority votes for outcome $d$ then $r$ supports outcome $d$. Then even if we consider only binary issues, cast participation doesn't hold for \textsc{MinSum}. 
+    Let $r$ be such that if a strict majority votes for outcome $d$ then $r$ supports outcome $d$. Then even if we consider only binary issues, cast participation does not hold for \textsc{MinSum}. 
 \end{proposition}
 
 \begin{proof}
