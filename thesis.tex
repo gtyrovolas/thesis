@@ -75,7 +75,7 @@
         Honour School of Mathematics and Computer Science (Part C)\\
         \vspace*{.5cm}
         Trinity Term 2022 \\
-        Words: 9947
+        Words: 9948
     \end{center}
 
 \end{titlepage}
@@ -274,7 +274,7 @@ To be able to have a well-defined notion of $v$ being the $i$\textsuperscript{th
 An example where this could be a problem is the partial order $\succ$ over $\{a, b, c, d\}$ given by $a \succ d$ and $b \succ c \succ d$.
 The rest of the paper seems to assume that for every agent $u$ their preference relation is a total order for some $k_u$ agents and the rest of the agents are tied at the end and are not approved of\footnote{This inconsistency and our given remedy has been acknowledged by Dr. Kotsialou in correspondence with her.}.
 
-Now, that the graph is set up there are different ways to resolve delegations called delegation mechanisms. Further, once every voter has voted, there are different aggregation rules such as the majority rule, a qualified majority rule or a weighted majority rule.
+Now that the graph is set up, there are different ways to resolve delegations called delegation mechanisms. Further, once every voter has voted, there are different aggregation rules such as the majority rule, a qualified majority rule or a weighted majority rule.
 The key concepts extended in this paper are those of \emph{cast participation} and \emph{guru participation} and they are defined for a \emph{pair} of delegation mechanism and aggregation rules.
 Cast participation is the property that every voter $i$ with a preference over the alternatives weakly improves the outcome by voting directly compared to abstaining.
 Guru participation is the property that voter $g$ weakly benefits by having more voters delegate to $g$.
@@ -287,7 +287,7 @@ The reasonable objection by \citeauthor{kotsialou} is that the second preference
 So, they propose BFS to return the lexicographically smallest chain \emph{from the chains with the smallest lengths}.
 They then prove that if there are cycles in the graph DFS may not satisfy guru participation whereas if there are no cycles guru participation is satisfied. In contrast, guru participation is always satisfied for breadth first search.
 
-A different approach and model is given by \citet{grandi}. This is the paper which we will be extending, so a formal treatment of their model is given in the next section.
+A different approach and model are given by \citet{grandi}. This is the paper which we will be extending, so a formal treatment of their model is given in the next section.
 The authors of the paper allow individual agents to delegate to functions of other agents. A simple example would be to delegate to the majority of some trusted agents.
 Agents submit a ballot where these functions are totally ordered in terms of preference.
 These two complications of the simple model means that cycles can be introduced in much more complicated ways.
@@ -1227,7 +1227,7 @@ Then cast participation does not hold.
 \begin{proof}
     Consider the smart profile where for each agent $a$, $B_a = (u_a)$. 
     In particular $0 >_i * >_i 1$. We are allowed to deduce this because $i$ does not vote for an abstention.
-    But, by setting a smart ballot of $B_i = (e)$ we obtain $r(\vec{u}')$ and $ r(\vec{u}') < r(\vec{u})$. So voter $i$ prefers to vote directly for $e$ than $0$ despite preferring outcome $0$.
+    But, by setting a smart ballot of $B_i = (e)$ we obtain $r(\vec{u}')$ and $ r(\vec{u}') < r(\vec{u})$. So, voter $i$ prefers to vote directly for $e$ rather than for $0$ despite preferring outcome $0$.
     This violates cast participation.
 \end{proof}
 
