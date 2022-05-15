@@ -377,12 +377,12 @@ Consider voters $N = \{a, b, c, d, e, f, g\}$, with smart ballots:
     &B_b = \left(\overline{d} > c > 1 \right) \\
     &B_c = \left(\Maj(e, f, g) > a > 1 \right) \\
     &B_d = (a > c > 1) \\
-    &B_e = (d > f \lor g > 0) \\
+    &B_e = (d > f \land g > 0) \\
     &B_f = (c > 0) \\
     &B_g = (1)
 \end{align*}
 
-This is illustrated in Figure \ref{fig:example}, where full lines indicate first preferences and dashed lines indicate second preferences and loosely dashed lines third preferences. To avoid clutter we have removed the third preferences of $a, b, c$.
+This is illustrated in Figure \ref{fig:example}, where full lines indicate first preferences, dashed lines indicate second preferences and loosely dashed lines third preferences. To avoid clutter we have removed the third preferences of $a, b, c$.
 
 \begin{figure}[h]
     \centering
@@ -429,7 +429,7 @@ This is illustrated in Figure \ref{fig:example}, where full lines indicate first
         \draw[->, loosely dashed] (d) to (one);
 
         \draw[->, dashed] (e) to node[midway,right] {$\land$}(elli_fg);
-        \draw[->] (e) to [bend right] (d);
+        \draw[->] (e) to (d);
         \draw[->, loosely dashed] (e) to (zero);
 
         \draw[->] (f) to [bend left] (c);
@@ -539,7 +539,7 @@ Formally:
 \begin{definition}[MinMaxSum]
     For a given profile $\mathbf{B}$, the \textsc{MinMaxSum} unravelling procedure s defined as:
     \[
-        \textsc{MinMaxSum}(\mathbf{B}) =  \left\{ X_{\mathbf{c}}\mid \arg  \min_{\vec{c} \in \mathit{minC}(\mathbf{B})} \sum_{i=1}^n c_i \right\}.
+        \textsc{MinMaxSum}(\mathbf{B}) =  \left\{ X_{\mathbf{c}} \bigm| \arg  \min_{\vec{c} \in \mathit{minC}(\mathbf{B})} \sum_{i=1}^n c_i \right\}.
     \]
     where $\mathit{minC}(\vec{B})$ is the set of consistent certificates that minimise the maximum $c_i$. 
 \end{definition}
